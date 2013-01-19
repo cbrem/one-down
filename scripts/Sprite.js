@@ -58,19 +58,19 @@ function SpriteImage(srcImgObj){
     (ex: position, velocity, etc)
     
    params: 
-     xPos               the world x coordinate of the left side of the sprite
-     yPos               the world y coordinate of the top side of the sprite
+     worldX               the world x coordinate of the left side of the sprite
+     worldY               the world y coordinate of the top side of the sprite
      width              the width this sprite will display as
      height             the height this sprite will display as
      spriteImg       the SpriteImage instance to use as the source of this 
                      sprite's graphics
 **/
-function Sprite(xPos, yPos, width, height, spriteImg){
+function Sprite(worldX, worldY, width, height, spriteImg){
     assert(spriteImg instanceof SpriteImage, "Sprite not given SpriteImage");
     this.spriteImg = spriteImg;
     
-    this.xPos = xPos;
-    this.yPos = yPos;
+    this.worldX = worldX;
+    this.worldY = worldY;
     
     this.width = width;
     this.height = height;
@@ -96,14 +96,19 @@ function Sprite(xPos, yPos, width, height, spriteImg){
         world coordinates
     **/
     this.drawTo = function(ctx, drawX, drawY){
+        assert(ctx !== undefined, "Context was not defined for Sprite draw!");
         if(drawX === undefined){
-            drawX = this.xPos;
+            drawX = this.worldX;
         }
         if(drawY === undefined){
-            drawY = this.yPos;
+            drawY = this.worldY;
         }
         
         // call the image handler's drawing function
         this.spriteImg.drawTo(ctx, drawX, drawY, this.width, this.height);
+    }
+    
+    this.draw = function(ctx){
+        this.drawTo(ctx);
     }
 }
