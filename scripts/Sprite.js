@@ -20,13 +20,14 @@ function SpriteImage(srcImgObj){
     this._clipHeight = srcImgObj.height;
     this._animations = [];
     
-    /** SpriteImage.drawTo: (canvas context, Number, Number)
+    /** SpriteImage.drawTo: (canvas context, Number, Number, Number, Number)
     
     draws the SpriteImage to the given canvas context
     
     params:
-    ctx             the canvas context to draw on
-    drawX, drawY    the canvas context coordinates to draw to
+    ctx                         the canvas context to draw on
+    drawX, drawY                the canvas context coordinates to draw to
+    drawWidth, drawHeight       the size to draw the images to on the canvas
     **/
     this.drawTo = function(ctx, drawX, drawY, drawWidth, drawHeight){
         // round to get prevent blurriness
@@ -40,6 +41,7 @@ function SpriteImage(srcImgObj){
                       drawX, drawY, drawWidth, drawHeight
                      );
         
+        // display a red overlay to show where the sprite is when in debug mode
         if(this._showDebug === true){
             ctx.save();
             ctx.fillStyle = "rgba(255,0,0,0.5)";
@@ -50,7 +52,7 @@ function SpriteImage(srcImgObj){
 }
 
 /**
-    Sprite: (Number, Number, SpriteImage)
+    Sprite: (Number, Number, Number, Number, SpriteImage)
     
     handles the actual object that a sprite represents and its data
     (ex: position, velocity, etc)
