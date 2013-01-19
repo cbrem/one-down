@@ -9,6 +9,7 @@ function Game () {
 
     var updateModel() = function () {
         player.update();
+        collisions.collide();
     };
 
     var updateView() = function () {
@@ -44,7 +45,7 @@ function Game () {
         environment = new Environment();
 
         //initialize canvas and context
-        canvas = document.getElementById("myCanvas");
+        canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");
 
         //initialize event handlers
