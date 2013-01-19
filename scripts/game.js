@@ -3,16 +3,20 @@
 function Game () {
     var environment,
         player,
+        collisions,
         canvas,
-        ctx;
+        ctx,
+        clicks,
+        presses;
         //add more objects here
 
-    var updateModel() = function () {
-        player.update();
+    var updateModel = function () {
+        player.update(clicks, presses); //synchronously send updates to player
+        clicks = [], presses = [];      //clear clicks and presses
         collisions.collide();
     };
 
-    var updateView() = function () {
+    var updateView = function () {
         environment.draw();
         player.draw();
     };
@@ -30,11 +34,15 @@ function Game () {
         canvX = e.pageX - canvas.offsetLeft;
         canvY = e.pageY - canvas.offsetTop;
         alert("You clicked on the canvas at (" + canvX + ", " + canvY + ").");
+
+        clicks.push(e);
     };
 
     var onKeyDown = function (e) {
         //react to key
         alert("Keycode of the pressed key is " + e.keyCode);
+
+        presses.push(e);
     };
 
     this.run = function () {
