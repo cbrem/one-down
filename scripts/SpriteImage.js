@@ -62,7 +62,7 @@ function SpriteImage(srcNickname){
 SpriteImage.sourcesData = {
     // arrays to make this for-loopable to work around not being allowed to 
     // forloop through object keys by homework constraints
-    "nicknames":["chik2", "ninjatuna"],
+    "nicknames":["chik2", "ninjatuna","mario"],
     "chik2": {
         "srcPath": "assets/images/chik2.png",
         "imgObj": undefined, // the actual Image object, will be overwritten on preload
@@ -85,6 +85,62 @@ SpriteImage.sourcesData = {
             "run":{
                 // data about clip areas here
             }
+        }
+    },
+    "mario": {
+        "srcPath": "assets/images/mariobros.png",
+        "imgObj": undefined,
+        "animationData":{
+            "run":[{x:80,y:32,w:16,h:16},
+                    {x:96,y:32,w:16,h:16},
+                    {x:112,y:32,w:16,h:16}],
+            "fall":[{x:304,y:32,w:16,h:16},
+                    {x:320,y:32,w:16,h:16},
+                    {x:336,y:32,w:16,h:16}],
+            "stand":[{x:176,y:32,w:16,h:16}],
+            "jump":[{x:144,y:32,w:16,h:16}]
+        }
+    },
+    "groundBlock": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:0,y:0,w:16,h:16}]
+        }
+    },
+    "pipe": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:0,y:128,w:32,h:32}]
+        }
+    },
+    "solidBlock": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:0,y:16,w:16,h:16}]
+        }
+    },
+    "brickBlock": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:16,y:0,w:16,h:16}]
+        }
+    },
+    "cloud": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:0,y:320,w:48,h:32}]
+        }
+    },
+    "bush": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "static":[{x:176,y:144,w:48,h:16}]
         }
     }
 }
