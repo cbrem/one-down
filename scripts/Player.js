@@ -39,9 +39,10 @@ function Player(x, y, width, height){
         this.y += this.velY;
     }
     
-    this.update = function(mousePresses, keyPresses){
-        console.log(keyPresses);
+    this.update = function(mousePresses, heldKeys){
         this._updateVelocity();
         this._updatePos();
+        
+        
     };
 }

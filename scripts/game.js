@@ -72,12 +72,15 @@ function Game() {
         canvas,
         ctx,
         clicks,
-        presses;
+        heldKeys;
         //add more objects here
 
     var updateModel = function () {
-        player.update(clicks, presses); //synchronously send updates to player
-        clicks = [], presses = [];      //clear clicks and presses
+        //synchronously send updates to player
+        console.log(clicks, heldKeys);
+        player.update(clicks, heldKeys); 
+        clicks = [];      //clear clicks, but don't clear 
+                                        // heldKeys until release
         //collisions.collide();
     };
 
@@ -105,20 +108,35 @@ function Game() {
     };
 
     var onKeyDown = function (e) {
-        
         //react to key
-        // crossbrowser check
-        var keyCode = (e.key) ? e.key : e.keyCode;
-        //alert("Keycode of the pressed key is " + e.keyCode);
-
-        presses.push(e);
+        var keyCode = util_getKeyCode(e);
+        //alert("Keycode of the pressed key is " + keyCode);
+        assert(true);
+        // prevent page from moving while moving player
+        if(util_isPageMoveKeyCode(keyCode)){
+            e.preventDefault();
+        }
+        
+        heldKeys[keyCode] = e;
+    };
+    
+    var onKeyUp = function (e) {
+        var keyCode = util_getKeyCode(e);
+        
+        if(util_isPageMoveKeyCode(keyCode)){
+            e.preventDefault();
+        }
+        
+        // remove key
+        delete(heldKeys[keyCode]);
     };
 
     this.run = function () {
         console.log('running game');
         
         // initialize mouse and key event queues
-        presses = [], clicks = [];
+        clicks = [];
+        heldKeys = {};
         
         //instanciate all libraries,
         //which will stay constant throughout this instance of the run method
@@ -136,6 +154,7 @@ function Game() {
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
         canvas.addEventListener("keydown", onKeyDown, true);
+        canvas.addEventListener("keyup", onKeyUp, true);
 
         // make canvas focusable, then give it focus!
         canvas.setAttribute('tabindex','0');
