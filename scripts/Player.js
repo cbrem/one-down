@@ -40,7 +40,7 @@ function Player(x, y, width, height){
     }
     
     this.update = function(mousePresses, keyPresses){
-        console.log(keyPresses);
+        //console.log(keyPresses);
         this._updateVelocity();
         this._updatePos();
     };
