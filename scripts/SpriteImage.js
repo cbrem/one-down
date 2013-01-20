@@ -7,21 +7,61 @@
                       (must be one of the nicknames in the sourcesData)
 **/
 function SpriteImage(srcNickname){
-    assert(SpriteImage.sourcesData[srcNickname] != undefined, "invalid sprite name");
-    this.srcData = SpriteImage.sourcesData[srcNickname];
-    var srcImgObj = this.srcData.imgObj;
+    this._init = function(srcNickname){
+        this.nickname = srcNickname;
+        var srcData = SpriteImage.sourcesData[srcNickname];
+        assert(srcData != undefined, 
+               "invalid sprite name: "+srcNickname);
+        this.srcData = srcData;
+        var srcImgObj = this.srcData.imgObj;
+        
+        assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + this.nickname);
+        assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
+        assert(srcImgObj.complete, "SpriteImage: source not preloaded");
+        
+        /* sets up sprite with default "static" animation */
+        this.curAnimation = "static";
+        this._aniIndex = 0;
+        
+        var animData = this.srcData.animationData;
+        assert(animData !== undefined, 
+               "missing animation data for SpriteImage("+this.nickname+")");
+        var defaultAnim = "static";
+        
+        this.switchAnimation(defaultAnim);
+    };
     
-    assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + srcNickname);
-    assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
-    assert(srcImgObj.complete, "SpriteImage: source not preloaded");
+    this._hasAnimation = function(animName){
+        var allAnims = this._getAllAnims();
+        return allAnims[animName] !== undefined;
+    };
     
-    /* sets up sprite with default "static" animation */
-    this.curAnimation = "static";
-    this._aniIndex = 0;
-    this._clipX = this.srcData["animationData"]["static"][0].x;
-    this._clipY = this.srcData["animationData"]["static"][0].y;
-    this._clipWidth = this.srcData["animationData"]["static"][0].w;
-    this._clipHeight = this.srcData["animationData"]["static"][0].h;
+    this._getAllAnims = function(){
+        var animData = this.srcData.animationData;
+        assert(animData !== undefined, 
+               "missing animations for "+this.nickname);
+        return animData;
+    }
+    
+    this._getAnimFrameList = function(animName){
+        assert(this._hasAnimation(animName), "no animation "+animName+
+               "for SpriteImage("+this.nickname+")");
+               
+        var frameList = this._getAllAnims(animName)[animName];
+        assert(frameList instanceof Array,
+               "invalid animation data for '"+animName+"'"+
+               " in SpriteImage("+this.nickname+")")
+        return frameList;
+    }
+    
+    this._getCurrFrame = function(){
+        var frameIndex = this._aniIndex;
+        var frameList = this._getAnimFrameList(this.curAnimation);
+        assert(frameIndex < frameList.length, "frame index "+frameIndex+
+                " out of range for animation '"+this.curAnimation+"'"+
+                " in SpriteImage("+this.nickname+")");
+        return frameList[frameIndex];
+    }
     
     /** SpriteImage.drawTo: (canvas context, Number, Number, Number, Number, 
                              Boolean)
@@ -42,9 +82,14 @@ function SpriteImage(srcNickname){
         drawY = Math.round(drawY);
         drawWidth = Math.round(drawWidth);
         drawHeight = Math.round(drawHeight);
+        
+        var frame = this._getCurrFrame();
+        var clipX = frame.x;
+        var clipY = frame.y;
+        var clipWidth = frame.w;
+        var clipHeight = frame.h;
         ctx.drawImage(this.srcData.imgObj, 
-                      this._clipX, this._clipY, 
-                      this._clipWidth, this._clipHeight,
+                      clipX, clipY, clipWidth, clipHeight,
                       drawX, drawY, drawWidth, drawHeight
                      );
         
@@ -58,52 +103,26 @@ function SpriteImage(srcNickname){
     };    
     
     this.nextFrame = function(){
-        val newIndex = this._aniIndex + 1;
+        var frameList = this._getAnimFrameList(this.curAnimation);
+        var newIndex = this._aniIndex + 1;
         // wrap around here
-        if (newIndex >= this.srcData["animationData"][this.curAnimation].length)
+        if (newIndex >= frameList.length)
             {newIndex = 0;}
         this._aniIndex = newIndex;
-        // change where the image is clipped from (but not width/height)
-        this._clipX = this.srcData["animationData"][this.curAnimation][newIndex].x;
-        this._clipY = this.srcData["animationData"][this.curAnimation][newIndex].y;
-    }
+    };
     
     this.switchAnimation = function(animationName){
         this.curAnimation = animationName;
         this._aniIndex = 0;
-        this._clipX = this.srcData["animationData"][animationName][0].x;
-        this._clipY = this.srcData["animationData"][animationName][0].y;
-    }
+    };
+    
+    this._init.apply(this, arguments);
 }
 
 SpriteImage.sourcesData = {
     // arrays to make this for-loopable to work around not being allowed to 
     // forloop through object keys by homework constraints
-    "nicknames":["chik2", "ninjatuna","mario"],
-    "chik2": {
-        "srcPath": "assets/images/chik2.png",
-        "imgObj": undefined, // the actual Image object, will be overwritten on preload
-        "animationData":{
-            "walk":{
-                // data about clip areas here
-            },
-            "run":{
-                // data about clip areas here
-            }
-        }
-    },
-    "ninjatuna": {
-        "srcPath": "assets/images/ninjatunaicon.png",
-        "imgObj": undefined, // the actual Image object, will be overwritten on preload
-        "animationData":{
-            "walk":{
-                // data about clip areas here
-            },
-            "run":{
-                // data about clip areas here
-            }
-        }
-    },
+    "nicknames":["mario"],
     "mario": {
         "srcPath": "assets/images/mariobros.png",
         "imgObj": undefined,

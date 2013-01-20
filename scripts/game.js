@@ -77,7 +77,7 @@ function Game() {
 
     var updateModel = function () {
         //synchronously send updates to player
-        console.log(clicks, heldKeys);
+        //console.log(clicks, heldKeys);
         player.update(clicks, heldKeys); 
         clicks = [];      //clear clicks, but don't clear 
                                         // heldKeys until release
@@ -150,6 +150,7 @@ function Game() {
 
         // initialize player
         player = new Player(0, 50, 25, 25);
+        player.switchAnimation("run");
         
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
