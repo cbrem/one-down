@@ -86,7 +86,7 @@ function Game() {
         player.draw(ctx);
     };
 
-    var cycleLength = 10; //length of a timer cycle
+    var cycleLength = 1000; //length of a timer cycle
     var timer = function () {
         updateModel();
         updateView();

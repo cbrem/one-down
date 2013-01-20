@@ -11,9 +11,9 @@ function Player(x, y, width, height){
     this.sprite = new SpriteImage('chik2');
     
     this.velX = 0;
-    this.velY = -5;
-    this.accelX = 0.3;
-    this.accelY = 0.3;
+    this.velY = 0;
+    this.accelX = 0;
+    this.accelY = 0;
     this.maxVel = 5;
     
     this.draw = function(ctx){
@@ -40,6 +40,7 @@ function Player(x, y, width, height){
     }
     
     this.update = function(mousePresses, keyPresses){
+        console.log(keyPresses);
         this._updateVelocity();
         this._updatePos();
     };
