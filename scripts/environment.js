@@ -110,7 +110,7 @@ function Environment () {
 
     this.draw = function (ctx, game) {
         //draw background
-        ctx.fillStyle = "#0000FF";
+        ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 
         var drawSpriteArray = function (a) {

@@ -65,6 +65,8 @@ function preloadImages(loadedCallback){
 //the main Game object.
 //the method is Game.run, which starts the game.
 function Game() {
+    var self = this;
+
     var _gameFps = 10;
     var environment,
         player,
@@ -75,15 +77,21 @@ function Game() {
         presses;
         //add more objects here
 
+    this.width = 600;
+    this.worldX;
+    this.worldY;
+    this.speed;
+
     var updateModel = function () {
         player.update(clicks, presses); //synchronously send updates to player
         clicks = [], presses = [];      //clear clicks and presses
         //collisions.collide();
+        environment.update(self);
     };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-       // environment.draw(ctx);
+        environment.draw(ctx, self);
         player.draw(ctx);
     };
 
@@ -124,8 +132,14 @@ function Game() {
         //which will stay constant throughout this instance of the run method
         
         //collisions = new Collisions();
-        //environment = new Environment();
-        
+        environment = new Environment(self);
+
+        //set game dimensions and speed
+        this.worldX = 0;
+        this.worldY = 0;
+        this.width = 0;
+        this.speed = 40;
+
         //initialize canvas and context
         canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");
