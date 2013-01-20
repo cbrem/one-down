@@ -5,7 +5,7 @@ params:
 **/
 function Player(x, y, width, height){
     this._init = function(x, y, width, height){
-        console.log(this);
+        console.log("initializing",this);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,6 +20,8 @@ function Player(x, y, width, height){
     };
     
     this.draw = function(ctx){
+        // FIX THIS: does not match new scaleFactor implementation of 
+        // SpriteImage.drawTo
         this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
     };
     

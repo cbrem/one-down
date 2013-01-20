@@ -23,7 +23,6 @@ function preloadImages(loadedCallback){
     // the human readable nicknames of the images we will be preloading
     var imageNames = srcData["nicknames"];
     var totalToPreload = imageNames.length;
-    console.log(totalToPreload);
     var numLoadedSoFar = 0;
     
     var imgObj, imgNickname;
@@ -65,6 +64,8 @@ function preloadImages(loadedCallback){
 //the main Game object.
 //the method is Game.run, which starts the game.
 function Game() {
+    var self = this;
+
     var _gameFps = 10;
     var environment,
         player,
@@ -75,6 +76,11 @@ function Game() {
         heldKeys;
         //add more objects here
 
+    this.width = 600;
+    this.worldX;
+    this.worldY;
+    this.speed;
+
     var updateModel = function () {
         //synchronously send updates to player
         //console.log(clicks, heldKeys);
@@ -82,11 +88,12 @@ function Game() {
         clicks = [];      //clear clicks, but don't clear 
                                         // heldKeys until release
         //collisions.collide();
+        //environment.update(self);
     };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-       // environment.draw(ctx);
+        //environment.draw(ctx, self);
         player.draw(ctx);
     };
 
@@ -142,8 +149,14 @@ function Game() {
         //which will stay constant throughout this instance of the run method
         
         //collisions = new Collisions();
-        //environment = new Environment();
-        
+        //environment = new Environment(self);
+
+        //set game dimensions and speed
+        this.worldX = 0;
+        this.worldY = 0;
+        this.width = 0;
+        this.speed = 40;
+
         //initialize canvas and context
         canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");

@@ -31,7 +31,7 @@ function randomInt(bound1, bound2) {
     var hi = Math.max(bound1, bound2);
     var rand = lo + Math.floor(Math.random()*(hi - lo));
     if(rand === hi)
-        //this is highly unlikely
+        //this is highly unlikely, maybe impossible
         return randomInt(bound1, bound2);
     else
         return rand;
@@ -110,7 +110,7 @@ function Environment () {
 
     this.draw = function (ctx, game) {
         //draw background
-        ctx.fillStyle = "#0000FF";
+        ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 
         var drawSpriteArray = function (a) {

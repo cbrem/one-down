@@ -6,8 +6,14 @@
     srcNickname       the human readable nickname for the image
                       (must be one of the nicknames in the sourcesData)
 **/
+
+// sprites we have:
+// "mario", "groundBlock", "pipe", "solidBlock", "brickBlock",
+//  "cloud", "bush"
 function SpriteImage(srcNickname){
     this._init = function(srcNickname){
+        console.log("initializing",this);
+    
         this.nickname = srcNickname;
         var srcData = SpriteImage.sourcesData[srcNickname];
         assert(srcData != undefined, 
@@ -71,23 +77,24 @@ function SpriteImage(srcNickname){
     params:
     ctx                         the canvas context to draw on
     drawX, drawY                the canvas context coordinates to draw to
-    drawWidth, drawHeight       the size to draw the images to on the canvas
+    scaleFactor                 how much to magnify the original image by
     showDebug                   (optional) if set to true, will show the 
                                 boundaries of the drawn area with a red overlay
                                  - default: false
     **/
-    this.drawTo = function(ctx, drawX, drawY, drawWidth, drawHeight, showDebug){
+    this.drawTo = function(ctx, drawX, drawY, scaleFactor, showDebug){
         // round to prevent blurriness
         drawX = Math.round(drawX);
         drawY = Math.round(drawY);
-        drawWidth = Math.round(drawWidth);
-        drawHeight = Math.round(drawHeight);
         
         var frame = this._getCurrFrame();
         var clipX = frame.x;
         var clipY = frame.y;
         var clipWidth = frame.w;
         var clipHeight = frame.h;
+        
+        var drawWidth = Math.round(clipWidth*scaleFactor)
+        var drawHeight = Math.round(clipHeight*scaleFactor)
         ctx.drawImage(this.srcData.imgObj, 
                       clipX, clipY, clipWidth, clipHeight,
                       drawX, drawY, drawWidth, drawHeight
@@ -120,8 +127,8 @@ function SpriteImage(srcNickname){
 }
 
 SpriteImage.sourcesData = {
-    // arrays to make this for-loopable to work around not being allowed to 
-    // forloop through object keys by homework constraints
+    // human-readable-nickname array to make this for-loopable to work around
+    // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario"],
     "mario": {
         "srcPath": "assets/images/mariobros.png",
