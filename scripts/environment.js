@@ -199,4 +199,5 @@ function Environment () {
                 addNecessarySprite(choice.name, game.worldX,
                                    game.worldX + game.width, spritesOnScreen);
         }
+    };
 }
