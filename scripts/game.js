@@ -1,45 +1,70 @@
-function startGame(spriteImageData){
-    var game = new Game(spriteImageData);
+function startGame(){
+    console.log('starting game with src data:', SpriteImage.sourcesData);
+    var game = new Game();
     game.run();
 }
 
-// magic preloading junk, will comment later
+
 function runPreloader(){
-    preloadImages();
+    preloadImages(startGame);
 }
 
-function preloadImages(){
-    var sources = ["assets/images/chik2.png"];
-    var numLoaded = 0;
-    // a dictionary consisting of image paths mapped to the SpriteImage objects 
-    // they correspond to
-    var spriteImageData = {};
-    var img;
+/** preloadImages: (callback function:(no params))
+
+ grabs the source image data stored in the SpriteImage class and preloads the
+ indicated images by creating new Images and storing them back in the sourcedata
+ 
+ params: 
+    loadedCallback       the function to call once al images are preloaded
+**/
+function preloadImages(loadedCallback){
+    var srcData = SpriteImage.sourcesData;
     
-    for (var i = 0; i < sources.length; i++){
-        img = new Image();
-        img.onload = function(){
-            var totalImages = sources.length;
-            var loadedImg = this;
-            var srcPath = loadedImg.src;
-            var imageName = srcPath.slice(srcPath.lastIndexOf('/') + 1);
-            numLoaded ++;
-                        
-            console.log(imageName);
-            spriteImageData[imageName] = new SpriteImage(loadedImg);
-            // if all images are loaded, start the game
-            if(numLoaded === totalImages){
-                startGame(spriteImageData);
+    // the human readable nicknames of the images we will be preloading
+    var imageNames = srcData["nicknames"];
+    var totalToPreload = imageNames.length;
+    console.log(totalToPreload);
+    var numLoadedSoFar = 0;
+    
+    var imgObj, imgNickname;
+    
+    for (var i = 0; i < imageNames.length; i++){
+        imgNickname = imageNames[i];
+        assert(srcData[imgNickname] !== undefined, 
+               "invalid nickname '" + imgNickname + "' in preloader, "+
+               "check that your nicknames is in the source data's keys");
+        assert(srcData[imgNickname].srcPath !== undefined, 
+               "srcPath not set for" + imgNickname);
+               
+        imgObj = new Image();
+        imgObj.onload = function(){
+            numLoadedSoFar++;
+            console.log(this, imgNickname);
+            // if all images are loaded, call the callback
+            if(numLoadedSoFar >= totalToPreload){
+                // make sure every source has a stored Image object
+                imageNames.forEach(function(imgName){
+                    assert(srcData[imgName]["imgObj"] !== undefined, 
+                           "preloader problem, missing Image object for "+
+                           imgName
+                           );
+                });
+                
+                loadedCallback();
             }
         }
-        img.src = sources[i];
+        imgObj.src = srcData[imgNickname].srcPath;
+        
+        // save the Image object back in the srcData to avoid having 
+        // to repeatedly construct Images when creating SpriteImages
+        // will be loaded when the loadedCallback finally fires
+        srcData[imgNickname]["imgObj"] = imgObj;
     }
 }
 
 //the main Game object.
 //the method is Game.run, which starts the game.
-function Game(spriteImageData) {
-    this.spriteImageData = spriteImageData;
+function Game() {
     var environment,
         player,
         collisions,
@@ -85,21 +110,22 @@ function Game(spriteImageData) {
     };
 
     this.run = function () {
-        console.log('running game:');
-        console.log('loaded SpriteImages:', this.spriteImageData);
+        console.log('running game');
         //instanciate all libraries,
         //which will stay constant throughout this instance of the run method
         
-        player = new Sprite(10,10,50,50, this.spriteImageData['chik2.png']);
         //collisions = new Collisions();
         //environment = new Environment();
-
-        
         
         //initialize canvas and context
         canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");
 
+        var testSprite = new SpriteImage('ninjatuna');
+        var testSprite2 = new SpriteImage('chik2');
+        testSprite.drawTo(ctx, 50, 50, 100, 150);
+        testSprite2.drawTo(ctx, 150, 50, 150, 50);
+        
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
         canvas.addEventListener("keydown", onKeyDown, true);
