@@ -23,7 +23,6 @@ function preloadImages(loadedCallback){
     // the human readable nicknames of the images we will be preloading
     var imageNames = srcData["nicknames"];
     var totalToPreload = imageNames.length;
-    console.log(totalToPreload);
     var numLoadedSoFar = 0;
     
     var imgObj, imgNickname;
@@ -74,7 +73,7 @@ function Game() {
         canvas,
         ctx,
         clicks,
-        presses;
+        heldKeys;
         //add more objects here
 
     this.width = 600;
@@ -83,15 +82,18 @@ function Game() {
     this.speed;
 
     var updateModel = function () {
-        player.update(clicks, presses); //synchronously send updates to player
-        clicks = [], presses = [];      //clear clicks and presses
+        //synchronously send updates to player
+        //console.log(clicks, heldKeys);
+        player.update(clicks, heldKeys); 
+        clicks = [];      //clear clicks, but don't clear 
+                                        // heldKeys until release
         //collisions.collide();
-        environment.update(self);
+        //environment.update(self);
     };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        environment.draw(ctx, self);
+        //environment.draw(ctx, self);
         player.draw(ctx);
     };
 
@@ -113,26 +115,41 @@ function Game() {
     };
 
     var onKeyDown = function (e) {
-        
         //react to key
-        // crossbrowser check
-        var keyCode = (e.key) ? e.key : e.keyCode;
-        //alert("Keycode of the pressed key is " + e.keyCode);
-
-        presses.push(e);
+        var keyCode = util_getKeyCode(e);
+        //alert("Keycode of the pressed key is " + keyCode);
+        assert(true);
+        // prevent page from moving while moving player
+        if(util_isPageMoveKeyCode(keyCode)){
+            e.preventDefault();
+        }
+        
+        heldKeys[keyCode] = e;
+    };
+    
+    var onKeyUp = function (e) {
+        var keyCode = util_getKeyCode(e);
+        
+        if(util_isPageMoveKeyCode(keyCode)){
+            e.preventDefault();
+        }
+        
+        // remove key
+        delete(heldKeys[keyCode]);
     };
 
     this.run = function () {
         console.log('running game');
         
         // initialize mouse and key event queues
-        presses = [], clicks = [];
+        clicks = [];
+        heldKeys = {};
         
         //instanciate all libraries,
         //which will stay constant throughout this instance of the run method
         
         //collisions = new Collisions();
-        environment = new Environment(self);
+        //environment = new Environment(self);
 
         //set game dimensions and speed
         this.worldX = 0;
@@ -146,10 +163,12 @@ function Game() {
 
         // initialize player
         player = new Player(0, 50, 25, 25);
+        player.switchAnimation("run");
         
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
         canvas.addEventListener("keydown", onKeyDown, true);
+        canvas.addEventListener("keyup", onKeyUp, true);
 
         // make canvas focusable, then give it focus!
         canvas.setAttribute('tabindex','0');
