@@ -8,21 +8,20 @@
 **/
 function SpriteImage(srcNickname){
     assert(SpriteImage.sourcesData[srcNickname] != undefined, "invalid sprite name");
-    var srcData = SpriteImage.sourcesData[srcNickname];
-    var srcImgObj = srcData.imgObj;
+    this.srcData = SpriteImage.sourcesData[srcNickname];
+    var srcImgObj = this.srcData.imgObj;
     
     assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + srcNickname);
     assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
     assert(srcImgObj.complete, "SpriteImage: source not preloaded");
-    this._srcImgObj = srcImgObj;
     
-    /* for spritesheet animations, unfinished for now and
-       hardcoded to do static images only */
-    this._clipX = 0;
-    this._clipY = 0;
-    this._clipWidth = srcImgObj.width;
-    this._clipHeight = srcImgObj.height;
-    this._animations = {};
+    /* sets up sprite with default "static" animation */
+    this.curAnimation = "static";
+    this._aniIndex = 0;
+    this._clipX = this.srcData["animationData"]["static"][0].x;
+    this._clipY = this.srcData["animationData"]["static"][0].y;
+    this._clipWidth = this.srcData["animationData"]["static"][0].w;
+    this._clipHeight = this.srcData["animationData"]["static"][0].h;
     
     /** SpriteImage.drawTo: (canvas context, Number, Number, Number, Number, 
                              Boolean)
@@ -43,7 +42,7 @@ function SpriteImage(srcNickname){
         drawY = Math.round(drawY);
         drawWidth = Math.round(drawWidth);
         drawHeight = Math.round(drawHeight);
-        ctx.drawImage(this._srcImgObj, 
+        ctx.drawImage(this.srcData.imgObj, 
                       this._clipX, this._clipY, 
                       this._clipWidth, this._clipHeight,
                       drawX, drawY, drawWidth, drawHeight
@@ -58,15 +57,22 @@ function SpriteImage(srcNickname){
         }
     };    
     
-    this.nextFrame = function(skip){
-        if(skip === undefined){
-            skip = 1;
-        }
-        // TODO
+    this.nextFrame = function(){
+        val newIndex = this._aniIndex + 1;
+        // wrap around here
+        if (newIndex >= this.srcData["animationData"][this.curAnimation].length)
+            {newIndex = 0;}
+        this._aniIndex = newIndex;
+        // change where the image is clipped from (but not width/height)
+        this._clipX = this.srcData["animationData"][this.curAnimation][newIndex].x;
+        this._clipY = this.srcData["animationData"][this.curAnimation][newIndex].y;
     }
     
     this.switchAnimation = function(animationName){
-        // TODO
+        this.curAnimation = animationName;
+        this._aniIndex = 0;
+        this._clipX = this.srcData["animationData"][animationName][0].x;
+        this._clipY = this.srcData["animationData"][animationName][0].y;
     }
 }
 
@@ -108,7 +114,7 @@ SpriteImage.sourcesData = {
             "fall":[{x:304,y:32,w:16,h:16},
                     {x:320,y:32,w:16,h:16},
                     {x:336,y:32,w:16,h:16}],
-            "stand":[{x:176,y:32,w:16,h:16}],
+            "static":[{x:176,y:32,w:16,h:16}],
             "jump":[{x:144,y:32,w:16,h:16}]
         }
     },
