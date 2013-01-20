@@ -65,6 +65,7 @@ function preloadImages(loadedCallback){
 //the main Game object.
 //the method is Game.run, which starts the game.
 function Game() {
+    var _gameFps = 10;
     var environment,
         player,
         collisions,
@@ -86,7 +87,7 @@ function Game() {
         player.draw(ctx);
     };
 
-    var cycleLength = 1000; //length of a timer cycle
+    var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
     var timer = function () {
         updateModel();
         updateView();
