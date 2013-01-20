@@ -81,6 +81,7 @@ function Game() {
     };
 
     var updateView = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
        // environment.draw(ctx);
         player.draw(ctx);
     };
@@ -97,20 +98,27 @@ function Game() {
         var canvX, canvY;
         canvX = e.pageX - canvas.offsetLeft;
         canvY = e.pageY - canvas.offsetTop;
-        alert("You clicked on the canvas at (" + canvX + ", " + canvY + ").");
+        //alert("You clicked on the canvas at (" + canvX + ", " + canvY + ").");
 
         clicks.push(e);
     };
 
     var onKeyDown = function (e) {
+        
         //react to key
-        alert("Keycode of the pressed key is " + e.keyCode);
+        // crossbrowser check
+        var keyCode = (e.key) ? e.key : e.keyCode;
+        //alert("Keycode of the pressed key is " + e.keyCode);
 
         presses.push(e);
     };
 
     this.run = function () {
         console.log('running game');
+        
+        // initialize mouse and key event queues
+        presses = [], clicks = [];
+        
         //instanciate all libraries,
         //which will stay constant throughout this instance of the run method
         
@@ -121,15 +129,17 @@ function Game() {
         canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");
 
-        var testSprite = new SpriteImage('ninjatuna');
-        var testSprite2 = new SpriteImage('chik2');
-        testSprite.drawTo(ctx, 50, 50, 100, 150);
-        testSprite2.drawTo(ctx, 150, 50, 150, 50);
+        // initialize player
+        player = new Player(0, 50, 25, 25);
         
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
         canvas.addEventListener("keydown", onKeyDown, true);
 
+        // make canvas focusable, then give it focus!
+        canvas.setAttribute('tabindex','0');
+        canvas.focus();
+        
         //the inital call to timer, which will run continuously to update
         //the model and view
         timer();

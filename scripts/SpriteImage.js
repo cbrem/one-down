@@ -22,7 +22,7 @@ function SpriteImage(srcNickname){
     this._clipY = 0;
     this._clipWidth = srcImgObj.width;
     this._clipHeight = srcImgObj.height;
-    this._animations = [];
+    this._animations = {};
     
     /** SpriteImage.drawTo: (canvas context, Number, Number, Number, Number, 
                              Boolean)
@@ -38,7 +38,7 @@ function SpriteImage(srcNickname){
                                  - default: false
     **/
     this.drawTo = function(ctx, drawX, drawY, drawWidth, drawHeight, showDebug){
-        // round to get prevent blurriness
+        // round to prevent blurriness
         drawX = Math.round(drawX);
         drawY = Math.round(drawY);
         drawWidth = Math.round(drawWidth);
@@ -57,6 +57,17 @@ function SpriteImage(srcNickname){
             ctx.restore();
         }
     };    
+    
+    this.nextFrame = function(skip){
+        if(skip === undefined){
+            skip = 1;
+        }
+        // TODO
+    }
+    
+    this.switchAnimation = function(animationName){
+        // TODO
+    }
 }
 
 SpriteImage.sourcesData = {
