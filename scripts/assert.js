@@ -13,6 +13,6 @@ function assert(expr, errorMsg){
             errorMsg = "assertion error message not given";
         }
         
-        throw("Assertion Error:", errorMsg);
+        throw("Assertion Error: " + errorMsg);
     }
 }
