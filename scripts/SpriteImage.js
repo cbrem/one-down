@@ -6,6 +6,10 @@
     srcNickname       the human readable nickname for the image
                       (must be one of the nicknames in the sourcesData)
 **/
+
+// sprites we have:
+// "mario", "groundBlock", "pipe", "solidBlock", "brickBlock",
+//  "cloud", "bush"
 function SpriteImage(srcNickname){
     assert(SpriteImage.sourcesData[srcNickname] != undefined, "invalid sprite name");
     this.srcData = SpriteImage.sourcesData[srcNickname];
@@ -31,17 +35,19 @@ function SpriteImage(srcNickname){
     params:
     ctx                         the canvas context to draw on
     drawX, drawY                the canvas context coordinates to draw to
-    drawWidth, drawHeight       the size to draw the images to on the canvas
+    scaleFactor                 how much to magnify the original image by
     showDebug                   (optional) if set to true, will show the 
                                 boundaries of the drawn area with a red overlay
                                  - default: false
     **/
-    this.drawTo = function(ctx, drawX, drawY, drawWidth, drawHeight, showDebug){
+    this.drawTo = function(ctx, drawX, drawY, scaleFactor, showDebug){
         // round to prevent blurriness
-        drawX = Math.round(drawX);
-        drawY = Math.round(drawY);
-        drawWidth = Math.round(drawWidth);
-        drawHeight = Math.round(drawHeight);
+        var drawX = Math.round(drawX);
+        var drawY = Math.round(drawY);
+        var dataWidth = this.srcData.["animationData"][this.curAnimation][this._aniIndex].w;
+        var dataHeight = this.srcData.["animationData"][this.curAnimation][this._aniIndex].h;
+        var drawWidth = Math.round(dataWidth*scaleFactor);
+        var drawHeight = Math.round(dataHeight*scaleFactor);
         ctx.drawImage(this.srcData.imgObj, 
                       this._clipX, this._clipY, 
                       this._clipWidth, this._clipHeight,
@@ -58,7 +64,7 @@ function SpriteImage(srcNickname){
     };    
     
     this.nextFrame = function(){
-        val newIndex = this._aniIndex + 1;
+        var newIndex = this._aniIndex + 1;
         // wrap around here
         if (newIndex >= this.srcData["animationData"][this.curAnimation].length)
             {newIndex = 0;}
@@ -80,7 +86,7 @@ SpriteImage.sourcesData = {
     // arrays to make this for-loopable to work around not being allowed to 
     // forloop through object keys by homework constraints
     "nicknames":["chik2", "ninjatuna","mario"],
-    "chik2": {
+    /*"chik2": {
         "srcPath": "assets/images/chik2.png",
         "imgObj": undefined, // the actual Image object, will be overwritten on preload
         "animationData":{
@@ -103,7 +109,7 @@ SpriteImage.sourcesData = {
                 // data about clip areas here
             }
         }
-    },
+    },*/
     "mario": {
         "srcPath": "assets/images/mariobros.png",
         "imgObj": undefined,
