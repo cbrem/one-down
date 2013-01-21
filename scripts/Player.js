@@ -16,12 +16,13 @@ function Player(x, y, width, height){
         this.velY = 0;
         this.accelX = 0;
         this.accelY = 0;
-        this.maxVel = 5;
+        
+        this.maxVel = 4.5;
+        this._accelRate = 1.3;
+        this._decelRate = this._accelRate/6;
     };
     
     this.draw = function(ctx){
-        // FIX THIS: does not match new scaleFactor implementation of 
-        // SpriteImage.drawTo
         this.sprite.drawTo(ctx, this.x, this.y, 2);
     };
     
@@ -49,11 +50,38 @@ function Player(x, y, width, height){
         this.y += this.velY;
     }
     
+    this._applyDecelX = function(){
+        // to prevent problem of constantly hovering around 0 due to float nums
+        var stopBuffer = this._decelRate; 
+        // if currently moving right
+        if (this.velX > stopBuffer){
+            this.accelX = -this._decelRate;
+        }
+        // if currently moving left
+        else if (this.velX < -stopBuffer){
+            this.accelX = this._decelRate;
+        }
+        else{
+            this.accelX = this.velX = 0;
+        }
+    }
+    
     this.update = function(mousePresses, heldKeys){
+        var holdingLeft = util_keyInDict(LEFT_KEYCODE, heldKeys);
+        var holdingRight = util_keyInDict(RIGHT_KEYCODE, heldKeys);
+        if(holdingLeft === holdingRight){
+            this._applyDecelX();
+        }
+        else if(holdingLeft){
+            this.accelX = -this._accelRate;
+        }
+        else if(holdingRight){
+            this.accelX = this._accelRate;
+        }
+    
         this._updateVelocity();
         this._updatePos();
         this.sprite.nextFrame();
-       
     };
     
     this._init.apply(this, arguments);

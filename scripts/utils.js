@@ -26,6 +26,6 @@ function util_isPageMoveKeyCode(keyCode){
     return keyDict[keyCode] !== undefined;
 }
 
-function util_butt(){
-    alert('butt');
+function util_keyInDict(key, dict){
+    return dict[key] !== undefined;
 }

@@ -56,7 +56,7 @@ function preloadImages(loadedCallback){
         
         // save the Image object back in the srcData to avoid having 
         // to repeatedly construct Images when creating SpriteImages
-        // will be loaded when the loadedCallback finally fires
+        // will be fully loaded by the time the loadedCallback finally fires
         srcData[imgNickname]["imgObj"] = imgObj;
     }
 }
@@ -119,7 +119,7 @@ function Game() {
         var keyCode = util_getKeyCode(e);
         //alert("Keycode of the pressed key is " + keyCode);
         assert(true);
-        // prevent page from moving while moving player
+        // prevent webpage from moving while moving player
         if(util_isPageMoveKeyCode(keyCode)){
             e.preventDefault();
         }
@@ -156,8 +156,8 @@ function Game() {
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(0, 468, 25, 25);
-        player.switchAnimation("run");
+        player = new Player(200, 468, 25, 25);
+        player.switchAnimation("run_right");
 
         //initialize environment
         environment = new Environment();

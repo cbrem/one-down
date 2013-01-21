@@ -158,7 +158,7 @@ SpriteImage.sourcesData = {
         "srcPath": "assets/images/mariobros.png",
         "imgObj": undefined,
         "animationData":{
-            "run":[{x:112,y:32,w:16,h:16},
+            "run_right":[{x:112,y:32,w:16,h:16},
                     {x:96,y:32,w:16,h:16},
                     {x:80,y:32,w:16,h:16}],
             "fall":[{x:304,y:32,w:16,h:16},
