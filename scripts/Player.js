@@ -17,8 +17,8 @@ function Player(x, y, width, height){
         this.accelX = 0;
         this.accelY = 0;
         
-        this.maxVel = 4.5;
-        this._accelRate = 1.3;
+        this.maxVel = 8;
+        this._accelRate = 2;
         this._decelRate = this._accelRate/6;
     };
     

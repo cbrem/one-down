@@ -66,7 +66,7 @@ function preloadImages(loadedCallback){
 function Game() {
     var self = this;
 
-    var _gameFps = 60;
+    var _gameFps = 30;
     var environment,
         player,
         collisions,
@@ -98,7 +98,7 @@ function Game() {
     };
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
-    var timer = function () {
+    var timer = function (){
         updateModel();
         updateView();
         setTimeout(timer, cycleLength);
@@ -156,7 +156,7 @@ function Game() {
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(200, 468, 25, 25);
+        player = new Player(0, 536, 25, 25);
         player.switchAnimation("run_right");
 
         //initialize environment

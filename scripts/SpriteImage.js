@@ -167,7 +167,7 @@ SpriteImage.sourcesData = {
             "static":[{x:176,y:32,w:16,h:16}],
             "jump":[{x:144,y:32,w:16,h:16}]
         },
-        "frameStepDelay": 6
+        "frameStepDelay": 3
     },
     "groundBlock": {
         "srcPath": "assets/images/tileset.png",
