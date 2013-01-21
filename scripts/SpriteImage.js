@@ -32,6 +32,16 @@ function SpriteImage(srcNickname){
         this.curAnimation = "static";
         this._aniIndex = 0;
         
+        this._frameStepCount = 0;
+        // 0 delay is the same as no delay in animation, so just treat it
+        // as if no delay was set
+        if (srcData.frameStepDelay <= 0){
+            this._frameStepDelay = undefined;
+        }
+        else{
+            this._frameStepDelay = srcData.frameStepDelay;
+        }
+        
         var animData = this.srcData.animationData;
         assert(animData !== undefined, 
                "missing animation data for SpriteImage("+this.nickname+")");
@@ -113,15 +123,25 @@ function SpriteImage(srcNickname){
     };    
     
     this.nextFrame = function(){
+        if(this._frameStepDelay !== undefined){
+            this._frameStepCount++;
+            this._frameStepCount %= this._frameStepDelay;
+            if(this._frameStepCount !== 0){
+                return;
+            }
+        }
+        
         var frameList = this._getAnimFrameList(this.curAnimation);
-        var newIndex = this._aniIndex + 1;
         // wrap around here
-        if (newIndex >= frameList.length)
-            {newIndex = 0;}
-        this._aniIndex = newIndex;
+        if (frameList.length > 0){
+            this._aniIndex = (this._aniIndex + 1) % frameList.length;
+        }
     };
     
     this.switchAnimation = function(animationName){
+        assert(this._hasAnimation(animationName), 
+               "SpriteImage("+this.srcNickname+") attempted to switch to "+
+               "invalid animation '"+animationName+"'");
         this.curAnimation = animationName;
         this._aniIndex = 0;
     };
@@ -138,15 +158,16 @@ SpriteImage.sourcesData = {
         "srcPath": "assets/images/mariobros.png",
         "imgObj": undefined,
         "animationData":{
-            "run":[{x:80,y:32,w:16,h:16},
+            "run":[{x:112,y:32,w:16,h:16},
                     {x:96,y:32,w:16,h:16},
-                    {x:112,y:32,w:16,h:16}],
+                    {x:80,y:32,w:16,h:16}],
             "fall":[{x:304,y:32,w:16,h:16},
                     {x:320,y:32,w:16,h:16},
                     {x:336,y:32,w:16,h:16}],
             "static":[{x:176,y:32,w:16,h:16}],
             "jump":[{x:144,y:32,w:16,h:16}]
-        }
+        },
+        "frameStepDelay": 6
     },
     "groundBlock": {
         "srcPath": "assets/images/tileset.png",

@@ -66,7 +66,7 @@ function preloadImages(loadedCallback){
 function Game() {
     var self = this;
 
-    var _gameFps = 10;
+    var _gameFps = 60;
     var environment,
         player,
         collisions,
