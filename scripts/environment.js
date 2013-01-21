@@ -18,11 +18,13 @@
 
 /*
 TODO:
-    - consolidate sprites into one array (no top and bottom)
     - change possibleAddSprites so that it works more like addNecessarySprites.
         (i.e. doesn't add just on sprite, but adds enough to fill distance travelled)
-    - make EnvBlock.level work
-    - change 
+    - preload non-interface functions
+    - make EnvBlock.collidable a property
+    - fix possiblyAddSprites so it fills the empty canvas with items BY making
+    it more like addNecessarySprites, where it calculates to open area and
+    fills it
 */
 
 //generates a random integer.
@@ -50,41 +52,46 @@ function randomChance(x) {
 
 //return a random hexidecimal color
 function randomColor() {
-    return "#" + randomInt(x, 0x1000000);
+    return "#" + randomInt(0, 0x1000000);
 }
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, level, necessary) {
+function EnvBlock (name, x, level, necessary, scaleFactor) {
     var getEnvBlockY = function (level) {
         switch (level) {
             case 1  : return 500;
             case 2  : return 400;
             case 3  : return 200;
-            default : throw Error("bad level in getEnvBlockY");
+            default : throw Error("bad level in getEnvBlockY: " + level);
                       return;
         }
     };
 
-    this.img = new SpriteImage(name, 2); //2 is scale factor
+    this.img = new SpriteImage(name);
     this.name = name;
     this.x = x;
-    this.y = getEnvBlock(level);
+    this.y = getEnvBlockY(level);
     this.necessary = necessary;
+    this.scaleFactor = scaleFactor;
+    this.width = this.img.width * this.scaleFactor;
 }
 
 function Environment () {
-    //lists of sprites currently on the top and bottom of the screen
-    this.sprites;
+    this.spritesOnScreen; //lists of sprites currently on the screen
     this.bgColor;
     
     var buffer; //min space between EnvBlocks
 
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
-    var spriteChoices = [{name : "chik2", level : 2, necessary : false}];
+    var spriteChoices = [{name : "mario", level : 2, necessary : false},
+                         {name : "groundBlock", level : 1, necessary : true},
+                         {name : "cloud", level : 3, necessary : true}];
 
-    this.init = function (game) {
+    this.init = function (ctx, game) {
         //clear sprite arrays
+
+        //clear spritesOnScreen
         this.spritesOnScreen = [];
 
         //set vertical spacing parameters
@@ -101,16 +108,16 @@ function Environment () {
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
             if (choice.necessary) {
-                addNecessarySprite(choice.name, game.worldX,
-                                   game.worldX + game.width,
-                                   spritesOnScreen);
+                addNecessarySprite(choice, game.worldX, game.width,
+                                   this.spritesOnScreen);
             }
         }
 
-        //fill map with non-necessary sprites
-        for (var spriteX = 0; spriteX < game.width; spriteX += game.speed)
-            possiblyAddSprite(spritesOnScreen, 4, platformY, game.width,
-                              topSpriteChoices);
+        //fill map with random sprites
+        for (var spriteX = 0; spriteX < game.width; spriteX += game.speed) {
+            possiblyAddSprite(this.spritesOnScreen, 4, game.width,
+                              spriteChoices, buffer);
+        }
     };
 
     this.draw = function (ctx, game) {
@@ -118,15 +125,16 @@ function Environment () {
         ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 
-        var drawSpriteArray = function (a) {
+        var drawEnvBlockArray = function (a) {
             for (var i = 0; i < a.length; i++) {
-                var sprite = a[i];
-                sprite.img.drawTo(ctx, sprite.x, sprite.level);
+                var envBlock = a[i];
+                envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                                    envBlock.scaleFactor);
             }
         };
 
         //draw sprites
-        drawSpriteArray(spritesOnScreen);
+        drawEnvBlockArray(this.spritesOnScreen);
     };
 
     //prune off-screen sprites from a sprite array.
@@ -139,38 +147,43 @@ function Environment () {
     //adds a new sprite to the provided array "a" with probability
     //1 out of "chance". Puts objects at set y coordinate.
     //worldX is the absolutes width of the screen, and worldWidth is its width
-    var possiblyAddSprite = function (a, choices, chance, worldWidth) {
-        var rightMost = a[a.length - 1];
-        var rightMostRightSide = rightMost.x + rightMost.width;
+    var possiblyAddSprite = function (a, choices, chance, worldWidth, buffer) {
+        var rightMostRightSide = 0;
+        for (var i = 0; i < a.length; i++) {
+            envBlock = a[i];
+            if (envBlock.necessary === false)
+                rightMostRightSide = Math.max(rightMostRightSide,
+                                              envBlock.x + envBlock.width);
+        }
         if (rightMostRightSide < worldWidth && randomChance(chance)) {
             var choice = randomChoice(choices);
             var newSprite =
                 new EnvBlock(choice.name, worldWidth + buffer,
-                             randInt(1, 4), choice.necessary);
+                             randomInt(1, 4), choice.necessary, 2);
+            console.log("created sprite in possiblyAddSprite with x = ", newSprite.x);
             a.push(newSprite);
         }
     };
 
     //span the screen with instances of a necessary sprite.
-    var addNecessarySprite = function (name, screenLeft, screenRight,
+    var addNecessarySprite = function (choice, worldX, gameWidth,
                                        spritesOnScreen) {
+
         //determine how much screen space of the necessary sprite is missing
         var furthestRight = 0; //right side of furthest right sprite
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var sameBlock = spritesOnScreen[i];
-            if (sameBlock.name === name)
+            if (sameBlock.name === choice.name)
                 furthestRight += sameBlock.width;
         }
 
         //fill that screen space with an appropriate number of instances
         //of the necessary sprite
-        var spritesToAdd =
-            Math.ceil((screenRight - furthestRight) / sprite.width);
-        for (var i = 0; i < spritesToAdd; i++) {
-            var newSprite = new EnvBlock(sprite.name, furthestRight,
-                                sprite.height, sprite.width, sprite.height);
+        while (furthestRight < gameWidth) {
+            var newSprite = new EnvBlock(choice.name, furthestRight,
+                                         choice.level, true, 2);
             spritesOnScreen.push(newSprite);
-            furthestRight += sprite.width;
+            furthestRight += newSprite.width;
         }
     };
 
@@ -184,20 +197,21 @@ function Environment () {
         };
 
         //shift all EnvBlocks
-        moveEnvBlocks(spritesOnScreen, game.speed);
+        //moveEnvBlocks(this.spritesOnScreen, game.speed);
 
         //remove elements which have moved off left side
         pruneSprites(spriteChoices);
 
         //possibly add in new sprites
-        possiblyAddSprites(spritesOnScreen, spriteChoices, 4, game.width);
+        possiblyAddSprite(this.spritesOnScreen, spriteChoices, 4, game.width,
+			  buffer);
 
         //add in necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
             if (choice.necessary)
-                addNecessarySprite(choice.name, game.worldX,
-                                   game.worldX + game.width, spritesOnScreen);
+                addNecessarySprite(choice, game.worldX,
+                                   game.width, this.spritesOnScreen);
         }
     };
 }

@@ -12,7 +12,7 @@
 //  "cloud", "bush"
 function SpriteImage(srcNickname){
     this._init = function(srcNickname){
-        console.log("initializing",this);
+        //console.log("initializing",this);
     
         this.nickname = srcNickname;
         var srcData = SpriteImage.sourcesData[srcNickname];
@@ -20,7 +20,10 @@ function SpriteImage(srcNickname){
                "invalid sprite name: "+srcNickname);
         this.srcData = srcData;
         var srcImgObj = this.srcData.imgObj;
-        
+
+        //CONNOR - store reference to image width
+        this.width = srcData.animationData.static[0].w;
+
         assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + this.nickname);
         assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
         assert(srcImgObj.complete, "SpriteImage: source not preloaded");
@@ -33,7 +36,7 @@ function SpriteImage(srcNickname){
         assert(animData !== undefined, 
                "missing animation data for SpriteImage("+this.nickname+")");
         var defaultAnim = "static";
-        
+       
         this.switchAnimation(defaultAnim);
     };
     
@@ -129,7 +132,8 @@ function SpriteImage(srcNickname){
 SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
-    "nicknames":["mario"],
+    "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
+                 "cloud", "bush"],
     "mario": {
         "srcPath": "assets/images/mariobros.png",
         "imgObj": undefined,

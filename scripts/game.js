@@ -76,7 +76,7 @@ function Game() {
         heldKeys;
         //add more objects here
 
-    this.width = 600;
+    this.width;
     this.worldX;
     this.worldY;
     this.speed;
@@ -88,12 +88,12 @@ function Game() {
         clicks = [];      //clear clicks, but don't clear 
                                         // heldKeys until release
         //collisions.collide();
-        //environment.update(self);
+        environment.update(self);
     };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //environment.draw(ctx, self);
+        environment.draw(ctx, self);
         player.draw(ctx);
     };
 
@@ -145,26 +145,24 @@ function Game() {
         clicks = [];
         heldKeys = {};
         
-        //instanciate all libraries,
-        //which will stay constant throughout this instance of the run method
-        
-        //collisions = new Collisions();
-        //environment = new Environment(self);
-
         //set game dimensions and speed
         this.worldX = 0;
         this.worldY = 0;
-        this.width = 0;
+        this.width = 600;
         this.speed = 40;
-
+        
         //initialize canvas and context
         canvas = document.getElementById("gamecanvas");
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(0, 50, 25, 25);
+        player = new Player(0, 468, 25, 25);
         player.switchAnimation("run");
-        
+
+        //initialize environment
+        environment = new Environment();
+        environment.init(ctx, self);
+
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
         canvas.addEventListener("keydown", onKeyDown, true);

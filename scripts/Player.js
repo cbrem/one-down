@@ -22,7 +22,7 @@ function Player(x, y, width, height){
     this.draw = function(ctx){
         // FIX THIS: does not match new scaleFactor implementation of 
         // SpriteImage.drawTo
-        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
+        this.sprite.drawTo(ctx, this.x, this.y, 2);
     };
     
     // simply a wrapper to call the stored SpriteImage's method
