@@ -57,8 +57,6 @@ function SpriteImage(srcNickname){
     
     this._getAllAnims = function(){
         var animData = this.srcData.animationData;
-        assert(animData !== undefined, 
-               "missing animations for "+this.nickname);
         return animData;
     }
     
