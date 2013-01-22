@@ -123,7 +123,7 @@ function Environment () {
         var drawEnvBlockArray = function (a) {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
-                envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                     envBlock.scaleFactor);
             }
         };

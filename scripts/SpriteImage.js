@@ -85,15 +85,17 @@ function SpriteImage(srcNickname){
     params:
     ctx                         the canvas context to draw on
     drawX, drawY                the canvas context coordinates to draw to
-    scaleFactor                 how much to magnify the original image by
+    drawWidth, drawHeight       the dimensions to draw the image as
     showDebug                   (optional) if set to true, will show the 
                                 boundaries of the drawn area with a red overlay
                                  - default: false
     **/
-    this.drawTo = function(ctx, drawX, drawY, scaleFactor, showDebug){
+    this.drawTo = function(ctx, drawX, drawY, drawWidth, drawHeight, showDebug){
         // round to prevent blurriness
         drawX = Math.round(drawX);
         drawY = Math.round(drawY);
+        drawWidth = Math.round(drawWidth);
+        drawHeight = Math.round(drawHeight);
         
         var frame = this._getCurrFrame();
         var clipX = frame.x;
@@ -101,8 +103,8 @@ function SpriteImage(srcNickname){
         var clipWidth = frame.w;
         var clipHeight = frame.h;
         
-        var drawWidth = Math.round(clipWidth*scaleFactor)
-        var drawHeight = Math.round(clipHeight*scaleFactor)
+        //var drawWidth = Math.round(clipWidth*scaleFactor)
+        //var drawHeight = Math.round(clipHeight*scaleFactor)
         ctx.drawImage(this.srcData.imgObj, 
                       clipX, clipY, clipWidth, clipHeight,
                       drawX, drawY, drawWidth, drawHeight
@@ -116,6 +118,20 @@ function SpriteImage(srcNickname){
             ctx.restore();
         }
     };    
+    
+    /**
+    params:
+    scaleFactor                 how much to magnify the original image by
+    **/
+    this.drawToScale = function(ctx, drawX, drawY, scaleFactor){
+        var frame = this._getCurrFrame();
+        var clipWidth = frame.w;
+        var clipHeight = frame.h;
+        
+        var drawWidth = Math.round(clipWidth*scaleFactor)
+        var drawHeight = Math.round(clipHeight*scaleFactor)
+        this.drawTo(ctx, drawX, drawY, drawWidth, drawHeight);
+    }
     
     this.nextFrame = function(){
         if(this._frameStepDelay !== undefined){

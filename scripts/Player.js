@@ -17,15 +17,20 @@ function Player(x, y, width, height){
         this.accelX = 0;
         this.accelY = 0;
         
-        this.maxVel = 8;
+        this.maxVelX = 8;
+        this.maxUpVel = 25;
+        this.maxDownVel = this.maxUpVel*(3/4);
+        this.gravAccel = 2.5;
+        
         this._accelRate = 2;
-        this._decelRate = this._accelRate/6;
+        this._decelRate = this._accelRate/3;
         
         this._facing = RIGHT_DIR;
+        this._canStartJump = true;
     };
     
     this.draw = function(ctx){
-        this.sprite.drawTo(ctx, this.x, this.y, 2);
+        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
     };
     
     // simply a wrapper to call the stored SpriteImage's method
@@ -34,11 +39,9 @@ function Player(x, y, width, height){
     }
     
     this._constrainVelocities = function(){
-        var maxPosVel = this.maxVel;
-        var minNegVel = -this.maxVel;
         // constrain velocities
-        this.velX = Math.min(maxPosVel, Math.max(minNegVel, this.velX));
-        this.velY = Math.min(maxPosVel, Math.max(minNegVel, this.velY));
+        this.velX = Math.min(this.maxVelX, Math.max(-this.maxVelX, this.velX));
+        this.velY = Math.min(this.maxDownVel, Math.max(-this.maxUpVel, this.velY));
     }
     
     this._updateVelocity = function(){
@@ -73,6 +76,7 @@ function Player(x, y, width, height){
     this.update = function(mousePresses, heldKeys){
         var holdingLeft = util_keyInDict(LEFT_KEYCODE, heldKeys);
         var holdingRight = util_keyInDict(RIGHT_KEYCODE, heldKeys);
+        var holdingSpace = util_keyInDict(SPACE_KEYCODE, heldKeys);
         if(holdingLeft === holdingRight){
             this._applyDecelX();
         }
@@ -85,6 +89,27 @@ function Player(x, y, width, height){
             this.accelX = this._accelRate;
             this.sprite.switchAnimation("run_right");
             this._facing = RIGHT_DIR;
+        }
+        
+        if(holdingSpace){
+            if(this._canStartJump){
+                this.velY = -this.maxUpVel;
+                this.accelY = this.gravAccel;
+                this._canStartJump = false;
+            }
+            else{
+                // counteract some of gravity to implement controllable ascent
+                this.velY -= this.gravAccel*(2/5);
+            }
+        }
+        
+        // temp hardcoded fake collision, use real collision later
+        // predict if next movement will cause collision
+        if(this.y + this.velY > 600 - this.height - 32){
+            this._canStartJump = true;
+            this.accelY = 0;
+            this.velY = 0;
+            this.y = 600 - this.height - 32;
         }
     
         this._updateVelocity();
