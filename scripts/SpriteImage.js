@@ -67,9 +67,6 @@ function SpriteImage(srcNickname){
                "for SpriteImage("+this.nickname+")");
                
         var frameList = this._getAllAnims(animName)[animName];
-        assert(frameList instanceof Array,
-               "invalid animation data for '"+animName+"'"+
-               " in SpriteImage("+this.nickname+")")
         return frameList;
     }
     
@@ -138,12 +135,25 @@ function SpriteImage(srcNickname){
         }
     };
     
-    this.switchAnimation = function(animationName){
-        assert(this._hasAnimation(animationName), 
-               "SpriteImage("+this.srcNickname+") attempted to switch to "+
-               "invalid animation '"+animationName+"'");
-        this.curAnimation = animationName;
-        this._aniIndex = 0;
+    /** SpriteImage.switchAnimation: (String, Boolean)
+    
+    params:
+    animationName           the human readable name for the animation to play
+    forceRestart            (optional) if set to on, forces an animation to
+                            restart if told to switch to the already running
+                            animation
+    **/
+    this.switchAnimation = function(animationName, forceRestart){
+        if(forceRestart === undefined){
+            forceRestart = false;
+        }
+        if(forceRestart === true || animationName !== this.curAnimation){
+            assert(this._hasAnimation(animationName), 
+                   "SpriteImage("+this.srcNickname+") attempted to switch to "+
+                   "invalid animation '"+animationName+"'");
+            this.curAnimation = animationName;
+            this._aniIndex = 0;
+        }
     };
     
     this._init.apply(this, arguments);
@@ -155,17 +165,22 @@ SpriteImage.sourcesData = {
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
                  "cloud", "bush"],
     "mario": {
-        "srcPath": "assets/images/mariobros.png",
-        "imgObj": undefined,
+        "srcPath": "assets/images/supermariobros_mario_sheet.png",
+        "imgObj": undefined, // overwritten with Image object after preload
         "animationData":{
-            "run_right":[{x:112,y:32,w:16,h:16},
-                    {x:96,y:32,w:16,h:16},
-                    {x:80,y:32,w:16,h:16}],
-            "fall":[{x:304,y:32,w:16,h:16},
-                    {x:320,y:32,w:16,h:16},
-                    {x:336,y:32,w:16,h:16}],
-            "static":[{x:176,y:32,w:16,h:16}],
-            "jump":[{x:144,y:32,w:16,h:16}]
+            "static":[{x:209,y:0,w:16,h:16}],
+            "stand_left":[{x:179,y:0,w:16,h:16}],
+            "stand_right":[{x:209,y:0,w:16,h:16}],
+            "run_left":[{x:150,y:0,w:16,h:16},
+                        {x:120,y:0,w:16,h:16},
+                        {x:90,y:0,w:16,h:16}],
+            "run_right":[{x:240,y:0,w:16,h:16},
+                        {x:270,y:0,w:16,h:16},
+                        {x:300,y:0,w:16,h:16}],
+            "fall":[{x:389,y:16,w:16,h:16},
+                    {x:0,y:16,w:16,h:16}],
+            "jump_left":[{x:29,y:0,w:16,h:16}],
+            "jump_right":[{x:360,y:0,w:16,h:16}]
         },
         "frameStepDelay": 3
     },

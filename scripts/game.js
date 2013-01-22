@@ -124,7 +124,7 @@ function Game() {
             e.preventDefault();
         }
         
-        heldKeys[keyCode] = e;
+        heldKeys[keyCode] = true;
     };
     
     var onKeyUp = function (e) {
@@ -135,7 +135,7 @@ function Game() {
         }
         
         // remove key
-        delete(heldKeys[keyCode]);
+        heldKeys[keyCode] = undefined;
     };
 
     this.run = function () {
@@ -157,8 +157,6 @@ function Game() {
 
         // initialize player
         player = new Player(0, 536, 25, 25);
-        player.switchAnimation("run_right");
-
         //initialize environment
         environment = new Environment();
         environment.init(ctx, self);

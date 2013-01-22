@@ -20,6 +20,8 @@ function Player(x, y, width, height){
         this.maxVel = 8;
         this._accelRate = 2;
         this._decelRate = this._accelRate/6;
+        
+        this._facing = RIGHT_DIR;
     };
     
     this.draw = function(ctx){
@@ -63,6 +65,8 @@ function Player(x, y, width, height){
         }
         else{
             this.accelX = this.velX = 0;
+            var dirName = (this._facing == LEFT_DIR) ? "left" : "right";
+            this.sprite.switchAnimation("stand_"+dirName);
         }
     }
     
@@ -74,9 +78,13 @@ function Player(x, y, width, height){
         }
         else if(holdingLeft){
             this.accelX = -this._accelRate;
+            this.sprite.switchAnimation("run_left");
+            this._facing = LEFT_DIR;
         }
         else if(holdingRight){
             this.accelX = this._accelRate;
+            this.sprite.switchAnimation("run_right");
+            this._facing = RIGHT_DIR;
         }
     
         this._updateVelocity();

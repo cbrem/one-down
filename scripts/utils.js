@@ -3,6 +3,8 @@ DOWN_KEYCODE = 40;
 LEFT_KEYCODE = 37;
 RIGHT_KEYCODE = 39;
 SPACE_KEYCODE = 32;
+LEFT_DIR = "left";
+RIGHT_DIR = "right";
 
 /** util_getEventKeycode: (event)
 
