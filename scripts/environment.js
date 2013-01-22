@@ -227,16 +227,19 @@ function Environment () {
         pruneSprites(spriteChoices);
 
         //fill screen with random sprites on each level
-        for (var i = 0; i < levels.length; i++)
-            if (levels[i].nonNecessary === true)
+        for (var i = 0; i < levels.length; i++){
+            if (levels[i].nonNecessary === true){
                 addNonNecessarySprite(i, game.width, this.spritesOnScreen,
                                       spriteChoices, levels, buffer, false);
+            }
+        }
 
         //add in necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
-            if (choice.necessary)
+            if (choice.necessary){
                 addNecessarySprite(choice, game.width, this.spritesOnScreen);
+            }
         }
     };
 }

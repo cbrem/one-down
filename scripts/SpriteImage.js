@@ -1,10 +1,11 @@
-/** SpriteImage: (Image)
+/** SpriteImage(String)
     handles the graphics for a sprite (ex: drawing and animation frame handling)
     (note: images must have been preloaded before using this class)
     
     params:
     srcNickname       the human readable nickname for the image
-                      (must be one of the nicknames in the sourcesData)
+                      (must be one of the nicknames in the 
+                       SpriteImage.sourcesData dictionary)
 **/
 
 // sprites we have:
@@ -22,15 +23,11 @@ function SpriteImage(srcNickname){
         var srcImgObj = this.srcData.imgObj;
 
         //CONNOR - store reference to image width
-        this.width = srcData.animationData.static[0].w;
+        this.width = srcData.animationData.default_static[0].w;
 
         assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + this.nickname);
         assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
         assert(srcImgObj.complete, "SpriteImage: source not preloaded");
-        
-        /* sets up sprite with default "static" animation */
-        this.curAnimation = "static";
-        this._aniIndex = 0;
         
         this._frameStepCount = 0;
         // 0 delay is the same as no delay in animation, so just treat it
@@ -45,21 +42,49 @@ function SpriteImage(srcNickname){
         var animData = this.srcData.animationData;
         assert(animData !== undefined, 
                "missing animation data for SpriteImage("+this.nickname+")");
-        var defaultAnim = "static";
-       
+               
+        /* sets up sprite with default animation */
+        var defaultAnim = "default_static";
+        //this.curAnimation = defaultAnim;
+        //this._aniIndex = 0;
         this.switchAnimation(defaultAnim);
     };
     
+    /** SpriteImage._hasAnimation(String) -> Boolean
+    
+    checks if the given animation exists for this sprite
+
+    params:
+    animName        the name of the animation to check for
+    
+    returns:
+    true if animName exists, false otherwise
+    **/
     this._hasAnimation = function(animName){
         var allAnims = this._getAllAnims();
         return allAnims[animName] !== undefined;
     };
     
+    /** SpriteImage._getAllAnims() -> Dictionary
+    
+    simply returns the animationData for the contructed SpriteImage;
+    see SpriteImage.sourcesData for structure details
+    
+    returns:
+    a dictionary consisting of the animationData of the current sprite
+    **/
     this._getAllAnims = function(){
         var animData = this.srcData.animationData;
         return animData;
     }
     
+    /** SpriteImage._getAnimFrameList(String) -> Array
+    
+    get the array of frame datas for a specific animation
+    
+    params:
+    animName        the name of the animation to get the frame list for
+    **/
     this._getAnimFrameList = function(animName){
         assert(this._hasAnimation(animName), "no animation "+animName+
                "for SpriteImage("+this.nickname+")");
@@ -68,6 +93,7 @@ function SpriteImage(srcNickname){
         return frameList;
     }
     
+    /** SpriteImage._getCurrFram() -> Dictionary **/
     this._getCurrFrame = function(){
         var frameIndex = this._aniIndex;
         var frameList = this._getAnimFrameList(this.curAnimation);
@@ -77,8 +103,8 @@ function SpriteImage(srcNickname){
         return frameList[frameIndex];
     }
     
-    /** SpriteImage.drawTo: (canvas context, Number, Number, Number, Number, 
-                             Boolean)
+    /** SpriteImage.drawTo(canvas context, Number, Number, Number, Number, 
+                           Boolean) -> ()
     
     draws the SpriteImage to the given canvas context
     
@@ -120,6 +146,8 @@ function SpriteImage(srcNickname){
     };    
     
     /**
+    SpriteImage.drawToScale(canvas context, Number, Number, Number) 
+                        -> ()
     params:
     scaleFactor                 how much to magnify the original image by
     **/
@@ -133,6 +161,9 @@ function SpriteImage(srcNickname){
         this.drawTo(ctx, drawX, drawY, drawWidth, drawHeight);
     }
     
+    /**
+    SpriteImage.next
+    **/
     this.nextFrame = function(){
         if(this._frameStepDelay !== undefined){
             this._frameStepCount++;
@@ -149,7 +180,7 @@ function SpriteImage(srcNickname){
         }
     };
     
-    /** SpriteImage.switchAnimation: (String, Boolean)
+    /** SpriteImage.switchAnimation(String, Boolean) -> ()
     
     params:
     animationName           the human readable name for the animation to play
@@ -181,8 +212,9 @@ SpriteImage.sourcesData = {
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet.png",
         "imgObj": undefined, // overwritten with Image object after preload
+        "frameStepDelay": 3,
         "animationData":{
-            "static":[{x:209,y:0,w:16,h:16}],
+            "default_static":[{x:209,y:0,w:16,h:16}],
             "stand_left":[{x:179,y:0,w:16,h:16}],
             "stand_right":[{x:209,y:0,w:16,h:16}],
             "run_left":[{x:150,y:0,w:16,h:16},
@@ -195,49 +227,48 @@ SpriteImage.sourcesData = {
                     {x:0,y:16,w:16,h:16}],
             "jump_left":[{x:29,y:0,w:16,h:16}],
             "jump_right":[{x:360,y:0,w:16,h:16}]
-        },
-        "frameStepDelay": 3
+        }
     },
     "groundBlock": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:0,y:0,w:16,h:16}]
+            "default_static":[{x:0,y:0,w:16,h:16}]
         }
     },
     "pipe": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:0,y:128,w:32,h:32}]
+            "default_static":[{x:0,y:128,w:32,h:32}]
         }
     },
     "solidBlock": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:0,y:16,w:16,h:16}]
+            "default_static":[{x:0,y:16,w:16,h:16}]
         }
     },
     "brickBlock": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:16,y:0,w:16,h:16}]
+            "default_static":[{x:16,y:0,w:16,h:16}]
         }
     },
     "cloud": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:0,y:320,w:48,h:32}]
+            "default_static":[{x:0,y:320,w:48,h:32}]
         }
     },
     "bush": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "static":[{x:176,y:144,w:48,h:16}]
+            "default_static":[{x:176,y:144,w:48,h:16}]
         }
     }
 }
