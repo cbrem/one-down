@@ -210,23 +210,23 @@ SpriteImage.sourcesData = {
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
                  "cloud", "bush"],
     "mario": {
-        "srcPath": "assets/images/supermariobros_mario_sheet.png",
+        "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
         "frameStepDelay": 3,
         "animationData":{
-            "default_static":[{x:209,y:0,w:16,h:16}],
-            "stand_left":[{x:179,y:0,w:16,h:16}],
-            "stand_right":[{x:209,y:0,w:16,h:16}],
-            "run_left":[{x:150,y:0,w:16,h:16},
-                        {x:120,y:0,w:16,h:16},
-                        {x:90,y:0,w:16,h:16}],
-            "run_right":[{x:240,y:0,w:16,h:16},
-                        {x:270,y:0,w:16,h:16},
-                        {x:300,y:0,w:16,h:16}],
-            "fall":[{x:389,y:16,w:16,h:16},
-                    {x:0,y:16,w:16,h:16}],
-            "jump_left":[{x:29,y:0,w:16,h:16}],
-            "jump_right":[{x:360,y:0,w:16,h:16}]
+            "default_static":[{x:420,y:0,w:32,h:32}],
+            "stand_left":[{x:360,y:0,w:32,h:32}],
+            "stand_right":[{x:420,y:0,w:32,h:32}],
+            "run_left":[{x:298,y:0,w:32,h:32},
+                        {x:238,y:0,w:32,h:32},
+                        {x:178,y:0,w:32,h:32}],
+            "run_right":[{x:480,y:0,w:32,h:32},
+                        {x:540,y:0,w:32,h:32},
+                        {x:600,y:0,w:32,h:32}],
+            "fall":[{x:780,y:32,w:32,h:32},
+                    {x:0,y:32,w:32,h:32}],
+            "jump_left":[{x:58,y:0,w:34,h:32}],
+            "jump_right":[{x:718,y:0,w:34,h:32}]
         }
     },
     "groundBlock": {

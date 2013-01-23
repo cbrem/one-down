@@ -94,7 +94,7 @@ function Game() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
         // draw blue background
-        ctx.fillStyle = "#6B8CFF";
+        ctx.fillStyle = "#9eb3ff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
         environment.draw(ctx, self);
