@@ -48,6 +48,11 @@ function Collisions() {
   					 overlap === "bottomright collide") {player.y = oy-player.height}
   	else // assume player is inside object, move it above the object
   	  {player.y = oy-player.height;}
+    
+    // reset ability to jump if they have a resetJump function defined
+    if(overlap !== "no collision" && player.resetJump !== undefined){
+        player.resetJump();
+    }
   }
 
   this.collide = function(player,env) {

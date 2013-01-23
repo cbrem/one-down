@@ -18,12 +18,13 @@ function Player(x, y, width, height){
         this.velX = 0;
         this.velY = 0;
         this.accelX = 0;
-        this.accelY = 0;
+        
+        this.gravAccel = 2.5;
+        this.accelY = this.gravAccel;
         
         this.maxVelX = 8;
         this.maxUpVel = 24;
         this.maxDownVel = this.maxUpVel*(3/4);
-        this.gravAccel = 2.5;
         
         this._accelRate = 2;
         this._decelRate = this._accelRate/3;
@@ -107,6 +108,10 @@ function Player(x, y, width, height){
         this.switchAnimation(fullAnimName);
     }
     
+    this.resetJump = function(){
+        this._canStartJump = true;
+    }
+    
     /** Player.update(Array, dictionary) -> ()
     **/
     this.update = function(mousePresses, heldKeys){
@@ -127,8 +132,8 @@ function Player(x, y, width, height){
         
         if(holdingSpace){
             if(this._canStartJump){
+                // provide jump boost
                 this.velY = -this.maxUpVel;
-                this.accelY = this.gravAccel;
                 this._canStartJump = false;
             }
             else{
@@ -139,12 +144,12 @@ function Player(x, y, width, height){
         
         // temp hardcoded fake collision, use real collision later
         // predict if next movement will cause collision
-        if(this.y + this.velY > 600 - this.height - 32){
-            /*this._canStartJump = true;
+        /*if(this.y + this.velY > 600 - this.height - 32){
+            this._canStartJump = true;
             this.accelY = 0;
             this.velY = 0;
-            this.y = 600 - this.height - 32;*/
-        }
+            this.y = 600 - this.height - 32;
+        }*/
     
         this._updateMovementAnim();
         this._updateVelocity();

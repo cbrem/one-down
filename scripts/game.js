@@ -161,7 +161,7 @@ function Game() {
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(0, 500, 32, 32);
+        player = new Player(0, 400, 32, 32);
         //initialize environment
         environment = new Environment();
         environment.init(ctx, self);
