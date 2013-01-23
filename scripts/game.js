@@ -24,7 +24,6 @@ function preloadImages(loadedCallback){
     var imageNames = srcData["nicknames"];
     var totalToPreload = imageNames.length;
     var numLoadedSoFar = 0;
-    
     var imgObj, imgNickname;
     
     for (var i = 0; i < imageNames.length; i++){
@@ -86,13 +85,18 @@ function Game() {
         //console.log(clicks, heldKeys);
         player.update(clicks, heldKeys); 
         clicks = [];      //clear clicks, but don't clear 
-                                        // heldKeys until release
+                                        // heldKeys until keyup event
         //collisions.collide();
         environment.update(self);
     };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        // draw blue background
+        ctx.fillStyle = "#9eb3ff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
         environment.draw(ctx, self);
         player.draw(ctx);
     };
@@ -156,7 +160,7 @@ function Game() {
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(0, 536, 25, 25);
+        player = new Player(0, 536, 32, 32);
         //initialize environment
         environment = new Environment();
         environment.init(ctx, self);
