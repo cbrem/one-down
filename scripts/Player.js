@@ -21,7 +21,7 @@ function Player(x, y, width, height){
         this.accelY = 0;
         
         this.maxVelX = 8;
-        this.maxUpVel = 25;
+        this.maxUpVel = 24;
         this.maxDownVel = this.maxUpVel*(3/4);
         this.gravAccel = 2.5;
         
@@ -38,11 +38,15 @@ function Player(x, y, width, height){
         this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
     };
     
-    /** Player.switchAnimation(String) -> ()
+    /** Player.switchAnimation(String, Boolean) -> ()
     simply a wrapper to call the stored SpriteImage's method
     **/
-    this.switchAnimation = function(animName){
-        this.sprite.switchAnimation(animName);
+    this.switchAnimation = function(animName, forceRestart){
+        this.sprite.switchAnimation(animName, forceRestart);
+    }
+    
+    this.getFacingDirName = function(){ 
+        return (this._facing == LEFT_DIR) ? "left" : "right";
     }
     
     /** Player._constrainVelocities() -> ()
@@ -83,9 +87,24 @@ function Player(x, y, width, height){
         }
         else{
             this.accelX = this.velX = 0;
-            var dirName = (this._facing == LEFT_DIR) ? "left" : "right";
-            this.sprite.switchAnimation("stand_"+dirName);
         }
+    }
+    
+    this._updateMovementAnim = function(){
+        var dirName = (this._facing === LEFT_DIR) ? "left" : "right";
+        var baseAnimName;
+        if(this._canStartJump === false){
+            baseAnimName = "jump";
+        }
+        else if(this.velX !== 0){
+            baseAnimName = "run";
+        }
+        else{
+            baseAnimName = "stand";
+        }
+        
+        var fullAnimName = baseAnimName + "_" + dirName;
+        this.switchAnimation(fullAnimName);
     }
     
     /** Player.update(Array, dictionary) -> ()
@@ -99,12 +118,10 @@ function Player(x, y, width, height){
         }
         else if(holdingLeft){
             this.accelX = -this._accelRate;
-            this.sprite.switchAnimation("run_left");
             this._facing = LEFT_DIR;
         }
         else if(holdingRight){
             this.accelX = this._accelRate;
-            this.sprite.switchAnimation("run_right");
             this._facing = RIGHT_DIR;
         }
         
@@ -129,6 +146,7 @@ function Player(x, y, width, height){
             this.y = 600 - this.height - 32;
         }
     
+        this._updateMovementAnim();
         this._updateVelocity();
         this._updatePos();
         this.sprite.nextFrame();
