@@ -92,6 +92,11 @@ function Game() {
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        // draw blue background
+        ctx.fillStyle = "#6B8CFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
         environment.draw(ctx, self);
         player.draw(ctx);
     };
