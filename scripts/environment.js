@@ -41,7 +41,7 @@ function randomChance(x) {
 
 //return a random hexidecimal color
 function randomColor() {
-    return "#" + randomInt(0, 0x1000000);
+    return "#" + randomInt(0, 0x1000000).toString(16);
 }
 
 //used by both EnvBlock and Environment.
@@ -117,6 +117,7 @@ function Environment () {
 
     this.draw = function (ctx, game) {
         //draw background
+        console.log(this.bgColor);
         ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 
