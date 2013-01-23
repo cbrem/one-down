@@ -68,6 +68,7 @@ function EnvBlock (name, x, level, necessary, collidable, scaleFactor) {
     this.collidable = collidable;
     this.scaleFactor = scaleFactor;
     this.width = this.img.width * this.scaleFactor;
+    this.height = this.width;
 }
 
 function Environment () {

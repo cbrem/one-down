@@ -140,16 +140,17 @@ function Player(x, y, width, height){
         // temp hardcoded fake collision, use real collision later
         // predict if next movement will cause collision
         if(this.y + this.velY > 600 - this.height - 32){
-            this._canStartJump = true;
+            /*this._canStartJump = true;
             this.accelY = 0;
             this.velY = 0;
-            this.y = 600 - this.height - 32;
+            this.y = 600 - this.height - 32;*/
         }
     
         this._updateMovementAnim();
         this._updateVelocity();
         this._updatePos();
         this.sprite.nextFrame();
+        console.log(this.x, this.y);
     };
     
     this._init.apply(this, arguments);

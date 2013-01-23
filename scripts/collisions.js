@@ -1,5 +1,5 @@
 // checks collisions
-function collisions() {
+function Collisions() {
   var env;
   var i;
   var envObj;
@@ -34,35 +34,39 @@ function collisions() {
   // takes player and "uncollides" him with an obstacle
   // parameters are the overlap string and 
   // the object's location and dimensions
-  function unOverlap(overlap,ox,oy,ow,oh) {
+  function unOverlap(player,overlap,ox,oy,ow,oh) {
+    if (overlap === "no collision") {return;}
   	// side collisions-make the sides flush
-  	if (overlap === "bottom collide") {player.y = oy-player.h;}
-  	else if (overlap === "right collide") {player.x = ox-player.w;}
+  	else if (overlap === "bottom collide") {player.y = oy-player.height;}
+  	else if (overlap === "right collide") {player.x = ox-player.width;}
   	else if (overlap === "top collide") {player.y = oy+oh;}
   	else if (overlap === "left collide") {player.x = ox+ow;}
   	// if corner collisions, move player above or below object
   	else if (overlap === "topleft collide" ||
   					 overlap === "topright collide") {player.y = oy;}
   	else if (overlap === "bottomleft collide" ||
-  					 overlap === "bottomright collide") {player.y = oy-player.h}
+  					 overlap === "bottomright collide") {player.y = oy-player.height}
   	else // assume player is inside object, move it above the object
-  	  {player.y = oy-player.h;}
+  	  {player.y = oy-player.height;}
   }
 
-  this.collide = function() {
-	  env = environmentList //replace!!!
+  this.collide = function(player,env) {
+    assert(typeof(player.x) === "number" && typeof(player.y) === "number" &&
+            typeof(player.height) === "number" && typeof(player.width) === "number");
 	  // iterate through each environment object
 	  // and check for collisions
 	  for (var i = 0; i < env.length; i++) {
 	  	envObj = env[i];
-	  	overlap = getOverlap(envObj.x,envObj.y,envObj.w,envObj.h,
-	  										player.x,player.y,player.w,player.h);
-	  	if (overlap !== "no overlap")
+
+	  	overlap = getOverlap(envObj.x,envObj.y,envObj.width,envObj.height,
+	  										player.x,player.y,player.width,player.height);
+      console.log(overlap, envObj.name);
+	  	if ((overlap !== "no collision") && envObj.collidable)
 	  	  {
-	  	  	if (envObj.enemy = true)
+	  	  	if (envObj.enemy)
 	  	  		{} //gameover
 	  	  	else //object is an obstacle, move player out of obstacle
-	  	  	  {unOverlap(overlap,envObj.x,envObj.y,envObj.w,envObj.h);}
+	  	  	  {unOverlap(player,overlap,envObj.x,envObj.y,envObj.width,envObj.height);}
 	  	  }
 		}
 	}

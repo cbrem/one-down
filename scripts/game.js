@@ -86,8 +86,9 @@ function Game() {
         player.update(clicks, heldKeys); 
         clicks = [];      //clear clicks, but don't clear 
                                         // heldKeys until keyup event
-        //collisions.collide();
-        environment.update(self);
+        //checks player collisions and corrects position
+        collisions.collide(player,environment.spritesOnScreen); 
+        //environment.update(self);
     };
 
     var updateView = function () {
@@ -97,7 +98,7 @@ function Game() {
         ctx.fillStyle = "#9eb3ff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
-        environment.draw(ctx, self);
+        environment.draw(ctx,self);
         player.draw(ctx);
     };
 
@@ -160,10 +161,12 @@ function Game() {
         ctx = canvas.getContext("2d");
 
         // initialize player
-        player = new Player(0, 536, 32, 32);
+        player = new Player(0, 500, 32, 32);
         //initialize environment
         environment = new Environment();
         environment.init(ctx, self);
+        // initialize Collisions
+        collisions = new Collisions();
 
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
