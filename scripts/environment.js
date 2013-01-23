@@ -83,7 +83,7 @@ function Environment () {
         {name : "bush", level : 1, necessary : true, collidable : false},
         {name : "groundBlock", level : 0, necessary : true, collidable : true},
         {name : "cloud", level : 3, necessary : false, collidable : false},
-        {name : "pipe", level : 2, necessary : false, collidable : false}
+        {name : "pipe", level : 2, necessary : false, collidable : true}
     ];
 
     this.init = function (ctx, game) {
