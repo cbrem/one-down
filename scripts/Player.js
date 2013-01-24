@@ -110,6 +110,7 @@ function Player(x, y, width, height){
     
     this.resetJump = function(){
         this._canStartJump = true;
+        this.velY = 0;
     }
     
     /** Player.update(Array, dictionary) -> ()
@@ -141,15 +142,6 @@ function Player(x, y, width, height){
                 this.velY -= this.gravAccel*(2/5);
             }
         }
-        
-        // temp hardcoded fake collision, use real collision later
-        // predict if next movement will cause collision
-        /*if(this.y + this.velY > 600 - this.height - 32){
-            this._canStartJump = true;
-            this.accelY = 0;
-            this.velY = 0;
-            this.y = 600 - this.height - 32;
-        }*/
     
         this._updateMovementAnim();
         this._updateVelocity();
