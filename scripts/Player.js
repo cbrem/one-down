@@ -39,6 +39,12 @@ function Player(game, x, y, width, height){
         this._canStartJump = true;
     };
     
+    this.destroyReferences = function(){
+        // remove references for cleanup
+        this.game = undefined;
+        this.sprite = undefined;
+    }
+    
     /** Player.draw(canvas context) -> () 
     **/
     this.draw = function(ctx){

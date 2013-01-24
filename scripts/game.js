@@ -130,6 +130,10 @@ function Game() {
         }
         
         heldKeys[keyCode] = true;
+        if(keyCode === R_KEYCODE){
+            player.destroyReferences();
+            self.init();
+        }
     };
     
     var onKeyUp = function (e) {
@@ -140,12 +144,11 @@ function Game() {
         }
         
         // remove key
-        heldKeys[keyCode] = undefined;
+        delete(heldKeys[keyCode]);
     };
 
-    this.run = function () {
-        console.log('running game');
-        
+    this.init = function(){
+        console.log("reinitializing game");
         // initialize mouse and key event queues
         clicks = [];
         heldKeys = {};
@@ -155,10 +158,6 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.speed = -4;
-        
-        //initialize canvas and context
-        canvas = document.getElementById("gamecanvas");
-        ctx = canvas.getContext("2d");
 
         // initialize player
         player = new Player(self, 300, 400, 32, 32);
@@ -167,6 +166,16 @@ function Game() {
         environment.init(ctx, self);
         // initialize Collisions
         collisions = new Collisions();
+    }
+    
+    /** like Tkinter's run; sets up event handlers etc. **/
+    this.run = function () {
+        console.log('running game; setting up event handlers');
+        this.init();
+        
+        //save reference to canvas and context
+        canvas = document.getElementById("gamecanvas");
+        ctx = canvas.getContext("2d");
 
         //initialize event handlers
         canvas.addEventListener("mousedown", onMouseDown, true);
