@@ -53,7 +53,7 @@ function Collisions() {
   	  {player.y = oy-player.height;}
     
     // reset ability to jump if they have a resetJump function defined
-    if(overlap !== "no collision" && player.resetJump !== undefined){
+    if(player.resetJump !== undefined && overlap.indexOf("bottom") !== -1){
         player.resetJump();
     }
   }
