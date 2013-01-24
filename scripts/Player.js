@@ -1,14 +1,17 @@
 /** Player(Number, Number, Number, Number)
 
 params:
+    game        the Game instance the player is being created in
     x           the x-coordinate of the player, relative to the canvas
     y           the y-coordinate of the player, relative to the canvas
     width       the width of the player, as displayed on the canvas
     height      the height of the player, as displayed on the canvas
 **/
-function Player(x, y, width, height){
-    this._init = function(x, y, width, height){
+function Player(game, x, y, width, height){
+    this._init = function(game, x, y, width, height){
         console.log("initializing", this);
+        this.game = game;
+        
         this.x = x;
         this.y = y;
         this.width = width;
@@ -23,6 +26,9 @@ function Player(x, y, width, height){
         this.accelY = this.gravAccel;
         
         this.maxVelX = 8;
+        assert(this.maxVelX >= Math.abs(this.game.speed), 
+               "Player horizontal movement too slow, "+
+               "won't be able to keep up with screen");
         this.maxUpVel = 24;
         this.maxDownVel = this.maxUpVel*(3/4);
         
@@ -70,6 +76,9 @@ function Player(x, y, width, height){
     **/
     this._updatePos = function(){
         this.x += this.velX;
+        // scroll with screen
+        this.x += this.game.speed;
+        
         this.y += this.velY;
     }
     
