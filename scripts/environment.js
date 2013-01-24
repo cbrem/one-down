@@ -222,7 +222,7 @@ function Environment () {
         };
 
         //shift all EnvBlocks
-        //moveEnvBlocks(this.spritesOnScreen, game.speed);
+        moveEnvBlocks(this.spritesOnScreen, game.speed);
 
         //remove elements which have moved off left side
         pruneSprites(spriteChoices);

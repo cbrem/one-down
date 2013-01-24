@@ -88,7 +88,7 @@ function Game() {
                                         // heldKeys until keyup event
         //checks player collisions and corrects position
         collisions.collide(player,environment.spritesOnScreen); 
-        //environment.update(self);
+        environment.update(self);
     };
 
     var updateView = function () {
@@ -154,7 +154,7 @@ function Game() {
         this.worldX = 0;
         this.worldY = 0;
         this.width = 600;
-        this.speed = 40;
+        this.speed = -4;
         
         //initialize canvas and context
         canvas = document.getElementById("gamecanvas");
