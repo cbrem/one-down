@@ -74,23 +74,56 @@ function Game() {
         clicks,
         heldKeys;
         //add more objects here
+    var pauseSprite;
 
     this.width;
     this.worldX;
     this.worldY;
     this.speed;
+    this.gamePaused;
+    // set of directions to kill the player in if they are offscreen there
+    this.deadZoneDirs;
 
     var updateModel = function () {
         //synchronously send updates to player
         //console.log(clicks, heldKeys);
-        player.update(clicks, heldKeys); 
         clicks = [];      //clear clicks, but don't clear 
                                         // heldKeys until keyup event
         //checks player collisions and corrects position
-        collisions.collide(player,environment.spritesOnScreen); 
-        environment.update(self);
+        
+        if(self.gamePaused === false){
+            player.update(self, clicks, heldKeys); 
+            environment.update(self);
+            collisions.collide(player,environment.spritesOnScreen); 
+        }
+        else{ 
+            pauseSprite.nextFrame();
+        }
     };
 
+    
+    // split this type of drawing into a HUD object or something
+    var _drawPauseScreen = function(){
+        ctx.save();
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.font = 'bold 60px "Lucida Console", Monaco, monospace';
+        ctx.textAlign = "center";
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        
+        var pauseMetrics = pauseSprite.getCurrFrameMetrics();
+        var text = "Paused";
+        var textX = (canvas.width - pauseMetrics.width)/2;
+        var textY = canvas.height/2;
+        ctx.fillText("Paused", textX, textY);
+        ctx.strokeText("Paused", textX, textY);
+        ctx.restore();
+        
+        pauseSprite.drawTo(ctx, textX + pauseMetrics.width + 30, textY - pauseMetrics.height/2); 
+    }
+    
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
@@ -100,6 +133,10 @@ function Game() {
         ctx.restore();
         environment.draw(ctx,self);
         player.draw(ctx);
+        
+        if(self.gamePaused === true){
+            _drawPauseScreen();
+        }
     };
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
@@ -123,7 +160,7 @@ function Game() {
         //react to key
         var keyCode = util_getKeyCode(e);
         //alert("Keycode of the pressed key is " + keyCode);
-        assert(true);
+        
         // prevent webpage from moving while moving player
         if(util_isPageMoveKeyCode(keyCode)){
             e.preventDefault();
@@ -133,6 +170,10 @@ function Game() {
         if(keyCode === R_KEYCODE){
             player.destroyReferences();
             self.init();
+        }
+        else if(keyCode === P_KEYCODE){
+            self.gamePaused = !self.gamePaused;
+            pauseSprite.switchAnimation("default_static", true);
         }
     };
     
@@ -152,20 +193,29 @@ function Game() {
         // initialize mouse and key event queues
         clicks = [];
         heldKeys = {};
+        this.gamePaused = false;
         
         //set game dimensions and speed
         this.worldX = 0;
         this.worldY = 0;
         this.width = 600;
-        this.speed = -4;
+        this.scrollX = -4;
+        this.scrollY = 0;
 
+        // set dead zones
+        this.deadZoneDirs = {};
+        // temp, hardcode as the left
+        this.deadZoneDirs[LEFT_DIR] = true;;
+        
         // initialize player
-        player = new Player(self, 300, 400, 32, 32);
+        player = new Player(300, 400, 32, 32);
         //initialize environment
         environment = new Environment();
         environment.init(ctx, self);
         // initialize Collisions
         collisions = new Collisions();
+        
+        pauseSprite = new SpriteImage("sleep_render");
     }
     
     /** like Tkinter's run; sets up event handlers etc. **/

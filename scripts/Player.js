@@ -1,16 +1,14 @@
 /** Player(Number, Number, Number, Number)
 
 params:
-    game        the Game instance the player is being created in
     x           the x-coordinate of the player, relative to the canvas
     y           the y-coordinate of the player, relative to the canvas
     width       the width of the player, as displayed on the canvas
     height      the height of the player, as displayed on the canvas
 **/
-function Player(game, x, y, width, height){
-    this._init = function(game, x, y, width, height){
+function Player(){
+    this._init = function(x, y, width, height){
         console.log("initializing", this);
-        this.game = game;
         
         this.x = x;
         this.y = y;
@@ -26,9 +24,6 @@ function Player(game, x, y, width, height){
         this.accelY = this.gravAccel;
         
         this.maxVelX = 8;
-        assert(this.maxVelX >= Math.abs(this.game.speed), 
-               "Player horizontal movement too slow, "+
-               "won't be able to keep up with screen");
         this.maxUpVel = 24;
         this.maxDownVel = this.maxUpVel*(3/4);
         
@@ -78,14 +73,20 @@ function Player(game, x, y, width, height){
         this._constrainVelocities();
     };
     
-    /** Player._updatePos() -> ()
+    this._constrainPositions = function(game){
+    }
+    
+    /** Player._updatePos(game instance) -> ()
     **/
-    this._updatePos = function(){
+    this._updatePos = function(game){
         this.x += this.velX;
         // scroll with screen
-        this.x += this.game.speed;
+        this.x += game.scrollX;
         
         this.y += this.velY;
+        this.y += game.scrollY;
+        
+        this._constrainPositions(game);
     }
     
     /** Player._applyDecelX() -> ()
@@ -130,7 +131,7 @@ function Player(game, x, y, width, height){
     
     /** Player.update(Array, dictionary) -> ()
     **/
-    this.update = function(mousePresses, heldKeys){
+    this.update = function(game, mousePresses, heldKeys){
         var holdingLeft = util_keyInDict(LEFT_KEYCODE, heldKeys);
         var holdingRight = util_keyInDict(RIGHT_KEYCODE, heldKeys);
         var holdingSpace = util_keyInDict(SPACE_KEYCODE, heldKeys);
@@ -160,7 +161,7 @@ function Player(game, x, y, width, height){
     
         this._updateMovementAnim();
         this._updateVelocity();
-        this._updatePos();
+        this._updatePos(game);
         this.sprite.nextFrame();
         console.log(this.x, this.y);
     };

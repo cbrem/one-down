@@ -216,13 +216,15 @@ function Environment () {
     //note that these should be the NEW side coordinates.
     this.update = function (game) {
         //moves all EnvBlocks in a by a given distance
-        var moveEnvBlocks = function (a, distance) {
-            for (var i = 0; i < a.length; i++)
-                a[i].x += distance;
+        var moveEnvBlocks = function (a, distX, distY) {
+            for (var i = 0; i < a.length; i++){
+                a[i].x += distX;
+                a[i].y += distY;
+            }    
         };
 
         //shift all EnvBlocks
-        moveEnvBlocks(this.spritesOnScreen, game.speed);
+        moveEnvBlocks(this.spritesOnScreen, game.scrollX, game.scrollY);
 
         //remove elements which have moved off left side
         pruneSprites(spriteChoices);
