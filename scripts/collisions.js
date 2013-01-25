@@ -63,7 +63,7 @@ function Collisions() {
             typeof(player.height) === "number" && typeof(player.width) === "number");
 	  // iterate through each environment object
 	  // and check for collisions
-    console.log('    !!collision check!!')
+    //console.log('    !!collision check!!')
 	  for (var i = 0; i < env.length; i++) {
 	  	envObj = env[i];
 
@@ -71,7 +71,7 @@ function Collisions() {
 	  										player.x,player.y,player.width,player.height);
 	  	if ((overlap !== "no collision") && envObj.collidable)
 	  	  {
-          console.log(overlap, envObj.name);
+          //console.log(overlap, envObj.name);
 	  	  	if (envObj.enemy)
 	  	  		{} //gameover
 	  	  	else //object is an obstacle, move player out of obstacle

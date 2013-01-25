@@ -163,7 +163,7 @@ function Player(){
         this._updateVelocity();
         this._updatePos(game);
         this.sprite.nextFrame();
-        console.log(this.x, this.y);
+        //console.log("Player is at:", this.x, this.y);
     };
     
     this._init.apply(this, arguments);

@@ -37,7 +37,7 @@ function preloadImages(loadedCallback){
         imgObj = new Image();
         imgObj.onload = function(){
             numLoadedSoFar++;
-            console.log(this, imgNickname);
+            console.log("loaded", this);
             // if all images are loaded, call the callback
             if(numLoadedSoFar >= totalToPreload){
                 // make sure every source has a stored Image object
