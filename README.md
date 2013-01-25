@@ -5,11 +5,10 @@ TO DO:
 for alpha prototype:
 
 xadd restart
+xadd pause
 -fix random generation
 -make a way to die (go offscreen/enemies)
--add pause
--add game over screen
--add restart button
+-add game over screen (with restart button)
 
 for a good game:
 
