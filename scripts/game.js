@@ -105,7 +105,7 @@ function Game() {
     // split this type of drawing into a HUD object or something
     var _drawPauseScreen = function(){
         ctx.save();
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillStyle = "rgba(50, 50, 50, 0.7)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.font = 'bold 60px "Lucida Console", Monaco, monospace';
