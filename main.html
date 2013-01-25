@@ -6,8 +6,8 @@
         html,body{
             background-color:black;
         }
-        canvas{
-            margin: 0 auto;
+        #canvas-container{
+            text-align: center;
         }
     </style>
     <script src="scripts/assert.js" type="text/javascript"></script>
@@ -24,8 +24,10 @@
     </script>
 </head>
 <body>
-<canvas id="gamecanvas" width="600" height="600" style="border:1px solid #000000;">
-    No canvas available!
-</canvas>
+<div id="canvas-container">
+    <canvas id="gamecanvas" width="600" height="600" style="border:1px solid #000000;">
+        No canvas available!
+    </canvas>
+</div>
 </body>
 </html>
