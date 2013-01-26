@@ -58,7 +58,7 @@ var levels = [
 ];
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, level, necessary, collidable, scaleFactor) {
+function EnvBlock (name, x, level, necessary, collidable, drawable, scaleFactor) {
     this.img = new SpriteImage(name);
     this.name = name;
     this.x = x;
@@ -66,12 +66,15 @@ function EnvBlock (name, x, level, necessary, collidable, scaleFactor) {
     this.y = levels[level].y;
     this.necessary = necessary;
     this.collidable = collidable;
+    this.drawable = drawable;
     this.scaleFactor = scaleFactor;
     this.width = this.img.width * this.scaleFactor;
     this.height = this.width;
 }
 
 function Environment () {
+    var self = this;
+
     this.spritesOnScreen; //lists of sprites currently on the screen
     this.bgColor;
     
@@ -121,8 +124,9 @@ function Environment () {
         var drawEnvBlockArray = function (a) {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
-                envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
-                                    envBlock.scaleFactor);
+                if(envBlock.drawable) 
+                    envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
+                                             envBlock.scaleFactor);
             }
         };
 
@@ -141,9 +145,9 @@ function Environment () {
     //(i.e. sprite arrays are sorted by x-coordinate of right side)
     var pruneSprites = function (spritesOnScreen, worldWidth) {
         var newSpritesOnScreen = [];
-        for (var i = 0; i < spritesOnScreen; i++) {
+        for (var i = 0; i < spritesOnScreen.length; i++) {
             var sprite = spritesOnScreen[i];
-            if (sprite.x + sprite.width > 0) newSpritesOnScreen.push(sprite);
+            if ((sprite.x + sprite.width) > 0) newSpritesOnScreen.push(sprite);
         }
         self.spritesOnScreen = newSpritesOnScreen;
     };
@@ -185,14 +189,24 @@ function Environment () {
 
         while(furthestRight < 2 * gameWidth) {
             var levelChoice = chooseByLevel(choices, level);
+            
+            var collidable,
+                drawable;
+            if (randomChance(levels[level].chance)) {
+                collidable = levelChoice.collidable;
+                drawable = true;
+            } else {
+                //the sprite only takes up space and is not drawn
+                collidable = false;
+                drawable = false;
+            }
+
             var newSprite =
                 new EnvBlock(levelChoice.name, furthestRight,
                              levelChoice.level, levelChoice.necessary,
-                             levelChoice.collidable, 2);
+                             collidable, drawable, 2);
             furthestRight += (newSprite.width + buffer);
-            if (randomChance(levels[level].chance))
-                //possibly don't push newSprite
-                spritesOnScreen.push(newSprite);
+            spritesOnScreen.push(newSprite);
         }
     };
 
@@ -201,10 +215,13 @@ function Environment () {
 
         //determine how much screen space of the necessary sprite is missing
         var furthestRight = 0; //right side of furthest right sprite
+        var found = 0;
         for (var i = 0; i < spritesOnScreen.length; i++) {
-            var sameBlock = spritesOnScreen[i];
-            if (sameBlock.name === choice.name)
-                furthestRight += sameBlock.width;
+            var envBlock = spritesOnScreen[i];
+            if (envBlock.name === choice.name) {
+                found++;
+                furthestRight += envBlock.width;
+            }
         }
 
         //fill that screen space with an appropriate number of instances
@@ -212,7 +229,7 @@ function Environment () {
         while (furthestRight < 2 * gameWidth) {
             var newSprite = new EnvBlock(choice.name, furthestRight,
                                          choice.level, choice.necessary,
-                                         choice.collidable, 2);
+                                         choice.collidable, true, 2);
             spritesOnScreen.push(newSprite);
             furthestRight += newSprite.width;
         }
