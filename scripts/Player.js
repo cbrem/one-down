@@ -163,7 +163,7 @@ function Player(){
         this._updateVelocity();
         this._updatePos(game);
         this.sprite.nextFrame();
-        console.log("Player is at:", this.x, this.y);
+        //console.log("Player is at:", this.x, this.y);
 
         // gameOver is triggered by falling down or going past left side
         if ((this.x + this.width < 0) || (this.y > game.height)){

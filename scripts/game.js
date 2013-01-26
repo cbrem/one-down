@@ -77,11 +77,13 @@ function Game() {
     var pauseSprite;
 
     this.width;
+    this.height;
     this.worldX;
     this.worldY;
     this.speed;
     this.gamePaused;
     this.gameOver;
+    this.time;
     // set of directions to kill the player in if they are offscreen there
     this.deadZoneDirs;
 
@@ -99,6 +101,11 @@ function Game() {
         }
         else{ 
             pauseSprite.nextFrame();
+        }
+
+        // for the high score
+        if (!self.gameOver) {
+            self.time++;
         }
     };
 
@@ -123,7 +130,7 @@ function Game() {
         ctx.restore();
         
         pauseSprite.drawTo(ctx, textX + pauseMetrics.width + 30, textY - pauseMetrics.height/2); 
-    }
+    };
     
     var _drawGameOverScreen = function(){
         ctx.save();
@@ -140,7 +147,22 @@ function Game() {
         ctx.fillText("Press R to Restart", canvas.width/2, canvas.height/2+50);
 
         ctx.restore();
-    }
+    };
+
+    // draws bar for high score
+    var _drawTopBar = function() {
+        // make black high score bar on top
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0,canvas.width,30);
+
+        // write the score
+        ctx.font = 'bold 20px Arial, Monaco, monospace';
+        ctx.textAlign = "left";
+        ctx.fillStyle = "white";
+        ctx.fillText("SCORE ", canvas.width*2/3, 22);
+        ctx.textAlign = "right";
+        ctx.fillText(String(self.time), canvas.width-5, 22);
+    };
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -151,6 +173,7 @@ function Game() {
         ctx.restore();
         environment.draw(ctx,self);
         player.draw(ctx);
+        _drawTopBar();
         
         if(self.gamePaused){
             _drawPauseScreen();
@@ -162,6 +185,7 @@ function Game() {
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
     var timer = function (){
+        console.log("then time is:", self.time);
         updateModel();
         updateView();
         setTimeout(timer, cycleLength);
@@ -221,8 +245,11 @@ function Game() {
         this.worldX = 0;
         this.worldY = 0;
         this.width = 600;
+        this.height = 600;
         this.scrollX = -4;
         this.scrollY = 0;
+        this.time = 0;
+        console.log("time is:" + this.time);
 
         // set dead zones
         this.deadZoneDirs = {};
@@ -258,6 +285,7 @@ function Game() {
         canvas.setAttribute('tabindex','0');
         canvas.focus();
         
+        console.log("here time is:", this.time);
         //the inital call to timer, which will run continuously to update
         //the model and view
         timer();

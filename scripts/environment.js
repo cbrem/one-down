@@ -114,7 +114,7 @@ function Environment () {
 
     this.draw = function (ctx, game) {
         //draw background
-        console.log(this.bgColor);
+        //console.log(this.bgColor);
         ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 

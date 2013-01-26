@@ -6,9 +6,9 @@ for alpha prototype:
 
 xadd restart
 xadd pause
--fix random generation
+xfix random generation
 xmake a way to die (go offscreen/enemies)
--add game over screen (with restart button)
+xadd game over screen (with restart button)
 
 for a good game:
 
