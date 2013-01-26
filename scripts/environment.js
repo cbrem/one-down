@@ -41,7 +41,9 @@ function randomChance(x) {
 
 //return a random hexidecimal color
 function randomColor() {
-    return "#" + randomInt(0, 0x1000000).toString(16);
+    return {red : randomInt(0x10, 0xFF), 
+            blue : randomInt(0x10, 0xFF),
+            green : randomInt(0x10, 0xFF)};
 }
 
 //used by both EnvBlock and Environment.
@@ -108,7 +110,7 @@ function Environment () {
         buffer = 50;
 
         //randomly choose background color
-        this.bgColor = randomColor();
+        this.bgColor = {red: 0x93, green:0xbe, blue:0xff};;
 
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
@@ -127,7 +129,9 @@ function Environment () {
     this.draw = function (ctx, game) {
         //draw background
         //console.log(this.bgColor);
-        ctx.fillStyle = this.bgColor;
+        ctx.fillStyle = ("#"+(this.bgColor.red.toString(16))+
+                        (this.bgColor.green.toString(16))+
+                        this.bgColor.blue.toString(16));
         ctx.fillRect(0,0, game.width, game.height);
 
         var drawEnvBlockArray = function (a) {
@@ -261,43 +265,36 @@ function Environment () {
         //shift all EnvBlocks
         moveEnvBlocks(this.spritesOnScreen, game.scrollX, game.scrollY);
 
-
-/*
- *
-  I think you want this.spritesOnScreen, not spriteChoices
-  but when you do that it breaks
- *
- */
         //remove elements which have moved off left side
         pruneSprites(this.spritesOnScreen, game.width);
 
-/*
- *
-  these loops are running way too often
-  can we just do them when we need it? 
-  (maybe when we move game.width, generate a new frame game.width ahead of that)
- *
- */
+        if (!game.transition) {
+            //fill screen with random sprites on each level
+            for (var i = 0; i < levels.length; i++){
+                if (levels[i].nonNecessary === true){
+                    addNonNecessarySprite(i, game.width, this.spritesOnScreen,
+                                          spriteChoices, levels, buffer, false);
+                }
+            }
 
-        //fill screen with random sprites on each level
-        for (var i = 0; i < levels.length; i++){
-            if (levels[i].nonNecessary === true){
-                addNonNecessarySprite(i, game.width, this.spritesOnScreen,
-                                      spriteChoices, levels, buffer, false);
+            //add in necessary sprites
+            for (var i = 0; i < spriteChoices.length; i++) {
+                var choice = spriteChoices[i];
+                if (choice.necessary){
+                    addNecessarySprite(choice, game.width, this.spritesOnScreen);
+                }
             }
         }
-
-/*
- *
-  the ground blocks stop after 2 screens..?
- *
- */
-        //add in necessary sprites
-        for (var i = 0; i < spriteChoices.length; i++) {
-            var choice = spriteChoices[i];
-            if (choice.necessary){
-                addNecessarySprite(choice, game.width, this.spritesOnScreen);
-            }
+        else if (game.falling)
+        {
+            // don't let it get below 16...bad hex error-turns white
+            var fadeSpeed = 2;
+            if (this.bgColor.red > 15+fadeSpeed) 
+                {this.bgColor.red -= fadeSpeed;};
+            if (this.bgColor.green > 15+fadeSpeed) 
+                {this.bgColor.green -= fadeSpeed;};
+            if (this.bgColor.blue > 15+fadeSpeed) 
+                {this.bgColor.blue -= fadeSpeed;};
         }
     };
 }

@@ -36,6 +36,7 @@ function Collisions() {
   // parameters are the overlap string and 
   // the object's location and dimensions
   function unOverlap(player,overlap,ox,oy,ow,oh) {
+    console.log(overlap);
     if (overlap === "no collision") {return;}
   	// side collisions-make the sides flush
   	else if (overlap === "bottom collide") {player.y = oy-player.height;}
@@ -44,11 +45,21 @@ function Collisions() {
   	else if (overlap === "left collide") {player.x = ox+ow;}
   	// if corner collisions, move player above or below object
   	else if (overlap === "topleft collide" ||
-  					 overlap === "topright collide") 
-                {player.y = oy;} //above
+             overlap === "topright collide") 
+        if (player.velY < 0) 
+          {player.y = oy + oh;} //below if jumping
+        else if (overlap === "topright collide") 
+          {player.x = ox-player.width;} //left if right collides
+        else 
+          {player.x = ox+ow} //right if left collides
   	else if (overlap === "bottomleft collide" ||
   					 overlap === "bottomright collide") 
-                {player.y = oy-player.height} //below
+        if (player.velY >= 0) 
+          {player.y = oy-player.height;} //above if falling/walking
+        else if (overlap === "bottomright collide") 
+          {player.x = ox-player.width;} //left if right collides
+        else 
+          {player.x = ox+ow} //right if left collides
   	else // assume player is inside object, move it above the object
   	  {player.y = oy-player.height;}
     

@@ -239,8 +239,7 @@ SpriteImage.sourcesData = {
             "run_right":[{x:480,y:0,w:32,h:32},
                         {x:540,y:0,w:32,h:32},
                         {x:600,y:0,w:32,h:32}],
-            "fall":[{x:780,y:32,w:32,h:32},
-                    {x:0,y:32,w:32,h:32}],
+            "fall":[{x:0,y:32,w:32,h:32}],
             "jump_left":[{x:58,y:0,w:34,h:32}],
             "jump_right":[{x:718,y:0,w:34,h:32}]
         }

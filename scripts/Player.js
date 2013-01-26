@@ -74,6 +74,18 @@ function Player(){
     };
     
     this._constrainPositions = function(game){
+        if (this.x + this.width > game.width)
+            {this.x = game.width-this.width;}
+        if (game.falling) {
+            if (this.x + this.width > game.width)
+                {this.x = game.width-this.width;}
+            if (this.x < 0)
+                {this.x = 0;}
+            if (this.y + this.height > game.height)
+                {this.y = game.height-this.height;}
+            if (this.y < 30)
+                {this.y = 30}
+        }
     }
     
     /** Player._updatePos(game instance) -> ()
@@ -93,24 +105,44 @@ function Player(){
     **/
     this._applyDecelX = function(){
         // to prevent problem of constantly hovering around 0 due to float nums
-        var stopBuffer = this._decelRate; 
+        var stopBufferX = this._decelRate; 
         // if currently moving right
-        if (this.velX > stopBuffer){
+        if (this.velX > stopBufferX){
             this.accelX = -this._decelRate;
         }
         // if currently moving left
-        else if (this.velX < -stopBuffer){
+        else if (this.velX < -stopBufferX){
             this.accelX = this._decelRate;
         }
         else{
             this.accelX = this.velX = 0;
         }
     }
+
+    this._applyDecelY = function(){
+        // to prevent problem of constantly hovering around 0 due to float nums
+        var stopBufferY = 10 + this._decelRate; 
+        // if currently moving right
+        if (this.velY > stopBufferY){
+            this.accelY = -this._decelRate;
+        }
+        // if currently moving left
+        else if (this.velY < -stopBufferY){
+            this.accelY = this._decelRate;
+        }
+        else{
+            this.accelY = 0;
+            this.velY = 10;
+        }
+    }    
     
-    this._updateMovementAnim = function(){
+    this._updateMovementAnim = function(game){
         var dirName = (this._facing === LEFT_DIR) ? "left" : "right";
         var baseAnimName;
-        if(this._canStartJump === false){
+        if (game.falling) {
+            baseAnimName = "fall";
+        }
+        else if(this._canStartJump === false){
             baseAnimName = "jump";
         }
         else if(this.velX !== 0){
@@ -120,7 +152,8 @@ function Player(){
             baseAnimName = "stand";
         }
         
-        var fullAnimName = baseAnimName + "_" + dirName;
+        if (!game.falling) {var fullAnimName = baseAnimName + "_" + dirName;}
+        else {var fullAnimName = baseAnimName;}
         this.switchAnimation(fullAnimName);
     }
     
@@ -135,6 +168,19 @@ function Player(){
         var holdingLeft = util_keyInDict(LEFT_KEYCODE, heldKeys);
         var holdingRight = util_keyInDict(RIGHT_KEYCODE, heldKeys);
         var holdingSpace = util_keyInDict(SPACE_KEYCODE, heldKeys);
+        // up and down for falling mode
+        var holdingUp = util_keyInDict(UP_KEYCODE, heldKeys);
+        var holdingDown = util_keyInDict(DOWN_KEYCODE, heldKeys);
+        if (game.falling) {
+            this.maxUpVel = 0;
+            this.maxDownVel = 20;
+        }
+        else {
+            this.maxUpVel = 24;
+            this.maxDownVel = this.maxUpVel*(3/4);
+            this.accelY = this.gravAccel;
+        }
+        // what to do for each key
         if(holdingLeft === holdingRight){
             this._applyDecelX();
         }
@@ -146,8 +192,19 @@ function Player(){
             this.accelX = this._accelRate;
             this._facing = RIGHT_DIR;
         }
+        if (game.falling) {
+            if(holdingUp === holdingDown){
+                this._applyDecelY();
+            }
+            else if (holdingUp){// && game.falling) {
+                this.accelY = -this._accelRate;
+            }
+            else if (holdingDown){// && game.falling) {
+                this.accelY = this._accelRate;
+            }
+        }
         
-        if(holdingSpace){
+        if(holdingSpace && !game.falling){
             if(this._canStartJump){
                 // provide jump boost
                 this.velY = -this.maxUpVel;
@@ -159,14 +216,14 @@ function Player(){
             }
         }
     
-        this._updateMovementAnim();
+        this._updateMovementAnim(game);
         this._updateVelocity();
         this._updatePos(game);
         this.sprite.nextFrame();
-        //console.log("Player is at:", this.x, this.y);
+        console.log("Player is at:", this.x, this.y, "moving", this.velX, this.velY);
 
         // gameOver is triggered by falling down or going past left side
-        if ((this.x + this.width < 0) || (this.y > game.height)){
+        if (this.x + this.width < 0){
             game.gameOver = true;
         }
     };

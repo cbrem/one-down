@@ -84,6 +84,9 @@ function Game() {
     this.gamePaused;
     this.gameOver;
     this.time;
+    this.transition;
+    this.nextTransition;
+    this.falling;
     // set of directions to kill the player in if they are offscreen there
     this.deadZoneDirs;
 
@@ -104,8 +107,28 @@ function Game() {
         }
 
         // for the high score
-        if (!self.gameOver) {
+        if ((!self.gameOver) && (!self.gamePaused)) {
             self.time++;
+        }
+        // first falling transition
+        if (self.time > self.nextTransition) {
+            if (!self.falling) {
+                self.transition = true;
+                self.nextTransition += 400;
+            }
+            else {
+                self.transition = false;
+                self.nextTransition += 200;
+                self.falling = false;
+                self.scrollX = -6;
+                self.scrollY = 0;
+            }
+        }
+        // player has fallen into a hole or falls too far down
+        if (player.y > 445) {
+            self.falling = true;
+            self.scrollX = 0;
+            self.scrollY = -10;
         }
     };
 
@@ -185,7 +208,6 @@ function Game() {
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
     var timer = function (){
-        console.log("then time is:", self.time);
         updateModel();
         updateView();
         setTimeout(timer, cycleLength);
@@ -240,21 +262,18 @@ function Game() {
         heldKeys = {};
         this.gamePaused = false;
         this.gameOver = false;
+        this.transition = false;
+        this.nextTransition = 50;
+        this.falling = false;
         
         //set game dimensions and speed
         this.worldX = 0;
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -4;
+        this.scrollX = -6;
         this.scrollY = 0;
         this.time = 0;
-        console.log("time is:" + this.time);
-
-        // set dead zones
-        this.deadZoneDirs = {};
-        // temp, hardcode as the left
-        this.deadZoneDirs[LEFT_DIR] = true;
         
         // initialize player
         player = new Player(300, 400, 32, 32);
@@ -285,7 +304,6 @@ function Game() {
         canvas.setAttribute('tabindex','0');
         canvas.focus();
         
-        console.log("here time is:", this.time);
         //the inital call to timer, which will run continuously to update
         //the model and view
         timer();
