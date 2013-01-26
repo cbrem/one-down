@@ -68,6 +68,7 @@ function EnvBlock (name, x, level, necessary, collidable, scaleFactor) {
     this.collidable = collidable;
     this.scaleFactor = scaleFactor;
     this.width = this.img.width * this.scaleFactor;
+    this.height = this.width;
 }
 
 function Environment () {
@@ -82,7 +83,7 @@ function Environment () {
         {name : "bush", level : 1, necessary : true, collidable : false},
         {name : "groundBlock", level : 0, necessary : true, collidable : true},
         {name : "cloud", level : 3, necessary : false, collidable : false},
-        {name : "pipe", level : 2, necessary : false, collidable : false}
+        {name : "pipe", level : 2, necessary : false, collidable : true}
     ];
 
     this.init = function (ctx, game) {
@@ -133,12 +134,21 @@ function Environment () {
         drawEnvBlockArray(this.spritesOnScreen);
     };
 
+
+/*
+ *
+  DEBUG THIS IT DOESN'T WORK
+ *
+ */
     //prune off-screen sprites from a sprite array.
     //takes advantage of the sprite array invariant
     //(i.e. sprite arrays are sorted by x-coordinate of right side)
     var pruneSprites = function (a, worldWidth) {
         while (a[0].x + a[0].width < worldWidth) a.shift();
     };
+
+
+
 
     //Adds enough new sprites on a given level to span the screen. 
     //Unlike addNecessarySprite, sprite choice is random,
@@ -216,17 +226,33 @@ function Environment () {
     //note that these should be the NEW side coordinates.
     this.update = function (game) {
         //moves all EnvBlocks in a by a given distance
-        var moveEnvBlocks = function (a, distance) {
-            for (var i = 0; i < a.length; i++)
-                a[i].x += distance;
+        var moveEnvBlocks = function (a, distX, distY) {
+            for (var i = 0; i < a.length; i++){
+                a[i].x += distX;
+                a[i].y += distY;
+            }    
         };
 
         //shift all EnvBlocks
-        //moveEnvBlocks(this.spritesOnScreen, game.speed);
+        moveEnvBlocks(this.spritesOnScreen, game.scrollX, game.scrollY);
 
+
+/*
+ *
+  I think you want this.spritesOnScreen, not spriteChoices
+  but when you do that it breaks
+ *
+ */
         //remove elements which have moved off left side
-        pruneSprites(spriteChoices);
+        //pruneSprites(spriteChoices, game.width);
 
+/*
+ *
+  these loops are running way too often
+  can we just do them when we need it? 
+  (maybe when we move game.width, generate a new frame game.width ahead of that)
+ *
+ */
         //fill screen with random sprites on each level
         for (var i = 0; i < levels.length; i++){
             if (levels[i].nonNecessary === true){
@@ -234,6 +260,12 @@ function Environment () {
                                       spriteChoices, levels, buffer, false);
             }
         }
+
+/*
+ *
+  the ground blocks stop after 2 screens..?
+ *
+ */
 
         //add in necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {

@@ -6,9 +6,10 @@ params:
     width       the width of the player, as displayed on the canvas
     height      the height of the player, as displayed on the canvas
 **/
-function Player(x, y, width, height){
+function Player(){
     this._init = function(x, y, width, height){
         console.log("initializing", this);
+        
         this.x = x;
         this.y = y;
         this.width = width;
@@ -18,12 +19,13 @@ function Player(x, y, width, height){
         this.velX = 0;
         this.velY = 0;
         this.accelX = 0;
-        this.accelY = 0;
+        
+        this.gravAccel = 2.5;
+        this.accelY = this.gravAccel;
         
         this.maxVelX = 8;
         this.maxUpVel = 24;
         this.maxDownVel = this.maxUpVel*(3/4);
-        this.gravAccel = 2.5;
         
         this._accelRate = 2;
         this._decelRate = this._accelRate/3;
@@ -31,6 +33,12 @@ function Player(x, y, width, height){
         this._facing = RIGHT_DIR;
         this._canStartJump = true;
     };
+    
+    this.destroyReferences = function(){
+        // remove references for cleanup
+        this.game = undefined;
+        this.sprite = undefined;
+    }
     
     /** Player.draw(canvas context) -> () 
     **/
@@ -65,11 +73,20 @@ function Player(x, y, width, height){
         this._constrainVelocities();
     };
     
-    /** Player._updatePos() -> ()
+    this._constrainPositions = function(game){
+    }
+    
+    /** Player._updatePos(game instance) -> ()
     **/
-    this._updatePos = function(){
+    this._updatePos = function(game){
         this.x += this.velX;
+        // scroll with screen
+        this.x += game.scrollX;
+        
         this.y += this.velY;
+        this.y += game.scrollY;
+        
+        this._constrainPositions(game);
     }
     
     /** Player._applyDecelX() -> ()
@@ -107,9 +124,14 @@ function Player(x, y, width, height){
         this.switchAnimation(fullAnimName);
     }
     
+    this.resetJump = function(){
+        this._canStartJump = true;
+        this.velY = 0;
+    }
+    
     /** Player.update(Array, dictionary) -> ()
     **/
-    this.update = function(mousePresses, heldKeys){
+    this.update = function(game, mousePresses, heldKeys){
         var holdingLeft = util_keyInDict(LEFT_KEYCODE, heldKeys);
         var holdingRight = util_keyInDict(RIGHT_KEYCODE, heldKeys);
         var holdingSpace = util_keyInDict(SPACE_KEYCODE, heldKeys);
@@ -127,8 +149,8 @@ function Player(x, y, width, height){
         
         if(holdingSpace){
             if(this._canStartJump){
+                // provide jump boost
                 this.velY = -this.maxUpVel;
-                this.accelY = this.gravAccel;
                 this._canStartJump = false;
             }
             else{
@@ -136,20 +158,12 @@ function Player(x, y, width, height){
                 this.velY -= this.gravAccel*(2/5);
             }
         }
-        
-        // temp hardcoded fake collision, use real collision later
-        // predict if next movement will cause collision
-        if(this.y + this.velY > 600 - this.height - 32){
-            this._canStartJump = true;
-            this.accelY = 0;
-            this.velY = 0;
-            this.y = 600 - this.height - 32;
-        }
     
         this._updateMovementAnim();
         this._updateVelocity();
-        this._updatePos();
+        this._updatePos(game);
         this.sprite.nextFrame();
+        //console.log("Player is at:", this.x, this.y);
     };
     
     this._init.apply(this, arguments);

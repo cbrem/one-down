@@ -93,14 +93,18 @@ function SpriteImage(srcNickname){
         return frameList;
     }
     
-    /** SpriteImage._getCurrFram() -> Dictionary **/
-    this._getCurrFrame = function(){
+    /** SpriteImage.getCurrFrameMetrics() -> Dictionary **/
+    this.getCurrFrameMetrics = function(){
         var frameIndex = this._aniIndex;
         var frameList = this._getAnimFrameList(this.curAnimation);
         assert(frameIndex < frameList.length, "frame index "+frameIndex+
                 " out of range for animation '"+this.curAnimation+"'"+
                 " in SpriteImage("+this.nickname+")");
-        return frameList[frameIndex];
+        var metrics = frameList[frameIndex];
+        // add width/height alternate names for usability
+        metrics["width"] = metrics.w;
+        metrics["height"] = metrics.h;
+        return metrics;
     }
     
     /** SpriteImage.drawTo(canvas context, Number, Number, Number, Number, 
@@ -111,7 +115,8 @@ function SpriteImage(srcNickname){
     params:
     ctx                         the canvas context to draw on
     drawX, drawY                the canvas context coordinates to draw to
-    drawWidth, drawHeight       the dimensions to draw the image as
+    drawWidth, drawHeight       (optional) the dimensions to draw the image as,
+                                (defaults to current frame's size)
     showDebug                   (optional) if set to true, will show the 
                                 boundaries of the drawn area with a red overlay
                                  - default: false
@@ -120,10 +125,21 @@ function SpriteImage(srcNickname){
         // round to prevent blurriness
         drawX = Math.round(drawX);
         drawY = Math.round(drawY);
+        
+        var metrics = this.getCurrFrameMetrics();
+        drawWidth = (drawWidth === undefined) ? metrics.width : drawWidth;
+        drawHeight = (drawHeight === undefined) ? metrics.height : drawHeight;
+        
+        assert(typeof(drawWidth) === "number", 
+                "attempted to draw SpriteImage("+this.nickname+
+                ") to invalid width "+drawWidth);
+        assert(typeof(drawHeight) === "number", 
+                "attempted to draw SpriteImage("+this.nickname+
+                ") to invalid height "+drawHeight);
         drawWidth = Math.round(drawWidth);
         drawHeight = Math.round(drawHeight);
         
-        var frame = this._getCurrFrame();
+        var frame = this.getCurrFrameMetrics();
         var clipX = frame.x;
         var clipY = frame.y;
         var clipWidth = frame.w;
@@ -152,7 +168,7 @@ function SpriteImage(srcNickname){
     scaleFactor                 how much to magnify the original image by
     **/
     this.drawToScale = function(ctx, drawX, drawY, scaleFactor){
-        var frame = this._getCurrFrame();
+        var frame = this.getCurrFrameMetrics();
         var clipWidth = frame.w;
         var clipHeight = frame.h;
         
@@ -208,7 +224,7 @@ SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
-                 "cloud", "bush"],
+                 "cloud", "bush", "sleep_render"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -269,6 +285,15 @@ SpriteImage.sourcesData = {
         "imgObj": undefined,
         "animationData":{
             "default_static":[{x:176,y:144,w:48,h:16}]
+        }
+    },
+    "sleep_render":{
+        "srcPath": "assets/images/sleeping_mario.png",
+        "imgObj": undefined,
+        "frameStepDelay": 45,
+        "animationData":{
+            "default_static":[{x:0,y:0,w:97,h:294},
+                              {x:111,y:0,w:97,h:294}]
         }
     }
 }
