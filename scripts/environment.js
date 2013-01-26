@@ -53,8 +53,12 @@ function randomColor() {
 var levels = [
     {y : 568, nonNecessary : false, chance : undefined}, 
     {y : 536, nonNecessary : false, chance : undefined}, 
-    {y : 504, nonNecessary : true, chance : 2}, 
-    {y : 300, nonNecessary : true, chance : 4}
+    {y : 504, nonNecessary : false, chance : undefined}, 
+    {y : 472, nonNecessary : false, chance : undefined}, 
+    {y : 440, nonNecessary : false, chance : undefined}, 
+    {y : 408, nonNecessary : true, chance : 2}, 
+    {y : 300, nonNecessary : true, chance : 1.5},
+    {y : 200, nonNecessary : true, chance : 4}
 ];
 
 //constructor for EnvBlock objects, which build the environment
@@ -83,10 +87,15 @@ function Environment () {
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
     var spriteChoices = [
-        {name : "bush", level : 1, necessary : true, collidable : false},
-        {name : "groundBlock", level : 0, necessary : true, collidable : true},
-        {name : "cloud", level : 3, necessary : false, collidable : false},
-        {name : "pipe", level : 2, necessary : false, collidable : true}
+        {name : "groundBlock",  level : 0, necessary : true,  collidable : true},
+        {name : "groundBlock",  level : 1, necessary : true,  collidable : true},
+        {name : "groundBlock",  level : 2, necessary : true,  collidable : true},
+        {name : "groundBlock",  level : 3, necessary : true,  collidable : true},
+        {name : "bush",         level : 4, necessary : true,  collidable : false},
+        {name : "pipe",         level : 5, necessary : false, collidable : true},
+        {name : "solidBlock",   level : 6, necessary : false, collidable : true},
+        {name : "brickBlock",   level : 6, necessary : false, collidable : true},
+        {name : "cloud",        level : 7, necessary : false, collidable : false}
     ];
 
     this.init = function (ctx, game) {
@@ -133,12 +142,6 @@ function Environment () {
         drawEnvBlockArray(this.spritesOnScreen);
     };
 
-
-/*
- *
-  DEBUG THIS IT DOESN'T WORK
- *
- */
     //prune off-screen sprites from a sprite array.
     //takes advantage of the sprite array invariant
     //(i.e. sprite arrays are sorted by x-coordinate of right side)
@@ -217,7 +220,8 @@ function Environment () {
         var found = 0;
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var envBlock = spritesOnScreen[i];
-            if (envBlock.name === choice.name) {
+            if (envBlock.name === choice.name && 
+                envBlock.level === choice.level) {
                 found++;
                 furthestRight += envBlock.width;
             }
