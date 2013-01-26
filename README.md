@@ -2,26 +2,37 @@
 
 TO DO:
 
-for alpha prototype:
+(roughly priority order)
 
-xadd restart
-xadd pause
-xfix random generation
-xmake a way to die (go offscreen/enemies)
-xadd game over screen (with restart button)
+fixes:
 
-for a good game:
+-fix block gap problems
+-fix odd collision things
 
-xadd high score on top of screen
-xmove ground up to the middle of the screen
--add more enemies/stuff to jump over/difficulty increase
-xadd holes to fall into
+falling mode:
 
-for an awesome game:
+-add enemies that make game over when falling
 
--add falling part when falling in a hole (and insurmountable holes-you have to fall)
--add things to dodge while falling
--add landing in another side scrolling portion
+transitions:
+
+-make transitions smoother
+-bring color back after transition
+-make new worlds after the first one have strange colored objects
+-make an other side that looks like you can jump to it (insurmountable hole)
+
+platforming mode:
+
+-add enemies in platforming mode
+-make the brick blocks breakable
+-make more blocks in a row
+-make stairs of blocks
+
+falling mode awesome extra:
+
 -add pipes to go into while falling that make you fall in a different direction
 
--add those little things that make the game awesomer
+???:
+
+-add platforming modes that go diagonally up and down
+-add platforming modes that go up and down and left and right 
+		(depending how you exit falling mode)
