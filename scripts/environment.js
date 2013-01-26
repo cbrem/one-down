@@ -131,9 +131,17 @@ function Environment () {
         ctx.fillRect(0,0, game.width, game.height);
 
         var drawEnvBlockArray = function (a) {
+            //first pass: draw neccesary
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
-                if(envBlock.drawable) 
+                if(envBlock.drawable && envBlock.necessary) 
+                    envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
+                                             envBlock.scaleFactor);
+            }
+            //first pass: draw neccesary
+            for (var i = 0; i < a.length; i++) {
+                var envBlock = a[i];
+                if(envBlock.drawable && !envBlock.necessary) 
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
             }
