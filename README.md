@@ -7,7 +7,7 @@ for alpha prototype:
 xadd restart
 xadd pause
 -fix random generation
--make a way to die (go offscreen/enemies)
+xmake a way to die (go offscreen/enemies)
 -add game over screen (with restart button)
 
 for a good game:

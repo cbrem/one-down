@@ -243,7 +243,7 @@ function Environment () {
  *
  */
         //remove elements which have moved off left side
-        //pruneSprites(spriteChoices, game.width);
+        pruneSprites(this.spritesOnScreen, game.width);
 
 /*
  *

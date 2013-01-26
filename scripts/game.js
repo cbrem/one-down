@@ -81,6 +81,7 @@ function Game() {
     this.worldY;
     this.speed;
     this.gamePaused;
+    this.gameOver;
     // set of directions to kill the player in if they are offscreen there
     this.deadZoneDirs;
 
@@ -91,7 +92,7 @@ function Game() {
                                         // heldKeys until keyup event
         //checks player collisions and corrects position
         
-        if(self.gamePaused === false){
+        if(!(self.gamePaused) && !(self.gameOver)){
             player.update(self, clicks, heldKeys); 
             environment.update(self);
             collisions.collide(player,environment.spritesOnScreen); 
@@ -124,6 +125,23 @@ function Game() {
         pauseSprite.drawTo(ctx, textX + pauseMetrics.width + 30, textY - pauseMetrics.height/2); 
     }
     
+    var _drawGameOverScreen = function(){
+        ctx.save();
+        ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.font = 'bold 95px Arial, Monaco, monospace';
+        ctx.textAlign = "center";
+        ctx.fillStyle = "red";
+        ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2-50);
+
+        ctx.font = 'bold 45px Arial, Monaco, monospace';
+        ctx.fillStyle = "white";
+        ctx.fillText("Press R to Restart", canvas.width/2, canvas.height/2+50);
+
+        ctx.restore();
+    }
+
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
@@ -134,8 +152,11 @@ function Game() {
         environment.draw(ctx,self);
         player.draw(ctx);
         
-        if(self.gamePaused === true){
+        if(self.gamePaused){
             _drawPauseScreen();
+        }
+        else if (self.gameOver){
+            _drawGameOverScreen();
         }
     };
 
@@ -194,6 +215,7 @@ function Game() {
         clicks = [];
         heldKeys = {};
         this.gamePaused = false;
+        this.gameOver = false;
         
         //set game dimensions and speed
         this.worldX = 0;
@@ -205,7 +227,7 @@ function Game() {
         // set dead zones
         this.deadZoneDirs = {};
         // temp, hardcode as the left
-        this.deadZoneDirs[LEFT_DIR] = true;;
+        this.deadZoneDirs[LEFT_DIR] = true;
         
         // initialize player
         player = new Player(300, 400, 32, 32);
