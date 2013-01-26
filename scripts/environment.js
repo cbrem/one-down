@@ -41,7 +41,7 @@ function randomChance(x) {
 
 //return a random hexidecimal color
 function randomColor() {
-    return "#" + randomInt(0, 0x1000000);
+    return "#" + randomInt(0, 0x1000000).toString(16);
 }
 
 //used by both EnvBlock and Environment.
@@ -92,10 +92,6 @@ function Environment () {
         //clear spritesOnScreen
         this.spritesOnScreen = [];
 
-        //set vertical spacing parameters
-        this.groundY = 500;
-        this.platformY = 200;
-
         //set buffer
         buffer = 50;
 
@@ -118,6 +114,7 @@ function Environment () {
 
     this.draw = function (ctx, game) {
         //draw background
+        console.log(this.bgColor);
         ctx.fillStyle = this.bgColor;
         ctx.fillRect(0,0, game.width, game.height);
 
@@ -142,12 +139,14 @@ function Environment () {
     //prune off-screen sprites from a sprite array.
     //takes advantage of the sprite array invariant
     //(i.e. sprite arrays are sorted by x-coordinate of right side)
-    var pruneSprites = function (a, worldWidth) {
-        while (a[0].x + a[0].width < worldWidth) a.shift();
+    var pruneSprites = function (spritesOnScreen, worldWidth) {
+        var newSpritesOnScreen = [];
+        for (var i = 0; i < spritesOnScreen; i++) {
+            var sprite = spritesOnScreen[i];
+            if (sprite.x + sprite.width > 0) newSpritesOnScreen.push(sprite);
+        }
+        self.spritesOnScreen = newSpritesOnScreen;
     };
-
-
-
 
     //Adds enough new sprites on a given level to span the screen. 
     //Unlike addNecessarySprite, sprite choice is random,
@@ -158,18 +157,16 @@ function Environment () {
     //if they are in a position that is currently on the screen
     var addNonNecessarySprite = function (level, gameWidth, spritesOnScreen,
                                           choices, levels, buffer, onScreen) {
+        
+        //ensure that all objects created will be off screen
+        var furthestRight = (onScreen) ? 0 : gameWidth;
+
         //determine how much space there is on this level
-        var furthestRight = 0;
-        if (onScreen) {
-            for (var i = 0; i < spritesOnScreen.length; i++) {
-                var envBlock = spritesOnScreen[i];
-                if (envBlock.necessary === false && envBlock.level === level)
-                    furthestRight = Math.max(furthestRight,
-                                             envBlock.x + envBlock.width);
-            }
-        } else {
-            //ensure that all objects created will be off screen
-            furthestRight = gameWidth;
+        for (var i = 0; i < spritesOnScreen.length; i++) {
+            var envBlock = spritesOnScreen[i];
+            if (envBlock.necessary === false && envBlock.level === level)
+                furthestRight = Math.max(furthestRight,
+                                         envBlock.x + envBlock.width);
         }
         furthestRight += buffer;
 
@@ -252,6 +249,7 @@ function Environment () {
   (maybe when we move game.width, generate a new frame game.width ahead of that)
  *
  */
+
         //fill screen with random sprites on each level
         for (var i = 0; i < levels.length; i++){
             if (levels[i].nonNecessary === true){
@@ -265,7 +263,6 @@ function Environment () {
   the ground blocks stop after 2 screens..?
  *
  */
-
         //add in necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
