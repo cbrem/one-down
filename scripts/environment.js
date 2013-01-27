@@ -355,8 +355,19 @@ function Environment () {
             }
         }
 
+        //check for next environment reaching correct y - coordinate
+        var maxY = 0;
+        for (var i = 0; i < this.spritesOnScreen.length; i++) {
+            var envBlock = this.spritesOnScreen[i];
+            maxY = Math.max(maxY, envBlock.y + envBlock.width);
+        }
+            if (maxY <= game.height) {
+            game.scrollX = -4;
+            game.scrollY = 0;
+        }
+
         if (game.falling) {
-            // don't let it get below 16...bad hex error-turns white
+           // don't let it get below 16...bad hex error-turns white
             var fadeSpeed = 2;
             if (this.bgColor.red > 15+fadeSpeed) 
                 {this.bgColor.red -= fadeSpeed;};
