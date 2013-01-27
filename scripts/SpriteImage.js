@@ -299,6 +299,7 @@ SpriteImage.sourcesData = {
     "goomba":{
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
+        "frameStepDelay": 8,
         "animationData":{
             "default_static":[{x:0,y:16,w:16,h:16}],
             "walk":[{x:0,y:16,w:16,h:16},

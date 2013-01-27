@@ -41,10 +41,11 @@ function Player(x, y, width, height){
         this.sprite = undefined;
     }
     
-    /** Player.draw(canvas context) -> () 
+    /** Player.draw(canvas context, optional Boolean) -> () 
     **/
-    this.draw = function(ctx){
-        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
+    this.draw = function(ctx, showDebug){
+        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
+        this.sprite.nextFrame();
     };
     
     /** Player.switchAnimation(String, Boolean) -> ()
@@ -242,7 +243,6 @@ function Player(x, y, width, height){
         this._updateMovementAnim(game);
         this._updateVelocity();
         this._updatePos(game);
-        this.sprite.nextFrame();
         //console.log("Player is at:", this.x, this.y, "moving", this.velX, this.velY);
 
         // gameOver is triggered by falling down or going past left side
