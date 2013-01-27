@@ -36,7 +36,7 @@ function Collisions() {
   // parameters are the overlap string and 
   // the object's location and dimensions
   function unOverlap(player,overlap,ox,oy,ow,oh) {
-    console.log(overlap);
+    //console.log(overlap);
     if (overlap === "no collision") {return;}
   	// side collisions-make the sides flush
   	else if (overlap === "bottom collide") {player.y = oy-player.height;}
@@ -66,6 +66,9 @@ function Collisions() {
     // reset ability to jump if they have a resetJump function defined
     if(player.resetJump !== undefined && overlap.indexOf("bottom") !== -1){
         player.resetJump();
+    }
+    else if(player.abortJump !== undefined && overlap.indexOf("top") !== -1){
+        player.abortJump();
     }
   }
 
