@@ -65,7 +65,7 @@ function preloadImages(loadedCallback){
 function Game() {
     var self = this;
 
-    var _gameFps = 30;
+    var _gameFps = 20;
     var environment,
         player,
         collisions,
@@ -263,7 +263,7 @@ function Game() {
         this.gamePaused = false;
         this.gameOver = false;
         this.transition = false;
-        this.nextTransition = 50;
+        this.nextTransition = 250;
         this.falling = false;
         
         //set game dimensions and speed

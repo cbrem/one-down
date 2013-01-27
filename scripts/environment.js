@@ -53,14 +53,19 @@ function randomColor() {
 //and an integer chance which is the reciprocal of the random chance that
 //sprites will be drawn on this level
 var levels = [
-    {y : 568, nonNecessary : false, chance : undefined}, 
-    {y : 536, nonNecessary : false, chance : undefined}, 
-    {y : 504, nonNecessary : false, chance : undefined}, 
-    {y : 472, nonNecessary : false, chance : undefined}, 
-    {y : 440, nonNecessary : false, chance : undefined}, 
-    {y : 408, nonNecessary : true, chance : 2}, 
-    {y : 300, nonNecessary : true, chance : 1.5},
-    {y : 200, nonNecessary : true, chance : 4}
+    {y : 568, nonNecessary : false, startChance : undefined,
+     followChance : undefined}, 
+    {y : 536, nonNecessary : false, startChance : undefined,
+     followChance : undefined}, 
+    {y : 504, nonNecessary : false, startChance : undefined,
+     followChance : undefined}, 
+    {y : 472, nonNecessary : false, startChance : undefined,
+     followChance : undefined}, 
+    {y : 440, nonNecessary : false, startChance : undefined,
+     followChance : undefined}, 
+    {y : 408, nonNecessary : true, startChance : 2, followChance : 5}, 
+    {y : 300, nonNecessary : true, startChance : 2, followChance : 1.1},
+    {y : 200, nonNecessary : true, startChance : 4, followChance : 6}
 ];
 
 //constructor for EnvBlock objects, which build the environment
@@ -95,7 +100,7 @@ function Environment () {
         {name : "groundBlock",  level : 3, necessary : true,  collidable : true},
         {name : "bush",         level : 4, necessary : true,  collidable : false},
         {name : "pipe",         level : 5, necessary : false, collidable : true},
-        {name : "solidBlock",   level : 6, necessary : false, collidable : true},
+        //{name : "solidBlock",   level : 6, necessary : false, collidable : true},
         {name : "brickBlock",   level : 6, necessary : false, collidable : true},
         {name : "cloud",        level : 7, necessary : false, collidable : false}
     ];
@@ -180,14 +185,21 @@ function Environment () {
         //ensure that all objects created will be off screen
         var furthestRight = (onScreen) ? 0 : gameWidth;
 
+        //is the furthest right EnvBlock on this level drawn? used for
+        //stringing
+        var furthestRightDrawn = false;
+
         //determine how much space there is on this level
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var envBlock = spritesOnScreen[i];
-            if (envBlock.necessary === false && envBlock.level === level)
-                furthestRight = Math.max(furthestRight,
-                                         envBlock.x + envBlock.width);
+            var rightSide = envBlock.x + envBlock.width;
+            if (envBlock.necessary === false && envBlock.level === level
+               && rightSide > furthestRight) {
+                furthestRight = rightSide;
+                furthestRightDrawn = envBlock.drawable;
+            }
         }
-        furthestRight += buffer;
+        //furthestRight += buffer;
 
         //randomly chooses a sprite,
         //and ensures that it will have a specified level and be non-necessary
@@ -207,7 +219,10 @@ function Environment () {
             
             var collidable,
                 drawable;
-            if (randomChance(levels[level].chance)) {
+
+            var chance = (furthestRightDrawn) ? levels[level].followChance :
+                                                levels[level].startChance;
+            if (randomChance(chance)) {
                 collidable = levelChoice.collidable;
                 drawable = true;
             } else {
@@ -220,7 +235,8 @@ function Environment () {
                 new EnvBlock(levelChoice.name, furthestRight,
                              levelChoice.level, levelChoice.necessary,
                              collidable, drawable, 2);
-            furthestRight += (newSprite.width + buffer);
+            furthestRight += newSprite.width;
+            //furthestRight += buffer;
             spritesOnScreen.push(newSprite);
         }
     };
@@ -230,13 +246,11 @@ function Environment () {
 
         //determine how much screen space of the necessary sprite is missing
         var furthestRight = 0; //right side of furthest right sprite
-        var found = 0;
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var envBlock = spritesOnScreen[i];
             if (envBlock.name === choice.name && 
                 envBlock.level === choice.level) {
-                found++;
-                furthestRight += envBlock.width;
+                furthestRight = envBlock.x + envBlock.width;
             }
         }
 
