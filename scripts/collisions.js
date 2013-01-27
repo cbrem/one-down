@@ -36,7 +36,7 @@ function Collisions() {
   // parameters are the overlap string and 
   // the object's location and dimensions
   function unOverlap(player,overlap,ox,oy,ow,oh) {
-    console.log(overlap);
+    //console.log(overlap);
     if (overlap === "no collision") {return;}
   	// side collisions-make the sides flush
   	else if (overlap === "bottom collide") {player.y = oy-player.height;}

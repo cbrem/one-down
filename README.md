@@ -6,7 +6,6 @@ TO DO:
 
 fixes:
 
--fix block gap problems
 -fix odd collision things
 
 falling mode:

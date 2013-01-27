@@ -65,7 +65,7 @@ function preloadImages(loadedCallback){
 function Game() {
     var self = this;
 
-    var _gameFps = 20;
+    var _gameFps = 30;
     var environment,
         player,
         collisions,
@@ -113,8 +113,10 @@ function Game() {
         // first falling transition
         if (self.time > self.nextTransition) {
             if (!self.falling) {
+                //begin the transition! environment will create a hole
                 self.transition = true;
                 self.nextTransition += 400;
+                self.nextEnvironment = self.time + 100;
             }
             else {
                 self.transition = false;
@@ -130,6 +132,15 @@ function Game() {
             self.scrollX = 0;
             self.scrollY = -10;
         }
+        /*
+        //player has falled for long enough. make a new environment!
+        if (self.time > self.nextEnvironment && self.falling) {
+            environment.init(ctx, self);
+            self.scrollY = 0;
+            self.scrollX = -6;
+            self.nextEnvironment += 1000;
+        }
+        */
     };
 
     
@@ -263,7 +274,8 @@ function Game() {
         this.gamePaused = false;
         this.gameOver = false;
         this.transition = false;
-        this.nextTransition = 250;
+        this.nextTransition = 500;
+        this.nextEnvironment = 0;
         this.falling = false;
         
         //set game dimensions and speed
@@ -279,7 +291,8 @@ function Game() {
         player = new Player(300, 400, 32, 32);
         //initialize environment
         environment = new Environment();
-        environment.init(ctx, self);
+        environment.init(self, 0);
+        environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
         // initialize Collisions
         collisions = new Collisions();
         
