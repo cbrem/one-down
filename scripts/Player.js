@@ -20,11 +20,11 @@ function Player(){
         this.velY = 0;
         this.accelX = 0;
         
-        this.gravAccel = 2.5;
+        this.gravAccel = 3;
         this.accelY = this.gravAccel;
         
-        this.maxVelX = 8;
-        this.maxUpVel = 24;
+        this.maxVelX = 7;
+        this.maxUpVel = 17;
         this.maxDownVel = this.maxUpVel*(3/4);
         
         this._accelRate = 2;
@@ -32,6 +32,7 @@ function Player(){
         
         this._facing = RIGHT_DIR;
         this._canStartJump = true;
+        this._canContinueJump = true;
     };
     
     this.destroyReferences = function(){
@@ -74,6 +75,9 @@ function Player(){
     };
     
     this._constrainPositions = function(game){
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        
         if (this.x + this.width > game.width)
             {this.x = game.width-this.width;}
         if (game.falling) {
@@ -159,7 +163,20 @@ function Player(){
     
     this.resetJump = function(){
         this._canStartJump = true;
-        this.velY = 0;
+        this._canContinueJump = true;
+        
+        // kill falling momentum to 
+        // prevent player from shooting into ground when walking off surfaces
+        // (remember positive y coordinates move down)
+        this.velY = Math.min(this.velY, 0);
+    }
+    
+    this.abortJump = function(){
+        this._canStartJump = false;
+        this._canContinueJump = false;
+        
+        // kill upwards momentum (remember positive y coordinates move down)
+        this.velY = Math.max(this.velY, 0);
     }
     
     /** Player.update(Array, dictionary) -> ()
@@ -210,9 +227,9 @@ function Player(){
                 this.velY = -this.maxUpVel;
                 this._canStartJump = false;
             }
-            else{
+            else if(this._canContinueJump){
                 // counteract some of gravity to implement controllable ascent
-                this.velY -= this.gravAccel*(2/5);
+                this.velY -= this.gravAccel*(1/2);
             }
         }
     
