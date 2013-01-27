@@ -43,6 +43,7 @@ function Collisions() {
   	else if (overlap === "right collide") {player.x = ox-player.width;}
   	else if (overlap === "top collide") {player.y = oy+oh;}
   	else if (overlap === "left collide") {player.x = ox+ow;}
+
   	// CORNER COLLISIONS (pretty complicated.)
   	else if (overlap === "topleft collide") {
       var xCollGap = (ox + ow) - player.x;
@@ -76,10 +77,12 @@ function Collisions() {
       // if bottom right is mostly on the right, move player left
       else {player.x = ox-player.width;}
     }
-  	else {// assume player is inside object, move it above the object
+  	else {
+      // assume player is inside object, move it above the object
       console.log("INSIDE COLLISION, PROBABLY BAD NEWS!!!");
   	  player.y = oy-player.height;
     }
+
     // reset ability to jump if they have a resetJump function defined
     if(player.resetJump !== undefined && overlap.indexOf("bottom") !== -1){
         player.resetJump();
@@ -89,7 +92,7 @@ function Collisions() {
     }
   }
 
-  this.collide = function(player,env) {
+  this.collide = function(player,env,game) {
     assert(typeof(player.x) === "number" && typeof(player.y) === "number" &&
             typeof(player.height) === "number" && typeof(player.width) === "number");
 	  // iterate through each environment object
@@ -102,9 +105,14 @@ function Collisions() {
 	  										player.x,player.y,player.width,player.height);
 	  	if ((overlap !== "no collision") && envObj.collidable)
 	  	  {
-          //console.log(overlap, envObj.name);
-	  	  	if (envObj.enemy)
-	  	  		{} //gameover
+          // enemy collision
+          if (envObj.enemy) {/*something bad*/}
+          // if player is falling and collides with a non-enemy
+          else if (game.falling) {
+            console.log("HEY I SHOULD LAND");
+            // they should land
+            game.falling = false;
+          }
 	  	  	else //object is an obstacle, move player out of obstacle
 	  	  	  {unOverlap(player,overlap,envObj.x,envObj.y,envObj.width,envObj.height);}
 	  	  }
