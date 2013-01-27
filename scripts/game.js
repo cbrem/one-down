@@ -84,7 +84,8 @@ function Game() {
     this.gamePaused;
     this.gameOver;
     this.time;
-    this.transition;
+    this.transitionDrop;
+    this.transitionLand;
     this.nextTransition;
     this.falling;
     // set of directions to kill the player in if they are offscreen there
@@ -111,10 +112,10 @@ function Game() {
         console.log(self.nextTransition);
         // activate TRANSITION
         if (self.time > self.nextTransition) {
-            // activate GAP
-            if (!self.falling){
+            // activate GAP (if X direction is moving, make drop)
+            if (self.scrollX !== 0){
                 console.log("GAP TRANSISTION at ", self.time);
-                self.transition = true;
+                self.transitionDrop = true;
                 // this gets overridden when they fall
                 // and is a safety in case they don't
                 self.nextTransition += 300;
@@ -122,7 +123,7 @@ function Game() {
             // activate STOP FALLING
             else {
                 console.log("STOP FALLING TRANSISTION at ", self.time);
-                self.transition = true;
+                self.transitionLand = true;
                 self.nextTransition = self.time + 400;
                 //self.falling = false;
                 environment.init(self, self.height);
@@ -268,7 +269,8 @@ function Game() {
         heldKeys = {};
         this.gamePaused = false;
         this.gameOver = false;
-        this.transition = false;
+        this.transitionDrop = false;
+        this.transitionLand = false;
         this.nextTransition = 100;
         this.nextEnvironment = 0;
         this.falling = false;

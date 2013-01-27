@@ -315,12 +315,12 @@ function Environment () {
             } else {
                 //if not currently drawing a gap
                 if (self.timeToNextGap > 0) {
-                    if (game.transition && !game.falling) {
+                    if (game.transitionDrop) {
                         console.log("MADE BIG GAP")
                         //force gap to appear soon
                         self.timeToNextGap = 0;
                         gapLeft = 35;
-                        game.transition = false;
+                        game.transitionDrop = false;
                         drawGap = true;
                     } else {
                         self.timeToNextGap--;
@@ -328,7 +328,7 @@ function Environment () {
                 } else {
                     //time to turn gap drawing on
                     drawGap = true;
-                    gapLeft = (game.transition) ? 40 : randomInt(20, 30);
+                    gapLeft = randomInt(20, 30);
                 }
 
             }
@@ -365,11 +365,12 @@ function Environment () {
             var envBlock = this.spritesOnScreen[i];
             maxY = Math.max(maxY, envBlock.y + envBlock.width);
         }
-        if ((game.transition) && (maxY <= game.height) && (game.falling)) {
+        if (game.transitionLand) {console.log("maxY = ", maxY);}
+        if ((game.transitionLand) && (maxY <= game.height) && (game.falling)) {
             console.log("BACK TO PLATFORM TRANSITION!");
             game.scrollX = -6;
             game.scrollY = 0;
-            game.transition = false;
+            game.transitionLand = false;
         }
 
         if (game.falling) {
