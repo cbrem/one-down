@@ -122,7 +122,7 @@ function Game() {
                 self.transition = false;
                 self.nextTransition += 200;
                 self.falling = false;
-                self.scrollX = -4;
+                self.scrollX = -6;
                 self.scrollY = 0;
             }
         }
@@ -209,11 +209,11 @@ function Game() {
         player.draw(ctx);
         _drawTopBar();
         
-        if (self.gameOver){
-            _drawGameOverScreen();
-        }
-        else if(self.gamePaused){
+        if(self.gamePaused){
             _drawPauseScreen();
+        }
+        else if (self.gameOver){
+            _drawGameOverScreen();
         }
     };
 
@@ -250,10 +250,8 @@ function Game() {
             self.init();
         }
         else if(keyCode === P_KEYCODE){
-            if(self.gameOver !== true){
-                self.gamePaused = !self.gamePaused;
-                pauseSprite.switchAnimation("default_static", true);
-            }
+            self.gamePaused = !self.gamePaused;
+            pauseSprite.switchAnimation("default_static", true);
         }
     };
     
@@ -276,7 +274,7 @@ function Game() {
         this.gamePaused = false;
         this.gameOver = false;
         this.transition = false;
-        this.nextTransition = 500;
+        this.nextTransition = 200;
         this.nextEnvironment = 0;
         this.falling = false;
         
@@ -285,7 +283,7 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -4;
+        this.scrollX = -6;
         this.scrollY = 0;
         this.time = 0;
         

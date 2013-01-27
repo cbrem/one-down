@@ -314,11 +314,7 @@ function Environment () {
                 } else {
                     //time to turn gap drawing on
                     drawGap = true;
-                    if (game.transition) {
-                        gapLeft = 60; //intentionally too big
-                    } else {
-                        gapLeft = randomInt(20, 30);
-                    }
+                    gapLeft = (game.transition) ? 40 : randomInt(20, 30);
                 }
 
             }
