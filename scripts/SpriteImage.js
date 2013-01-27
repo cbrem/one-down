@@ -167,14 +167,14 @@ function SpriteImage(srcNickname){
     params:
     scaleFactor                 how much to magnify the original image by
     **/
-    this.drawToScale = function(ctx, drawX, drawY, scaleFactor){
+    this.drawToScale = function(ctx, drawX, drawY, scaleFactor, showDebug){
         var frame = this.getCurrFrameMetrics();
         var clipWidth = frame.w;
         var clipHeight = frame.h;
         
         var drawWidth = Math.round(clipWidth*scaleFactor)
         var drawHeight = Math.round(clipHeight*scaleFactor)
-        this.drawTo(ctx, drawX, drawY, drawWidth, drawHeight);
+        this.drawTo(ctx, drawX, drawY, drawWidth, drawHeight, showDebug);
     }
     
     /**
@@ -230,14 +230,14 @@ SpriteImage.sourcesData = {
         "imgObj": undefined, // overwritten with Image object after preload
         "frameStepDelay": 3,
         "animationData":{
-            "default_static":[{x:420,y:0,w:32,h:32}],
-            "stand_left":[{x:360,y:0,w:32,h:32}],
-            "stand_right":[{x:420,y:0,w:32,h:32}],
+            "default_static":[{x:420,y:0,w:30,h:32}],
+            "stand_left":[{x:360,y:0,w:30,h:32}],
+            "stand_right":[{x:420,y:0,w:30,h:32}],
             "run_left":[{x:298,y:0,w:32,h:32},
-                        {x:238,y:0,w:32,h:32},
+                        {x:239,y:0,w:32,h:32},
                         {x:178,y:0,w:32,h:32}],
             "run_right":[{x:480,y:0,w:32,h:32},
-                        {x:540,y:0,w:32,h:32},
+                        {x:539,y:0,w:32,h:32},
                         {x:600,y:0,w:32,h:32}],
             "fall":[{x:0,y:32,w:32,h:32}],
             "jump_left":[{x:58,y:0,w:34,h:32}],

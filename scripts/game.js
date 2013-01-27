@@ -65,7 +65,7 @@ function preloadImages(loadedCallback){
 function Game() {
     var self = this;
 
-    var _gameFps = 20;
+    var _gameFps = 30;
     var environment,
         player,
         collisions,
@@ -120,7 +120,7 @@ function Game() {
                 self.transition = false;
                 self.nextTransition += 200;
                 self.falling = false;
-                self.scrollX = -6;
+                self.scrollX = -4;
                 self.scrollY = 0;
             }
         }
@@ -198,11 +198,11 @@ function Game() {
         player.draw(ctx);
         _drawTopBar();
         
-        if(self.gamePaused){
-            _drawPauseScreen();
-        }
-        else if (self.gameOver){
+        if (self.gameOver){
             _drawGameOverScreen();
+        }
+        else if(self.gamePaused){
+            _drawPauseScreen();
         }
     };
 
@@ -239,8 +239,10 @@ function Game() {
             self.init();
         }
         else if(keyCode === P_KEYCODE){
-            self.gamePaused = !self.gamePaused;
-            pauseSprite.switchAnimation("default_static", true);
+            if(self.gameOver !== true){
+                self.gamePaused = !self.gamePaused;
+                pauseSprite.switchAnimation("default_static", true);
+            }
         }
     };
     
@@ -271,7 +273,7 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -6;
+        this.scrollX = 0;//-4;
         this.scrollY = 0;
         this.time = 0;
         
