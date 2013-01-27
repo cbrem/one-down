@@ -44,7 +44,8 @@ function Collisions() {
   	else if (overlap === "top collide") {player.y = oy+oh;}
   	else if (overlap === "left collide") {player.x = ox+ow;}
   	// if corner collisions, move player above or below object
-  	else if (overlap === "topleft collide" ||
+    
+  	if (overlap === "topleft collide" ||
              overlap === "topright collide") 
         if (player.velY < 0) 
           {player.y = oy + oh;} //below if jumping
