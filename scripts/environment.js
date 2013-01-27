@@ -112,6 +112,14 @@ function Environment () {
         {name : "cloud",        level : 8, necessary : false, collidable : false}
     ];
 
+    //moves all EnvBlocks in a by a given distance
+    var moveEnvBlocks = function (a, distX, distY) {
+        for (var i = 0; i < a.length; i++){
+            a[i].x += distX;
+            a[i].y += distY;
+        }    
+    };
+
     //initialize the environment, with "below" determining how far beneath
     //the current top of the screen the top of the environment is located
     this.init = function (game, below) {
@@ -140,6 +148,8 @@ function Environment () {
                 addNonNecessarySprite(i, game.width, this.spritesOnScreen,
                                       spriteChoices, levels, buffer, true,
                                       drawGap);
+
+        moveEnvBlocks(this.spritesOnScreen, 0, below);
     };
 
     this.draw = function (ctx, game) {
@@ -320,14 +330,6 @@ function Environment () {
             }
         };
         manageGaps();
-
-        //moves all EnvBlocks in a by a given distance
-        var moveEnvBlocks = function (a, distX, distY) {
-            for (var i = 0; i < a.length; i++){
-                a[i].x += distX;
-                a[i].y += distY;
-            }    
-        };
 
         //shift all EnvBlocks
         moveEnvBlocks(this.spritesOnScreen, game.scrollX, game.scrollY);

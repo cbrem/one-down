@@ -115,8 +115,7 @@ function Game() {
             if (!self.falling) {
                 //begin the transition! environment will create a hole
                 self.transition = true;
-                self.nextTransition += 400;
-                self.nextEnvironment = self.time + 100;
+                self.nextTransition += 100;
             }
             else {
                 self.transition = false;
@@ -124,6 +123,7 @@ function Game() {
                 self.falling = false;
                 self.scrollX = -6;
                 self.scrollY = 0;
+                environment.init(self, self.height);
             }
         }
         // player has fallen into a hole or falls too far down
@@ -132,15 +132,6 @@ function Game() {
             self.scrollX = 0;
             self.scrollY = -10;
         }
-        /*
-        //player has falled for long enough. make a new environment!
-        if (self.time > self.nextEnvironment && self.falling) {
-            environment.init(ctx, self);
-            self.scrollY = 0;
-            self.scrollX = -6;
-            self.nextEnvironment += 1000;
-        }
-        */
     };
 
     
@@ -274,7 +265,7 @@ function Game() {
         this.gamePaused = false;
         this.gameOver = false;
         this.transition = false;
-        this.nextTransition = 200;
+        this.nextTransition = 100;
         this.nextEnvironment = 0;
         this.falling = false;
         
