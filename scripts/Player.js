@@ -6,7 +6,7 @@ params:
     width       the width of the player, as displayed on the canvas
     height      the height of the player, as displayed on the canvas
 **/
-function Player(){
+function Player(x, y, width, height){
     this._init = function(x, y, width, height){
         console.log("initializing", this);
         
@@ -161,22 +161,28 @@ function Player(){
         this.switchAnimation(fullAnimName);
     }
     
-    this.resetJump = function(){
-        this._canStartJump = true;
-        this._canContinueJump = true;
-        
+    this.killDownMomentum = function(){
         // kill falling momentum to 
         // prevent player from shooting into ground when walking off surfaces
         // (remember positive y coordinates move down)
         this.velY = Math.min(this.velY, 0);
     }
     
+    this.killUpMomentum = function(){
+        // kill upwards momentum (remember positive y coordinates move down)
+        this.velY = Math.max(this.velY, 0);
+    }
+    
+    this.resetJump = function(){
+        this._canStartJump = true;
+        this._canContinueJump = true;
+        this.killDownMomentum();
+    }
+    
     this.abortJump = function(){
         this._canStartJump = false;
         this._canContinueJump = false;
-        
-        // kill upwards momentum (remember positive y coordinates move down)
-        this.velY = Math.max(this.velY, 0);
+        this.killUpMomentum();
     }
     
     /** Player.update(Array, dictionary) -> ()
@@ -245,5 +251,6 @@ function Player(){
         }
     };
     
-    this._init.apply(this, arguments);
+    this._init(x, y, width, height);
+    //this._init.apply(this, arguments); // commented due to hw1 restriction
 };

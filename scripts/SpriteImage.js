@@ -217,7 +217,8 @@ function SpriteImage(srcNickname){
         }
     };
     
-    this._init.apply(this, arguments);
+    this._init(srcNickname);
+    //this._init.apply(this, arguments); // commented due to hw1 restriction
 }
 
 SpriteImage.sourcesData = {

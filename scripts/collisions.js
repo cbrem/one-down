@@ -80,11 +80,16 @@ function Collisions() {
       console.log("INSIDE COLLISION, PROBABLY BAD NEWS!!!");
   	  player.y = oy-player.height;
     }
+    
+    var isBottom = overlap.indexOf("bottom") !== -1;
+    var isTop = overlap.indexOf("top") !== -1
+    var isLeft = overlap.indexOf("left") !== -1
+    var isRight = overlap.indexOf("right") !== -1
     // reset ability to jump if they have a resetJump function defined
-    if(player.resetJump !== undefined && overlap.indexOf("bottom") !== -1){
+    if(player.resetJump !== undefined && isBottom){
         player.resetJump();
     }
-    else if(player.abortJump !== undefined && overlap.indexOf("top") !== -1){
+    else if(player.abortJump !== undefined && isTop){
         player.abortJump();
     }
   }
