@@ -224,7 +224,7 @@ SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
-                 "cloud", "bush", "sleep_render"],
+                 "cloud", "bush", "sleep_render", "goomba"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -293,6 +293,16 @@ SpriteImage.sourcesData = {
         "animationData":{
             "default_static":[{x:0,y:0,w:97,h:294},
                               {x:111,y:0,w:97,h:294}]
+        }
+    },
+    "goomba":{
+        "srcPath": "assets/images/enemies.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:16,w:16,h:16}],
+            "walk":[{x:0,y:16,w:16,h:16},
+                    {x:16,y:16,w:16,h:16}],
+            "stomped":[{x:32,y:16,w:16,h:16}]
         }
     }
 }

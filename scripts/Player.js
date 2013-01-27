@@ -75,6 +75,9 @@ function Player(){
     };
     
     this._constrainPositions = function(game){
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        
         if (this.x + this.width > game.width)
             {this.x = game.width-this.width;}
         if (game.falling) {
