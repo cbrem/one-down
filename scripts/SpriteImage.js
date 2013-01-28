@@ -226,7 +226,7 @@ SpriteImage.sourcesData = {
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
                  "cloud", "bush", "sleep_render", "goomba", "bullet_bill",
-                 "piranhaPlant"],
+                 "piranhaPlant", "spiny"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -314,7 +314,7 @@ SpriteImage.sourcesData = {
             "default_static":[{x:384,y:144,w:32,h:48}],
             "chomping":[{x:384,y:144,w:32,h:48},
                         {x:416,y:144,w:32,h:48}]
-        }
+        },
     },
     "spiny":{
         "srcPath": "assets/images/enemies.png",
