@@ -133,7 +133,8 @@ function Collisions() {
           // enemy collision
           if (envObj.harmful && (player instanceof Player)) {
             // spinys bounce you back
-            if (envObj.sprite.nickname === "spiny") {
+            if (envObj.sprite !== undefined && 
+                envObj.sprite.nickname === "spiny") {
               player.velX = -player.velX*5;
               player.velY = -player.velY*5;
             }
