@@ -137,6 +137,8 @@ function Collisions() {
                 envObj.sprite.nickname === "spiny") {
               player.velX = -player.velX*5;
               player.velY = -player.velY*5;
+              if (player.velX > -20) {player.velX = -20;}
+              if (player.velY > -15) {player.velY = -15;}
             }
             else {game.gameOver = true;}
           }
