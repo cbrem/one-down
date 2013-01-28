@@ -366,7 +366,7 @@ function Environment () {
             maxY = Math.max(maxY, envBlock.y + envBlock.width);
         }
         if (game.transitionLand) {console.log("maxY = ", maxY);}
-        if ((game.transitionLand) && (maxY <= game.height) && (game.falling)) {
+        if ((game.transitionLand) && (maxY <= game.height)) {
             console.log("BACK TO PLATFORM TRANSITION!");
             game.scrollX = -6;
             game.scrollY = 0;

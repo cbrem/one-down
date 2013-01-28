@@ -124,7 +124,7 @@ function Game() {
             else {
                 console.log("STOP FALLING TRANSISTION at ", self.time);
                 self.transitionLand = true;
-                self.nextTransition = self.time + 400;
+                self.nextTransition = self.time + 300;
                 //self.falling = false;
                 environment.init(self, self.height);
             }
