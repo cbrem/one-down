@@ -283,7 +283,7 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX =  -10;
+        this.scrollX = -6;
         this.scrollY = 0;
         this.time = 0;
         
@@ -297,7 +297,7 @@ function Game() {
         collisions = new Collisions();
         
         allEnemies = new Enemies();
-        allEnemies.addEnemy("goomba", 50, 50);
+        allEnemies.addEnemy("spiny", 50, 50);
         allEnemies.addEnemy("bullet_bill", 50, 80);
         
         pauseSprite = new SpriteImage("sleep_render");

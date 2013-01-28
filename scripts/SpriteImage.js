@@ -297,18 +297,16 @@ SpriteImage.sourcesData = {
                               {x:111,y:0,w:97,h:294}]
         }
     },
-    "goomba":{
+    "bullet_bill":{
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
-        "frameStepDelay": 8,
         "animationData":{
-            "default_static":[{x:0,y:32,w:32,h:32}],
-            "walk":[{x:0,y:32,w:32,h:32},
-                    {x:32,y:32,w:32,h:32}],
-            "stomped":[{x:32,y:32,w:32,h:32}]
+            "default_static":[{x:1152,y:34,w:32,h:28}],
+            "walk_left":[{x:1152,y:34,w:32,h:28}],
+            "walk_right":[{x:416,y:289,w:32,h:28}]
         }
     },
-        "piranhaPlant": {
+    "piranhaPlant": {
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
         "frameStepDelay": 20,
@@ -318,11 +316,16 @@ SpriteImage.sourcesData = {
                         {x:416,y:144,w:32,h:48}]
         }
     },
-    "bullet_bill":{
+    "spiny":{
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
+        "frameStepDelay": 5,
         "animationData":{
-            "default_static":[{x:1152,y:34,w:32,h:28}]
+            "default_static":[{x:544,y:415,w:32,h:32}],
+            "walk_left":[{x:1024,y:160,w:32,h:32},
+                          {x:992,y:160,w:32,h:32}],
+            "walk_right":[{x:544,y:415,w:32,h:32},
+                         {x:576,y:415,w:32,h:32}]
         }
     }
 }
