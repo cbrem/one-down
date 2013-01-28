@@ -327,18 +327,11 @@ function Environment () {
                 //if not currently drawing a gap
                 if (self.timeToNextGap > 0) {
                     if (game.transitionDrop) {
-<<<<<<< HEAD
                         plants = false;
-                        console.log("MADE BIG GAP")
-                        //force gap to appear soon
-                        self.timeToNextGap = 0;
-                        gapLeft = 50;
-=======
                         console.log("MADE BIG GAP");
                         //force gap to appear soon
                         self.timeToNextGap = 0;
                         gapLeft = randomInt(38,45);
->>>>>>> a2ac4f2d46d49f32ce722c233da38deba261d506
                         game.transitionDrop = false;
                         drawGap = true;
                     } else {
