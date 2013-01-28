@@ -3,12 +3,21 @@ Interface:
     Properties:
         * this.spritesOnScreen: an array of all EnvBlock objects currently
         being stored
+        * this.timeToNextGap: cycles until next gap is created in creation
+        zone (at game.width past the right side of the screen)
 
     Methods:
         * this.init: initialize a new stage
         * this.update: update a stage after the screen has moved
         * this.draw: draw all environment elements in a stage
 
+*/
+
+/*
+TODO:
+  * let ground take different levels
+  * add different colored pipes?
+  * move piranha plants
 */
 
 //generates a random integer.
@@ -41,41 +50,20 @@ function randomColor() {
             green : randomInt(0x10, 0xFF)};
 }
 
-//used by both EnvBlock and Environment.
-//level[n] gives the y-coordinate associated with level n,
-//a boolean (nonNecessary) which determines whether nonNecessary sprites
-//are drawn at that level,
-//and an integer chance which is the reciprocal of the random chance that
-//sprites will be drawn on this level
-var levels = [
-    {y : 568, nonNecessary : false, startChance : undefined,
-     followChance : undefined}, 
-    {y : 536, nonNecessary : false, startChance : undefined,
-     followChance : undefined}, 
-    {y : 504, nonNecessary : false, startChance : undefined,
-     followChance : undefined}, 
-    {y : 472, nonNecessary : false, startChance : undefined,
-     followChance : undefined}, 
-    {y : 440, nonNecessary : true, startChance : 2, followChance : 1.5}, 
-    {y : 408, nonNecessary : true, startChance : 8, followChance : 8}, 
-    {y : 300, nonNecessary : true, startChance : 4, followChance : 1.3},
-    {y : 200, nonNecessary : true, startChance : 4, followChance : 1.3},
-    {y : 100, nonNecessary : true, startChance : 4, followChance : 2},
-];
+var offset = 0; //how far from normal is ground level shifted?
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, level, necessary, collidable, drawable,
-                   harmful, width, height) {
-    assert(typeof(width) === "number" && width > 0, "invalid width for EnvBlock"+name);
-    assert(typeof(height) === "number" && height > 0, "invalid height for EnvBlock"+name);
+function EnvBlock (name, x, y, level, width, height,  necessary, collidable, drawable, harmful) {
+    assert(typeof(width) === "number" && width > 0, "invalid width for EnvBlock "+name);
+    assert(typeof(height) === "number" && height > 0, "invalid height for EnvBlock "+name);
     this.img = new SpriteImage(name);
     if(this.img.hasAnimation("chomping")){
         this.img.switchAnimation("chomping");
     }
     this.name = name;
     this.x = x;
+    this.y = y;
     this.level = level;
-    this.y = levels[level].y;
     this.necessary = necessary;
     this.collidable = collidable;
     this.drawable = drawable;
@@ -101,15 +89,15 @@ function Environment () {
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
     var spriteChoices = [
-        {name : "groundBlock",  level : 0, necessary : true,  collidable : true, width:32, height:32},
-        {name : "groundBlock",  level : 1, necessary : true,  collidable : true, width:32, height:32},
-        {name : "groundBlock",  level : 2, necessary : true,  collidable : true, width:32, height:32},
-        {name : "groundBlock",  level : 3, necessary : true,  collidable : true, width:32, height:32},
-        {name : "bush",         level : 4, necessary : false,  collidable : false, width:96, height:32},
-        {name : "pipe",         level : 5, necessary : false, collidable : true, width:64, height:64},
-        {name : "brickBlock",   level : 6, necessary : false, collidable : true, width:32, height:32},
-        {name : "cloudPlatform",level : 7, necessary : false, collidable : true, width:96, height:32},
-        {name : "cloud",        level : 8, necessary : false, collidable : false, width:96, height:64},
+        {name : "groundBlock",  level : 0, necessary : true,  collidable : true,  width : 32, height : 32, y : 568},
+        {name : "groundBlock",  level : 1, necessary : true,  collidable : true,  width : 32, height : 32, y : 536},
+        {name : "groundBlock",  level : 2, necessary : true,  collidable : true,  width : 32, height : 32, y : 504},
+        {name : "groundBlock",  level : 3, necessary : true,  collidable : true,  width : 32, height : 32, y : 472},
+        {name : "bush",         level : 4, necessary : false, collidable : false, width : 96, height : 32, y : 440, startChance : 2, followChance : 1.5},
+        {name : "pipe",         level : 5, necessary : false, collidable : true,  width : 64, height : 64, y : 408, startChance : 8, followChance : 8},
+        {name : "brickBlock",   level : 6, necessary : false, collidable : true,  width : 32, height : 32, y : 300, startChance : 4, followChance : 1.3},
+        {name : "cloudPlatform",level : 7, necessary : false, collidable : true,  width : 96, height : 32, y : 200, startChance : 4, followChance : 1.3},
+        {name : "cloud",        level : 8, necessary : false, collidable : false, width : 96, height : 64, y : 100, startChance : 4, followchance : 2}
     ];
 
     //moves all EnvBlocks in a by a given distance
@@ -138,18 +126,16 @@ function Environment () {
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
-            if (choice.necessary)
+            if (choice.necessary) {
                 addNecessarySprite(choice, game.width, this.spritesOnScreen,
                                    drawGap);
+            } else {
+                addNonNecessarySprite(choice, game.width, this.spritesOnScreen,
+                                      drawGap, true, buffer);
+            }
         }
 
-        //fill screen with random sprites on each level
-        for (var i = 0; i < levels.length; i++)
-            if (levels[i].nonNecessary === true)
-                addNonNecessarySprite(i, game.width, this.spritesOnScreen,
-                                      spriteChoices, levels, buffer, true,
-                                      drawGap);
-
+        //possibly shift blocks down so they don't appear on screen
         moveEnvBlocks(this.spritesOnScreen, 0, below);
     };
 
@@ -171,7 +157,7 @@ function Environment () {
                     }
                 }
             }
-            //first pass: draw neccesary
+            //second pass : draw nonNeccesary, to make sure they're in front
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && !envBlock.necessary) {
@@ -206,10 +192,9 @@ function Environment () {
     //worldX is the absolutes width of the screen, and gameWidth is its width.
     //onScreen is a boolean which determines whether EnvBlocks can be created
     //if they are in a position that is currently on the screen
-    var addNonNecessarySprite = function (level, gameWidth, spritesOnScreen,
-                                          choices, levels, buffer, onScreen,
-                                          gap) {
-        
+    var addNonNecessarySprite = function (choice, gameWidth, spritesOnScreen,
+                                          drawGap, onScreen, buffer) {
+                                          
         //ensure that all objects created will be off screen
         var furthestRight = (onScreen) ? 0 : gameWidth;
 
@@ -221,7 +206,8 @@ function Environment () {
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var envBlock = spritesOnScreen[i];
             var rightSide = envBlock.x + envBlock.width;
-            if (envBlock.necessary === false && envBlock.level === level
+            if (envBlock.necessary === false
+               && envBlock.level === choice.level
                && rightSide > furthestRight) {
                 furthestRight = rightSide;
                 furthestRightDrawn = envBlock.drawable;
@@ -229,29 +215,14 @@ function Environment () {
         }
         //furthestRight += buffer;
 
-        //randomly chooses a sprite,
-        //and ensures that it will have a specified level and be non-necessary
-        //IMPORTANT: "choices" must contain at least one such sprite for each
-        //level marked in "levels" as nonNecessary, or this function will
-        //recurse infinitely!
-        var chooseByLevel = function (choices, level) {
-            var choice = randomChoice(choices);
-            if (choice.level === level && choice.necessary === false)
-                return choice;
-            else
-                return chooseByLevel(choices, level);
-        };
-
         while(furthestRight < 2 * gameWidth) {
-            var levelChoice = chooseByLevel(choices, level);
-            
             var collidable,
                 drawable;
 
-            var chance = (furthestRightDrawn) ? levels[level].followChance :
-                                                levels[level].startChance;
-            if (randomChance(chance) && !gap) {
-                collidable = levelChoice.collidable;
+            var chance = (furthestRightDrawn) ? choice.followChance :
+                                                choice.startChance;
+            if (randomChance(chance) && !drawGap) {
+                collidable = choice.collidable;
                 drawable = true;
             } else {
                 //the sprite only takes up space and is not drawn
@@ -260,9 +231,9 @@ function Environment () {
             }
 
             var newSprite =
-                new EnvBlock(levelChoice.name, furthestRight,
-                             levelChoice.level, levelChoice.necessary,
-                             collidable, drawable, false, levelChoice.width, levelChoice.height);
+                new EnvBlock(choice.name, furthestRight, choice.y,
+                             choice.level, choice.width, choice.height,
+                             choice.necessary, collidable, drawable, false);
             furthestRight += newSprite.width;
             //furthestRight += buffer;
             spritesOnScreen.push(newSprite);
@@ -271,7 +242,7 @@ function Environment () {
 
     //span the screen with instances of a necessary sprite.
     var addNecessarySprite = function (choice, gameWidth, spritesOnScreen,
-                                       gap) {
+                                       drawGap) {
 
         //determine how much screen space of the necessary sprite is missing
         var furthestRight = 0; //right side of furthest right sprite
@@ -289,13 +260,12 @@ function Environment () {
             var collidable,
                 drawable,
                 name;
-            if (gap) {
+            if (drawGap) {
                 if (choice.level === 0 && plants) {
                     //draw a piranha plant over the gap
                     var holeSprite = 
-                        new EnvBlock("piranhaPlant", furthestRight, 
-                                     0, false, true, true, true, 
-                                     32,48); // size is hardcoded as hell, yikes
+                        new EnvBlock("piranhaPlant", furthestRight, 552, 
+                                     1, 32, 48, false, true, true, true); 
                     spritesOnScreen.push(holeSprite);
                 }
                 collidable = false;
@@ -305,9 +275,10 @@ function Environment () {
                 drawable = true;
             }
 
-            var newSprite = new EnvBlock(choice.name, furthestRight,
-                                         choice.level, choice.necessary,
-                                         collidable, drawable, false, choice.width, choice.height);
+            var newSprite = 
+                new EnvBlock(choice.name, furthestRight, choice.y,
+                             choice.level, choice.width, choice.height,
+                             choice.necessary, collidable, drawable, false);
             spritesOnScreen.push(newSprite);
             furthestRight += newSprite.width;
         }
@@ -359,21 +330,16 @@ function Environment () {
         //remove elements which have moved off left side
         pruneSprites(this.spritesOnScreen, game.width);
 
-        //fill screen with random sprites on each level
-        for (var i = 0; i < levels.length; i++){
-            if (levels[i].nonNecessary === true){
-                addNonNecessarySprite(i, game.width, this.spritesOnScreen,
-                                      spriteChoices, levels, buffer, false,
-                                      drawGap);
-            }
-        }
-
         //add in necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
             if (choice.necessary){
                 addNecessarySprite(choice, game.width, 
                                    this.spritesOnScreen, drawGap);
+            } else {
+                addNonNecessarySprite(choice, game.width,
+                                      this.spritesOnScreen, drawGap,
+                                      false, buffer)
             }
         }
 
@@ -381,7 +347,7 @@ function Environment () {
         var maxY = 0;
         for (var i = 0; i < this.spritesOnScreen.length; i++) {
             var envBlock = this.spritesOnScreen[i];
-            maxY = Math.max(maxY, envBlock.y + envBlock.width);
+            maxY = Math.max(maxY, envBlock.y + envBlock.height);
         }
         if ((game.transitionLand) && (maxY <= game.height)) {
            // console.log("BACK TO PLATFORM TRANSITION!");
