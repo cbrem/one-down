@@ -11,46 +11,11 @@ Interface:
         * this.update: update a stage after the screen has moved
         * this.draw: draw all environment elements in a stage
 
-*/
-
-/*
 TODO:
-  * let ground take different levels
-  * add different colored pipes?
-  * move piranha plants
+  * randomize image associated with blocks, pipes, etc at start of level
+  * add changing ground height -- store ground offset in a variable so Leon
+  can use it
 */
-
-//generates a random integer.
-//lower bound is inclusive, upper bound is exclusive.
-function randomInt(bound1, bound2) {
-    var lo = Math.min(bound1, bound2);
-    var hi = Math.max(bound1, bound2);
-    var rand = lo + Math.floor(Math.random()*(hi - lo));
-    if(rand === hi)
-        //this is highly unlikely, maybe impossible
-        return randomInt(bound1, bound2);
-    else
-        return rand;
-}
-
-//randomly chooses an element from an array
-function randomChoice (a) {
-    return a[randomInt(0, a.length)];
-}
-
-//returns true with probability 1/x
-function randomChance(x) {
-    return (0 === randomInt(0, x));
-}
-
-//return a random hexidecimal color
-function randomColor() {
-    return {red : randomInt(0x10, 0xFF), 
-            blue : randomInt(0x10, 0xFF),
-            green : randomInt(0x10, 0xFF)};
-}
-
-var offset = 0; //how far from normal is ground level shifted?
 
 //constructor for EnvBlock objects, which build the environment
 function EnvBlock (name, x, y, level, width, height,  necessary, collidable, drawable, harmful) {

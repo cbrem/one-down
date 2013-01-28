@@ -90,16 +90,42 @@ function Game() {
     this.nextTransition;
     this.falling;
     this.scrollSpeed;
+    this._nextEnemyDelayCountdown; // how many frames until the next enemy
+    this.groundY;
 
+    // get a random number of frames to wait until next enemy
+    var _regenNextEnemyDelay = function(self){
+        var minDist = 20;
+        var maxDist = self.width * 1.1;
+        var distanceToNextEnemy = randomInt(minDist, maxDist);
+        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
+    }
+    
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
         clicks = [];
-
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
+            if (!self.falling){
+                // spawn new enemy
+                self._nextEnemyDelayCountdown--;
+                if(self._nextEnemyDelayCountdown <= 0){
+                   self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
+                   if(Math.random() < 0.4){
+                        var randHeight = randomInt(50, 300); // hardcoding, eep!
+                        allEnemies.addEnemy("bullet_bill", self.width, randHeight);
+                   }
+                   else{
+                        var randHeight = randomInt(200, 475); // hardcoding, eep!
+                        allEnemies.addEnemy("spiny", self.width, randHeight);
+                   }
+                }
+            }
+            // update objects
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
+            // check collisions
             allEnemies.getAllEnemies().forEach(function(enemy){
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
@@ -219,6 +245,9 @@ function Game() {
         else if(self.gamePaused){
             _drawPauseScreen();
         }
+        
+        //ctx.fillStyle = "rgba(255,0,0,0.5)";
+        //ctx.fillRect(0, 0, canvas.width, 250);
     };
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
@@ -269,7 +298,7 @@ function Game() {
         // remove key
         delete(heldKeys[keyCode]);
     };
-
+    
     this.init = function(){
         console.log("reinitializing game");
         // initialize mouse and key event queues
@@ -292,6 +321,8 @@ function Game() {
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
+        this._nextEnemyDelayCountdown = 0; //start with enemy on screen
+        this.groundY = 450;// temp hardcode
         
         // initialize player
         player = new Player(500, 400, 32, 32);
@@ -302,10 +333,8 @@ function Game() {
         environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
         // initialize Collisions
         collisions = new Collisions();
-        
+        // initialize enemies manager
         allEnemies = new Enemies();
-        allEnemies.addEnemy("spiny", 500, 300);
-        allEnemies.addEnemy("bullet_bill", 1000, 80);
         
         pauseSprite = new SpriteImage("sleep_render");
     }

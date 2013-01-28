@@ -262,42 +262,42 @@ SpriteImage.sourcesData = {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:0,y:0,w:16,h:16}]
+            "default_static":[{x:0,y:0,w:32,h:32}]
         }
     },
     "pipe": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:0,y:128,w:32,h:32}]
+            "default_static":[{x:0,y:256,w:64,h:64}]
         }
     },
     "solidBlock": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:0,y:16,w:16,h:16}]
+            "default_static":[{x:0,y:32,w:32,h:32}]
         }
     },
     "brickBlock": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:16,y:0,w:16,h:16}]
+            "default_static":[{x:32,y:0,w:32,h:32}]
         }
     },
     "cloud": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:0,y:320,w:48,h:32}]
+            "default_static":[{x:0,y:640,w:96,h:64}]
         }
     },
     "bush": {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:176,y:144,w:48,h:16}]
+            "default_static":[{x:352,y:288,w:96,h:32}]
         }
     },
     "sleep_render":{
@@ -345,7 +345,7 @@ SpriteImage.sourcesData = {
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:128,y:320,w:48,h:16}],
+            "default_static":[{x:256,y:640,w:96,h:32}],
         }
     }
 }
