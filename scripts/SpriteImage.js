@@ -225,7 +225,8 @@ SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
-                 "cloud", "bush", "sleep_render", "goomba", "bullet_bill"],
+                 "cloud", "bush", "sleep_render", "goomba", "bullet_bill",
+                 "piranhaPlant"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload

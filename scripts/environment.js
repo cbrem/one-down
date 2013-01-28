@@ -64,7 +64,8 @@ var levels = [
 ];
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, level, necessary, collidable, drawable, scaleFactor) {
+function EnvBlock (name, x, level, necessary, collidable, drawable,
+                   harmful, scaleFactor) {
     this.img = new SpriteImage(name);
     this.name = name;
     this.x = x;
@@ -73,6 +74,7 @@ function EnvBlock (name, x, level, necessary, collidable, drawable, scaleFactor)
     this.necessary = necessary;
     this.collidable = collidable;
     this.drawable = drawable;
+    this.harmful = harmful;
     this.scaleFactor = scaleFactor;
     this.width = this.img.width * this.scaleFactor;
     this.height = this.width;
@@ -90,6 +92,7 @@ function Environment () {
                  //currently drawn
     var gapLeft;  //once setNextGap is on, time for which gap continues
                   //to be drawn
+    var plants; // should piranha plants be drawn in the holes?
 
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
@@ -123,6 +126,7 @@ function Environment () {
         buffer = 50;
         gapLeft = 0;
         drawGap = false;
+        plants = true;
 
         //randomly choose background color and first gap location
         this.bgColor = randomColor();
@@ -253,7 +257,7 @@ function Environment () {
             var newSprite =
                 new EnvBlock(levelChoice.name, furthestRight,
                              levelChoice.level, levelChoice.necessary,
-                             collidable, drawable, 2);
+                             collidable, drawable, false, 2);
             furthestRight += newSprite.width;
             //furthestRight += buffer;
             spritesOnScreen.push(newSprite);
@@ -281,24 +285,23 @@ function Environment () {
                 drawable,
                 name;
             if (gap) {
-                if (choice.level === 2) {
-                    collidable = true;
-                    drawable = true;
-                    name = "piranhaPlant";
-                } else {
-                    collidable = false;
-                    drawable = false;
-                    name = choice.name;
+                if (choice.level === 0 && plants) {
+                    //draw a piranha plant over the gap
+                    var holeSprite = 
+                        new EnvBlock("piranhaPlant", furthestRight,
+                                     0, false, true, true, true, 1);
+                    spritesOnScreen.push(holeSprite);
                 }
+                collidable = false;
+                drawable = false;
             } else {
                 collidable = choice.collidable;
                 drawable = true;
-                name = choice.name;
             }
 
-            var newSprite = new EnvBlock(name, furthestRight,
+            var newSprite = new EnvBlock(choice.name, furthestRight,
                                          choice.level, choice.necessary,
-                                         collidable, drawable, 2);
+                                         collidable, drawable, false, 2);
             spritesOnScreen.push(newSprite);
             furthestRight += newSprite.width;
         }
@@ -317,16 +320,18 @@ function Environment () {
                 } else {
                     //time to turn gap drawing off
                     drawGap = false;
+                    plants = true;
                     self.timeToNextGap = randomInt(50, 100);
                 }
             } else {
                 //if not currently drawing a gap
                 if (self.timeToNextGap > 0) {
                     if (game.transitionDrop) {
+                        plants = false;
                         console.log("MADE BIG GAP")
                         //force gap to appear soon
                         self.timeToNextGap = 0;
-                        gapLeft = 40;
+                        gapLeft = 50;
                         game.transitionDrop = false;
                         drawGap = true;
                     } else {
