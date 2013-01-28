@@ -217,7 +217,8 @@ function SpriteImage(srcNickname){
         }
     };
     
-    this._init.apply(this, arguments);
+    this._init(srcNickname);
+    //this._init.apply(this, arguments); // commented due to hw1 restriction
 }
 
 SpriteImage.sourcesData = {
@@ -298,11 +299,12 @@ SpriteImage.sourcesData = {
     "goomba":{
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
+        "frameStepDelay": 8,
         "animationData":{
-            "default_static":[{x:0,y:16,w:16,h:16}],
-            "walk":[{x:0,y:16,w:16,h:16},
-                    {x:16,y:16,w:16,h:16}],
-            "stomped":[{x:32,y:16,w:16,h:16}]
+            "default_static":[{x:0,y:32,w:32,h:32}],
+            "walk":[{x:0,y:32,w:32,h:32},
+                    {x:32,y:32,w:32,h:32}],
+            "stomped":[{x:32,y:32,w:32,h:32}]
         }
     }
 }

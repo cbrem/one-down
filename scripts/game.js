@@ -69,6 +69,7 @@ function Game() {
     var environment,
         player,
         collisions,
+        allEnemies,
         canvas,
         ctx,
         clicks,
@@ -98,6 +99,7 @@ function Game() {
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
             player.update(self, clicks, heldKeys); 
+            allEnemies.update(self);
             environment.update(self);
             collisions.collide(player,environment.spritesOnScreen,self); 
         }
@@ -202,6 +204,7 @@ function Game() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
         environment.draw(ctx,self);
+        allEnemies.draw(ctx);
         player.draw(ctx);
         _drawTopBar();
         
@@ -280,7 +283,7 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -10;
+        this.scrollX =  -10;
         this.scrollY = 0;
         this.time = 0;
         
@@ -292,6 +295,9 @@ function Game() {
         environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
         // initialize Collisions
         collisions = new Collisions();
+        
+        allEnemies = new Enemies();
+        allEnemies.addEnemy("goomba", 50, 50);
         
         pauseSprite = new SpriteImage("sleep_render");
     }
