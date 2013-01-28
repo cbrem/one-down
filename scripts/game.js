@@ -291,7 +291,7 @@ function Game() {
         this.time = 0;
         
         // initialize player
-        player = new Player(300, 400, 32, 32);
+        player = new Player(500, 400, 32, 32);
         player.maxVelX = -this.scrollSpeed+3;
         //initialize environment
         environment = new Environment();
