@@ -173,6 +173,7 @@ function Environment () {
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
                     envBlock.img.nextFrame();
+                    console.log(envBlock.img.nextFrame);
                 }
             }
         };
