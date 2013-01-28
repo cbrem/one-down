@@ -34,6 +34,7 @@ function Enemy(type, x, y){
         this.alive = true;
         this.exists = true;
         this.collidable = (typeData.flags.collidable) ? true : false;
+        this.collidablePlayerOnly = (typeData.flags.collidable_player_only) ? true : false;
         this.harmful = true;
 
         this.switchDirection(LEFT_DIR);
@@ -165,7 +166,7 @@ Enemy.types = {
         "height": 20,
         "maxVelX": 5,
         "flags":{
-            
+            "collidable_player_only":true
         }
     }
 }

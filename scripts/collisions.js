@@ -103,11 +103,12 @@ function Collisions() {
             player.abortJump();
         }
     }
-    else if(player.facing && player.switchDirection){
-        if(isLeft && player.facing === LEFT_DIR){
+    
+    if(player.switchDirection){
+        if(overlap === "left collide"){
             player.switchDirection(RIGHT_DIR);
         }
-        else if(isRight && player.facing === RIGHT_DIR){
+        else if(overlap === "right collide"){
             player.switchDirection(LEFT_DIR);
         }
     }
@@ -122,7 +123,11 @@ function Collisions() {
 	  for (var i = 0; i < env.length; i++) {
 	  	envObj = env[i];
 
-        if(envObj.collidable === false || player.collidable === false){
+        if(envObj.collidablePlayerOnly && player instanceof Player){
+            // pass
+        }
+        else if(envObj.collidable === false || player.collidable === false)
+        {
             continue;
         }
         
@@ -132,9 +137,9 @@ function Collisions() {
 	  	  {
           // enemy collision
           if (envObj.harmful && (player instanceof Player)) {
-            // spinys bounce you back
+            // enemies bounce you back
             if (envObj.sprite !== undefined && 
-                envObj.sprite.nickname === "spiny") {
+                envObj instanceof Enemy) {
               player.velX = -player.velX*5;
               player.velY = -player.velY*5;
             }

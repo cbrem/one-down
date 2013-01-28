@@ -130,7 +130,7 @@ function Game() {
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
             collisions.collide(player,environment.spritesOnScreen,self);
-            collisions.collide(player,allEnemies.getAllEnemies(),self); 
+            collisions.collide(player,allEnemies.getAllEnemies(),self);
         }
         else{ 
             pauseSprite.nextFrame();
