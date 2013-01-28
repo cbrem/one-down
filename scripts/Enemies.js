@@ -27,7 +27,9 @@ function Enemy(type, x, y){
         this.alive = true;
         this.exists = true;
         
-        this.sprite.switchAnimation("walk");
+        if(this.sprite.hasAnimation("walk")){
+            this.sprite.switchAnimation("walk");
+        }
     }
     
     this._updatePos = function(game){
@@ -104,6 +106,12 @@ Enemy.types = {
         "spriteName": "goomba",
         "width": 32,
         "height": 32,
+        "flags":[]
+    },
+    "bullet_bill":{
+        "spriteName": "bullet_bill",
+        "width": 32,
+        "height": 28,
         "flags":[]
     }
 }

@@ -50,7 +50,7 @@ function SpriteImage(srcNickname){
         this.switchAnimation(defaultAnim);
     };
     
-    /** SpriteImage._hasAnimation(String) -> Boolean
+    /** SpriteImage.hasAnimation(String) -> Boolean
     
     checks if the given animation exists for this sprite
 
@@ -60,7 +60,7 @@ function SpriteImage(srcNickname){
     returns:
     true if animName exists, false otherwise
     **/
-    this._hasAnimation = function(animName){
+    this.hasAnimation = function(animName){
         var allAnims = this._getAllAnims();
         return allAnims[animName] !== undefined;
     };
@@ -86,7 +86,7 @@ function SpriteImage(srcNickname){
     animName        the name of the animation to get the frame list for
     **/
     this._getAnimFrameList = function(animName){
-        assert(this._hasAnimation(animName), "no animation "+animName+
+        assert(this.hasAnimation(animName), "no animation "+animName+
                "for SpriteImage("+this.nickname+")");
                
         var frameList = this._getAllAnims(animName)[animName];
@@ -209,7 +209,7 @@ function SpriteImage(srcNickname){
             forceRestart = false;
         }
         if(forceRestart === true || animationName !== this.curAnimation){
-            assert(this._hasAnimation(animationName), 
+            assert(this.hasAnimation(animationName), 
                    "SpriteImage("+this.srcNickname+") attempted to switch to "+
                    "invalid animation '"+animationName+"'");
             this.curAnimation = animationName;
@@ -225,7 +225,7 @@ SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
-                 "cloud", "bush", "sleep_render", "goomba"],
+                 "cloud", "bush", "sleep_render", "goomba", "bullet_bill"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -305,6 +305,13 @@ SpriteImage.sourcesData = {
             "walk":[{x:0,y:32,w:32,h:32},
                     {x:32,y:32,w:32,h:32}],
             "stomped":[{x:32,y:32,w:32,h:32}]
+        }
+    },
+    "bullet_bill":{
+        "srcPath": "assets/images/enemies.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:1152,y:34,w:32,h:28}]
         }
     }
 }
