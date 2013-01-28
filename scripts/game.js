@@ -132,7 +132,7 @@ function Game() {
             }
         }
         // activate FALLING
-        if ((!self.falling) && (player.y > 575)) {
+        if ((!self.falling) && (player.y > 600)) {
             console.log("FALLING NOW!");
             self.falling = true;
             self.scrollX = 0;
