@@ -131,8 +131,14 @@ function Collisions() {
 	  	if (overlap !== "no collision")
 	  	  {
           // enemy collision
-          if (envObj.harmful && player instanceof Player) {
-            game.gameOver = true;
+          if (envObj.harmful && (player instanceof Player)) {
+            // spinys bounce you back
+            if (envObj.sprite !== undefined && 
+                envObj.sprite.nickname === "spiny") {
+              player.velX = -player.velX*5;
+              player.velY = -player.velY*5;
+            }
+            else {game.gameOver = true;}
           }
           // if player is falling and collides with a non-enemy
           else if (game.falling) {

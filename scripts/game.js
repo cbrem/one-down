@@ -129,7 +129,8 @@ function Game() {
             allEnemies.getAllEnemies().forEach(function(enemy){
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
-            collisions.collide(player,environment.spritesOnScreen,self); 
+            collisions.collide(player,environment.spritesOnScreen,self);
+            collisions.collide(player,allEnemies.getAllEnemies(),self); 
         }
         else{ 
             pauseSprite.nextFrame();
@@ -171,6 +172,11 @@ function Game() {
         }
     };
 
+
+    // draw title screen when game starts
+    var _drawTitleScreen = function(){
+        console.log("SHOULD BE DRAWING TITLE SCREEN NOW");
+    }
     
     // split this type of drawing into a HUD object or something
     var _drawPauseScreen = function(){
@@ -341,6 +347,8 @@ function Game() {
     
     /** like Tkinter's run; sets up event handlers etc. **/
     this.run = function () {
+
+        // actually start the game
         console.log('running game; setting up event handlers');
         this.init();
         
@@ -357,6 +365,9 @@ function Game() {
         canvas.setAttribute('tabindex','0');
         canvas.focus();
         
+        // draws the title screen, until user clicks start game
+        _drawTitleScreen();
+
         //the inital call to timer, which will run continuously to update
         //the model and view
         timer();
