@@ -109,7 +109,7 @@ function Collisions() {
 	  	if ((overlap !== "no collision") && envObj.collidable)
 	  	  {
           // enemy collision
-          if (envObj.harmful) {game.gameOver}
+          if (envObj.harmful) {game.gameOver = true;}
           // if player is falling and collides with a non-enemy
           else if (game.falling) {
             console.log("HEY I SHOULD LAND");

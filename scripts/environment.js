@@ -60,7 +60,7 @@ var levels = [
     {y : 408, nonNecessary : true, startChance : 8, followChance : 8}, 
     {y : 300, nonNecessary : true, startChance : 4, followChance : 1.3},
     {y : 200, nonNecessary : true, startChance : 4, followChance : 1.3},
-    {y : 100, nonNecessary : true, startChance : 4, followChance : 2}
+    {y : 100, nonNecessary : true, startChance : 4, followChance : 2},
 ];
 
 //constructor for EnvBlock objects, which build the environment
@@ -103,10 +103,9 @@ function Environment () {
         {name : "groundBlock",  level : 3, necessary : true,  collidable : true},
         {name : "bush",         level : 4, necessary : false,  collidable : false},
         {name : "pipe",         level : 5, necessary : false, collidable : true},
-        //{name : "solidBlock",   level : 6, necessary : false, collidable : true},
         {name : "brickBlock",   level : 6, necessary : false, collidable : true},
-        {name : "brickBlock",   level : 7, necessary : false, collidable : true},
-        {name : "cloud",        level : 8, necessary : false, collidable : false}
+        {name : "cloudPlatform",level : 7, necessary : false, collidable : true},
+        {name : "cloud",        level : 8, necessary : false, collidable : false},
     ];
 
     //moves all EnvBlocks in a by a given distance
