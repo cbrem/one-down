@@ -163,6 +163,7 @@ Enemy.types = {
         "height": 20,
         "maxVelX": 5,
         "flags":{
+            
         }
     }
 }
