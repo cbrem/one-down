@@ -4,22 +4,20 @@ TO DO:
 
 (roughly priority order)
 
-fixes:
 
+IMPORTANT:
 
-falling mode:
+-enemies when side scrolling
+-enemies when falling
+-title screen with some sort of how-to
 
--add enemies that make game over when falling
 
 transitions:
 
--make transitions smoother
--bring color back after transition
 -make new worlds after the first one have strange colored objects
 
 platforming mode:
 
--add enemies in platforming mode
 -make the brick blocks breakable
 -make stairs of blocks
 

@@ -24,6 +24,7 @@ function SpriteImage(srcNickname){
 
         //CONNOR - store reference to image width
         this.width = srcData.animationData.default_static[0].w;
+        this.height = srcData.animationData.default_static[0].h;
 
         assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + this.nickname);
         assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");
@@ -32,11 +33,22 @@ function SpriteImage(srcNickname){
         this._frameStepCount = 0;
         // 0 delay is the same as no delay in animation, so just treat it
         // as if no delay was set
-        if (srcData.frameStepDelay <= 0){
-            this._frameStepDelay = undefined;
+        if(srcData.frameStepDelay !== undefined){
+            if (srcData.frameStepDelay <= 0){
+                this._frameStepDelay = undefined;
+            }
+            else if(srcData.randomDelay === true){
+                var minDelay = Math.max(1, srcData.frameStepDelay - 3);
+                var maxDelay = Math.max(1, srcData.frameStepDelay + 3);
+                var randomDelay = Math.floor((Math.random() * maxDelay) + minDelay);
+                this._frameStepDelay = randomDelay;
+            }
+            else{
+                this._frameStepDelay = srcData.frameStepDelay;
+            }
         }
         else{
-            this._frameStepDelay = srcData.frameStepDelay;
+            this._frameStepDelay = undefined;
         }
         
         var animData = this.srcData.animationData;
@@ -291,7 +303,7 @@ SpriteImage.sourcesData = {
     "sleep_render":{
         "srcPath": "assets/images/sleeping_mario.png",
         "imgObj": undefined,
-        "frameStepDelay": 45,
+        "frameStepDelay": 30,
         "animationData":{
             "default_static":[{x:0,y:0,w:97,h:294},
                               {x:111,y:0,w:97,h:294}]
@@ -309,7 +321,8 @@ SpriteImage.sourcesData = {
     "piranhaPlant": {
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
-        "frameStepDelay": 20,
+        "frameStepDelay": 8,
+        "randomDelay": true,
         "animationData":{
             "default_static":[{x:384,y:144,w:32,h:48}],
             "chomping":[{x:384,y:144,w:32,h:48},
@@ -321,7 +334,7 @@ SpriteImage.sourcesData = {
         "imgObj": undefined,
         "frameStepDelay": 5,
         "animationData":{
-            "default_static":[{x:544,y:415,w:32,h:32}],
+            "default_static":[{x:1024,y:160,w:32,h:32}],
             "walk_left":[{x:1024,y:160,w:32,h:32},
                           {x:992,y:160,w:32,h:32}],
             "walk_right":[{x:544,y:415,w:32,h:32},

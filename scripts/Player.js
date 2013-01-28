@@ -24,7 +24,8 @@ function Player(){
         this.accelY = this.gravAccel;
         
         this.maxVelX = 11;
-        this.maxUpVel = 17;
+        this.maxVelX = Math.abs(this.maxVelX);
+        this.maxUpVel = 18;
         this.maxDownVel = this.maxUpVel*(3/4);
         
         this._accelRate = 2;
@@ -143,7 +144,7 @@ function Player(){
     this._updateMovementAnim = function(game){
         var dirName = (this._facing === LEFT_DIR) ? "left" : "right";
         var baseAnimName;
-        if (game.falling) {
+        if (game.falling || game.gameOver) {
             baseAnimName = "fall";
         }
         else if(this._canStartJump === false){
@@ -161,14 +162,16 @@ function Player(){
         this.switchAnimation(fullAnimName);
     }
     
-    this.resetJump = function(){
-        this._canStartJump = true;
-        this._canContinueJump = true;
-        
+    this.killDownwardMomentum = function(){
         // kill falling momentum to 
         // prevent player from shooting into ground when walking off surfaces
         // (remember positive y coordinates move down)
         this.velY = Math.min(this.velY, 0);
+    }
+    
+    this.resetJump = function(){
+        this._canStartJump = true;
+        this._canContinueJump = true;
     }
     
     this.abortJump = function(){
@@ -242,6 +245,8 @@ function Player(){
         if (this.x + this.width < 0){
             game.gameOver = true;
         }
+        // set as false and wait for collision to reset jump
+        this._canStartJump = false;
     };
     
     this._init.apply(this, arguments);

@@ -3,9 +3,10 @@ function Enemy(type, x, y){
         assert(Enemy.types[type] !== undefined, "Enemy type '"+type+
                 "' does not exist, check that Enemy.types is formatted properly");
         this.type = type;
+        console.log("made Enemy:" + type);
         
         var typeData = Enemy.types[type];
-        ["spriteName", "width", "height"].forEach(function(dataParam){
+        ["spriteName", "width", "height", "flags"].forEach(function(dataParam){
             assert(typeData[dataParam] !== undefined,
                    "missing parameter "+dataParam+"in data for type "+type);
         });
@@ -16,19 +17,37 @@ function Enemy(type, x, y){
         this.width = typeData.width;
         this.height = typeData.height;
         
-        this.velX = 5;
+        this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 2;
+        this.maxVelX = Math.abs(this.maxVelX);
+        this.maxUpVel = 17;
+        this.maxDownVel = this.maxUpVel*(3/4);
+        
+        this.velX = -this.maxVelX;
         this.velY = 0;
         this.accelX = 0;
         this.gravAccel = 3;
-        this.accelY = this.gravAccel;
+        this.accelY = (typeData.flags.has_gravity) ? this.gravAccel : 0;
         
-        this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 3;
         
         this.alive = true;
         this.exists = true;
+        this.collidable = (typeData.flags.collidable) ? true : false;
+        this.harmful = true;
         
-        if(this.sprite.hasAnimation("walk_right")){
-            this.sprite.switchAnimation("walk_right");
+        this.facing = LEFT_DIR;
+    }
+    
+    this.draw = function(ctx,showDebug){
+        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
+        this.sprite.nextFrame();
+    }
+    
+    this._updateMovementAnim = function(){
+        var baseAnim = "walk";
+        var dirName = (this.facing === RIGHT_DIR) ? "right" : "left";
+        var animName = baseAnim + "_" + dirName;
+        if(this.sprite.hasAnimation(animName)){
+            this.sprite.switchAnimation(animName);
         }
     }
     
@@ -43,17 +62,40 @@ function Enemy(type, x, y){
         this.y = Math.round(this.y);
     }
     
-    this._updateVel = function(game){
+    this.killDownwardMomentum = function(){
+        // kill falling momentum to 
+        // prevent player from shooting into ground when walking off surfaces
+        // (remember positive y coordinates move down)
+        this.velY = Math.min(this.velY, 0);
     }
     
-    this.draw = function(ctx,showDebug){
-        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
-        this.sprite.nextFrame();
+    this._constrainVelocities = function(){
+        // constrain velocities
+        this.velX = Math.min(this.maxVelX, Math.max(-this.maxVelX, this.velX));
+        this.velY = Math.min(this.maxDownVel, Math.max(-this.maxUpVel, this.velY));
+    }
+    
+    this._updateVel = function(game){
+        this.velX += this.accelX;
+        this.velY += this.accelY;
+        
+        this._constrainVelocities();
+    }
+    
+    this.switchDirection = function(newDir){
+        // default to simply toggling direction if not given a direction
+        if(newDir !== LEFT_DIR && newDir !== RIGHT_DIR){
+            newDir = (this.facing === LEFT_DIR) ? RIGHT_DIR : LEFT_DIR;
+        }
+        this.facing = newDir;
+        this.velX = (this.facing === LEFT_DIR) ? -this.maxVelX : this.maxVelX;
     }
     
     this.update = function(game){
         this._updateVel(game);
         this._updatePos(game);
+        
+        this._updateMovementAnim();
     }
     
     this._init(type, x ,y);
@@ -69,6 +111,10 @@ function Enemies(){
         this.enemiesList.forEach(function(enemy){
             enemy.draw(ctx);
         });
+    }
+    
+    this.getAllEnemies = function(){
+        return this.enemiesList;
     }
     
     this.pruneEnemies = function(game){
@@ -104,14 +150,19 @@ function Enemies(){
 Enemy.types = {
     "spiny":{
         "spriteName": "spiny",
-        "width": 32,
-        "height": 32,
-        "flags":[]
+        "width": 28,
+        "height": 28,
+        "flags":{
+            "has_gravity": true,
+            "collidable": true // if set to true, enemy will also change directions at walls
+        }
     },
     "bullet_bill":{
         "spriteName": "bullet_bill",
-        "width": 32,
-        "height": 29,
-        "flags":[]
+        "width": 28,
+        "height": 20,
+        "maxVelX": 5,
+        "flags":{
+        }
     }
 }
