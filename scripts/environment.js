@@ -164,8 +164,7 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && envBlock.necessary) {
-                    envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
-                                             envBlock.scaleFactor);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height, true);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -175,8 +174,7 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && !envBlock.necessary) {
-                    envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
-                                             envBlock.scaleFactor);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height, true);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }

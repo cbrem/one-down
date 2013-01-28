@@ -35,7 +35,7 @@ function Collisions() {
   // takes player and "uncollides" him with an obstacle
   // parameters are the overlap string and 
   // the object's location and dimensions
-  function unOverlap(player,overlap,ox,oy,ow,oh) {
+  function unOverlap(player,overlap,ox,oy,ow,oh,objName) {
     //console.log(overlap);
     if (overlap === "no collision") {return;}
   	// side collisions-make the sides flush 
@@ -99,7 +99,7 @@ function Collisions() {
     }
     else if(isTop){
         if(player.abortJump){
-            console.log(overlap);
+            console.log(overlap, "with", objName);
             player.abortJump();
         }
     }
@@ -133,7 +133,7 @@ function Collisions() {
             game.falling = false;
           }
 	  	  	else //object is an obstacle, move player out of obstacle
-	  	  	  {unOverlap(player,overlap,envObj.x,envObj.y,envObj.width,envObj.height);}
+	  	  	  {unOverlap(player,overlap,envObj.x,envObj.y,envObj.width,envObj.height,envObj.name);}
 	  	  }
 		}
 	}

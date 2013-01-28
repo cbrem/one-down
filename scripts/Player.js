@@ -246,6 +246,8 @@ function Player(){
         if (this.x + this.width < 0){
             game.gameOver = true;
         }
+        // set as false and wait for collision to reset jump
+        this._canStartJump = false;
     };
     
     this._init.apply(this, arguments);
