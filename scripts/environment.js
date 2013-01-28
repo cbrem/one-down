@@ -11,11 +11,6 @@ Interface:
 
 */
 
-/*
-TODO:
-    - preload non-interface functions
-*/
-
 //generates a random integer.
 //lower bound is inclusive, upper bound is exclusive.
 function randomInt(bound1, bound2) {
@@ -61,8 +56,7 @@ var levels = [
      followChance : undefined}, 
     {y : 472, nonNecessary : false, startChance : undefined,
      followChance : undefined}, 
-    {y : 440, nonNecessary : false, startChance : undefined,
-     followChance : undefined}, 
+    {y : 440, nonNecessary : true, startChance : 2, followChance : 1.5}, 
     {y : 408, nonNecessary : true, startChance : 8, followChance : 8}, 
     {y : 300, nonNecessary : true, startChance : 4, followChance : 1.3},
     {y : 200, nonNecessary : true, startChance : 4, followChance : 1.3},
@@ -104,7 +98,7 @@ function Environment () {
         {name : "groundBlock",  level : 1, necessary : true,  collidable : true},
         {name : "groundBlock",  level : 2, necessary : true,  collidable : true},
         {name : "groundBlock",  level : 3, necessary : true,  collidable : true},
-        {name : "bush",         level : 4, necessary : true,  collidable : false},
+        {name : "bush",         level : 4, necessary : false,  collidable : false},
         {name : "pipe",         level : 5, necessary : false, collidable : true},
         //{name : "solidBlock",   level : 6, necessary : false, collidable : true},
         {name : "brickBlock",   level : 6, necessary : false, collidable : true},
@@ -163,16 +157,20 @@ function Environment () {
             //first pass: draw neccesary
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
-                if(envBlock.drawable && envBlock.necessary) 
+                if(envBlock.drawable && envBlock.necessary) {
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
+                    envBlock.img.nextFrame();
+                }
             }
             //first pass: draw neccesary
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
-                if(envBlock.drawable && !envBlock.necessary) 
+                if(envBlock.drawable && !envBlock.necessary) {
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
+                    envBlock.img.nextFrame();
+                }
             }
         };
 
@@ -280,16 +278,25 @@ function Environment () {
         //of the necessary sprite
         while (furthestRight < 2 * gameWidth) {
             var collidable,
-                drawable;
+                drawable,
+                name;
             if (gap) {
-                collidable = false;
-                drawable = false;
+                if (choice.level === 2) {
+                    collidable = true;
+                    drawable = true;
+                    name = "piranhaPlant";
+                } else {
+                    collidable = false;
+                    drawable = false;
+                    name = choice.name;
+                }
             } else {
                 collidable = choice.collidable;
                 drawable = true;
+                name = choice.name;
             }
 
-            var newSprite = new EnvBlock(choice.name, furthestRight,
+            var newSprite = new EnvBlock(name, furthestRight,
                                          choice.level, choice.necessary,
                                          collidable, drawable, 2);
             spritesOnScreen.push(newSprite);
