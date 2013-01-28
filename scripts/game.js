@@ -209,11 +209,12 @@ function Game() {
         player.draw(ctx);
         _drawTopBar();
         
-        if(self.gamePaused){
-            _drawPauseScreen();
-        }
-        else if (self.gameOver){
+        if (self.gameOver){
+            player.switchAnimation("fall");
             _drawGameOverScreen();
+        }
+        else if(self.gamePaused){
+            _drawPauseScreen();
         }
     };
 
@@ -249,7 +250,7 @@ function Game() {
             player.destroyReferences();
             self.init();
         }
-        else if(keyCode === P_KEYCODE){
+        else if(keyCode === P_KEYCODE && self.gameOver === false){
             self.gamePaused = !self.gamePaused;
             pauseSprite.switchAnimation("default_static", true);
         }

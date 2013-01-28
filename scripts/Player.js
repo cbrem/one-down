@@ -143,7 +143,7 @@ function Player(){
     this._updateMovementAnim = function(game){
         var dirName = (this._facing === LEFT_DIR) ? "left" : "right";
         var baseAnimName;
-        if (game.falling) {
+        if (game.falling || game.gameOver) {
             baseAnimName = "fall";
         }
         else if(this._canStartJump === false){

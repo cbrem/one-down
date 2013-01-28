@@ -67,6 +67,9 @@ var levels = [
 function EnvBlock (name, x, level, necessary, collidable, drawable,
                    harmful, scaleFactor) {
     this.img = new SpriteImage(name);
+    if(this.img.hasAnimation("chomping")){
+        this.img.switchAnimation("chomping");
+    }
     this.name = name;
     this.x = x;
     this.level = level;
@@ -163,7 +166,9 @@ function Environment () {
                 if(envBlock.drawable && envBlock.necessary) {
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
-                    envBlock.img.nextFrame();
+                    if((game.gameOver || game.gamePaused) === false){
+                        envBlock.img.nextFrame();
+                    }
                 }
             }
             //first pass: draw neccesary
@@ -172,7 +177,9 @@ function Environment () {
                 if(envBlock.drawable && !envBlock.necessary) {
                     envBlock.img.drawToScale(ctx, envBlock.x, envBlock.y,
                                              envBlock.scaleFactor);
-                    envBlock.img.nextFrame();
+                    if((game.gameOver || game.gamePaused) === false){
+                        envBlock.img.nextFrame();
+                    }
                 }
             }
         };
