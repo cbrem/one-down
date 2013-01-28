@@ -281,7 +281,7 @@ function Game() {
         //set game dimensions and speed
         this.worldX = 0;
         this.worldY = 0;
-        this.width = 600;
+        this.width = 1200;
         this.height = 600;
         this.scrollX = -6;
         this.scrollY = 0;
