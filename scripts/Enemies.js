@@ -17,7 +17,7 @@ function Enemy(type, x, y){
         this.width = typeData.width;
         this.height = typeData.height;
         
-        this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 3.5;
+        this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 2;
         this.maxVelX = Math.abs(this.maxVelX);
         this.maxUpVel = 17;
         this.maxDownVel = this.maxUpVel*(3/4);
@@ -31,11 +31,23 @@ function Enemy(type, x, y){
         
         this.alive = true;
         this.exists = true;
-        this.collidable = true;//(typeData.flags.collidable) ? true : false;
+        this.collidable = (typeData.flags.collidable) ? true : false;
         this.harmful = true;
         
-        if(this.sprite.hasAnimation("walk_left")){
-            this.sprite.switchAnimation("walk_left");
+        this.facing = LEFT_DIR;
+    }
+    
+    this.draw = function(ctx,showDebug){
+        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
+        this.sprite.nextFrame();
+    }
+    
+    this._updateMovementAnim = function(){
+        var baseAnim = "walk";
+        var dirName = (this.facing === RIGHT_DIR) ? "right" : "left";
+        var animName = baseAnim + "_" + dirName;
+        if(this.sprite.hasAnimation(animName)){
+            this.sprite.switchAnimation(animName);
         }
     }
     
@@ -70,15 +82,20 @@ function Enemy(type, x, y){
         this._constrainVelocities();
     }
     
-    this.draw = function(ctx,showDebug){
-        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
-        this.sprite.nextFrame();
+    this.switchDirection = function(newDir){
+        // default to simply toggling direction if not given a direction
+        if(newDir !== LEFT_DIR && newDir !== RIGHT_DIR){
+            newDir = (this.facing === LEFT_DIR) ? RIGHT_DIR : LEFT_DIR;
+        }
+        this.facing = newDir;
+        this.velX = (this.facing === LEFT_DIR) ? -this.maxVelX : this.maxVelX;
     }
     
     this.update = function(game){
         this._updateVel(game);
         this._updatePos(game);
-       
+        
+        this._updateMovementAnim();
     }
     
     this._init(type, x ,y);
@@ -133,17 +150,17 @@ function Enemies(){
 Enemy.types = {
     "spiny":{
         "spriteName": "spiny",
-        "width": 32,
-        "height": 32,
+        "width": 28,
+        "height": 28,
         "flags":{
             "has_gravity": true,
-            "collidable": true
+            "collidable": true // if set to true, enemy will also change directions at walls
         }
     },
     "bullet_bill":{
         "spriteName": "bullet_bill",
-        "width": 32,
-        "height": 29,
+        "width": 28,
+        "height": 20,
         "maxVelX": 5,
         "flags":{
         }

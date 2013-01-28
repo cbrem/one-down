@@ -334,7 +334,7 @@ SpriteImage.sourcesData = {
         "imgObj": undefined,
         "frameStepDelay": 5,
         "animationData":{
-            "default_static":[{x:544,y:415,w:32,h:32}],
+            "default_static":[{x:1024,y:160,w:32,h:32}],
             "walk_left":[{x:1024,y:160,w:32,h:32},
                           {x:992,y:160,w:32,h:32}],
             "walk_right":[{x:544,y:415,w:32,h:32},

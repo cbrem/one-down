@@ -288,7 +288,7 @@ function Game() {
         this.worldY = 0;
         this.width = 1200;
         this.height = 600;
-        this.scrollSpeed = -8;
+        this.scrollSpeed = -1;//-8;
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
@@ -304,8 +304,8 @@ function Game() {
         collisions = new Collisions();
         
         allEnemies = new Enemies();
-        allEnemies.addEnemy("spiny", 500, 100);
-        //allEnemies.addEnemy("bullet_bill", 1000, 80);
+        allEnemies.addEnemy("spiny", 500, 300);
+        allEnemies.addEnemy("bullet_bill", 1000, 80);
         
         pauseSprite = new SpriteImage("sleep_render");
     }
