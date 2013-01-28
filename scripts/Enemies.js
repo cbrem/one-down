@@ -16,7 +16,7 @@ function Enemy(type, x, y){
         this.width = typeData.width;
         this.height = typeData.height;
         
-        this.velX = 1;
+        this.velX = 5;
         this.velY = 0;
         this.accelX = 0;
         this.gravAccel = 3;
@@ -27,8 +27,8 @@ function Enemy(type, x, y){
         this.alive = true;
         this.exists = true;
         
-        if(this.sprite.hasAnimation("walk")){
-            this.sprite.switchAnimation("walk");
+        if(this.sprite.hasAnimation("walk_right")){
+            this.sprite.switchAnimation("walk_right");
         }
     }
     
@@ -102,8 +102,8 @@ function Enemies(){
 
 
 Enemy.types = {
-    "goomba":{
-        "spriteName": "goomba",
+    "spiny":{
+        "spriteName": "spiny",
         "width": 32,
         "height": 32,
         "flags":[]
@@ -111,7 +111,7 @@ Enemy.types = {
     "bullet_bill":{
         "spriteName": "bullet_bill",
         "width": 32,
-        "height": 28,
+        "height": 29,
         "flags":[]
     }
 }

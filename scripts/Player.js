@@ -20,7 +20,7 @@ function Player(x, y, width, height){
         this.velY = 0;
         this.accelX = 0;
         
-        this.gravAccel = 3;
+        this.gravAccel = 2.7;
         this.accelY = this.gravAccel;
         
         this.maxVelX = 13;
@@ -236,7 +236,7 @@ function Player(x, y, width, height){
             }
             else if(this._canContinueJump){
                 // counteract some of gravity to implement controllable ascent
-                this.velY -= this.gravAccel*(1/2);
+                this.velY -= this.gravAccel*(.5);
             }
         }
     
