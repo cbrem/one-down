@@ -180,15 +180,16 @@ function Game() {
         
         ctx.font = 'bold 60px "Lucida Console", Monaco, monospace';
         ctx.textAlign = "center";
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
         
         var pauseMetrics = pauseSprite.getCurrFrameMetrics();
         var text = "Paused";
         var textX = (canvas.width - pauseMetrics.width)/2;
         var textY = canvas.height/2;
-        ctx.fillText("Paused", textX, textY);
-        ctx.strokeText("Paused", textX, textY);
+        
+        ctx.fillStyle = "black";
+        ctx.fillText(text, textX+1, textY+1);
+        ctx.fillStyle = "white";
+        ctx.fillText(text, textX, textY);
         ctx.restore();
         
         pauseSprite.drawTo(ctx, textX + pauseMetrics.width + 30, textY - pauseMetrics.height/2); 
