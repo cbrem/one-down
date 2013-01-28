@@ -319,7 +319,7 @@ function Environment () {
                         console.log("MADE BIG GAP")
                         //force gap to appear soon
                         self.timeToNextGap = 0;
-                        gapLeft = 35;
+                        gapLeft = 40;
                         game.transitionDrop = false;
                         drawGap = true;
                     } else {

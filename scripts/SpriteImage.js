@@ -306,5 +306,15 @@ SpriteImage.sourcesData = {
                     {x:32,y:32,w:32,h:32}],
             "stomped":[{x:32,y:32,w:32,h:32}]
         }
-    }
+    },
+        "piranhaPlant": {
+        "srcPath": "assets/images/enemies.png",
+        "imgObj": undefined,
+        "frameStepDelay": 20,
+        "animationData":{
+            "default_static":[{x:384,y:144,w:32,h:48}],
+            "chomping":[{x:384,y:144,w:32,h:48},
+                        {x:416,y:144,w:32,h:48}]
+        }
+    },
 }
