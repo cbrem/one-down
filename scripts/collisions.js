@@ -51,7 +51,7 @@ function Collisions() {
       var xCollGap = (ox + ow) - player.x;
       var yCollGap = (oy + oh) - player.y;
       // if top left is mostly on top, move player down
-      if (xCollGap > yCollGap) {player.y = oy+oh;}
+      if (xCollGap >= yCollGap) {player.y = oy+oh;}
       // if bottom left is mostly on left, move player right
       else {player.x = ox + ow;}
     } 
@@ -59,7 +59,7 @@ function Collisions() {
       var xCollGap = (player.x + player.width) - ox;
       var yCollGap = (oy + oh) - player.y;
       // if top right is mostly on top, move player down
-      if (xCollGap > yCollGap) {player.y = oy+oh;}
+      if (xCollGap >= yCollGap) {player.y = oy+oh;}
       // if bottom right is mostly on right, move player left
       else {player.x = ox - player.width}
     } 
@@ -67,7 +67,7 @@ function Collisions() {
       var xCollGap = (ox + ow) - player.x;
       var yCollGap = (player.y + player.height) - oy;
       // if bottom left is mostly on top, move player up
-      if (xCollGap > yCollGap) {player.y = oy-player.height-1;}
+      if (xCollGap >= yCollGap) {player.y = oy-player.height-1;}
       // if bottom left is mostly on left, move player right
       else {player.x = ox + ow;}
     }
@@ -75,7 +75,7 @@ function Collisions() {
       var xCollGap = (player.x + player.width) - ox;
       var yCollGap = (player.y + player.height) - oy;
       // if bottom right is mostly on top, move player up
-      if (xCollGap > yCollGap) {player.y = oy-player.height-1;}
+      if (xCollGap >= yCollGap) {player.y = oy-player.height-1;}
       // if bottom right is mostly on the right, move player left
       else {player.x = ox-player.width;}
     }
