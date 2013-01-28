@@ -226,7 +226,7 @@ SpriteImage.sourcesData = {
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
                  "cloud", "bush", "sleep_render", "goomba", "bullet_bill",
-                 "piranhaPlant"],
+                 "piranhaPlant", "spiny"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -297,32 +297,35 @@ SpriteImage.sourcesData = {
                               {x:111,y:0,w:97,h:294}]
         }
     },
-    "goomba":{
-        "srcPath": "assets/images/enemies.png",
-        "imgObj": undefined,
-        "frameStepDelay": 8,
-        "animationData":{
-            "default_static":[{x:0,y:32,w:32,h:32}],
-            "walk":[{x:0,y:32,w:32,h:32},
-                    {x:32,y:32,w:32,h:32}],
-            "stomped":[{x:32,y:32,w:32,h:32}]
-        }
-    },
-    "piranhaPlant": {
-    "srcPath": "assets/images/enemies.png",
-    "imgObj": undefined,
-    "frameStepDelay": 20,
-    "animationData":{
-        "default_static":[{x:384,y:144,w:32,h:48}],
-        "chomping":[{x:384,y:144,w:32,h:48},
-                    {x:416,y:144,w:32,h:48}]
-    }
-    },
     "bullet_bill":{
         "srcPath": "assets/images/enemies.png",
         "imgObj": undefined,
         "animationData":{
-            "default_static":[{x:1152,y:34,w:32,h:28}]
+            "default_static":[{x:1152,y:34,w:32,h:28}],
+            "walk_left":[{x:1152,y:34,w:32,h:28}],
+            "walk_right":[{x:416,y:289,w:32,h:28}]
+        }
+    },
+    "piranhaPlant": {
+        "srcPath": "assets/images/enemies.png",
+        "imgObj": undefined,
+        "frameStepDelay": 20,
+        "animationData":{
+            "default_static":[{x:384,y:144,w:32,h:48}],
+            "chomping":[{x:384,y:144,w:32,h:48},
+                        {x:416,y:144,w:32,h:48}]
+        },
+    },
+    "spiny":{
+        "srcPath": "assets/images/enemies.png",
+        "imgObj": undefined,
+        "frameStepDelay": 5,
+        "animationData":{
+            "default_static":[{x:544,y:415,w:32,h:32}],
+            "walk_left":[{x:1024,y:160,w:32,h:32},
+                          {x:992,y:160,w:32,h:32}],
+            "walk_right":[{x:544,y:415,w:32,h:32},
+                         {x:576,y:415,w:32,h:32}]
         }
     }
 }
