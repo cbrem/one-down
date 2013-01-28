@@ -301,7 +301,7 @@ function Environment () {
     //note that these should be the NEW side coordinates.
     this.update = function (game) {
 
-        //possibly turn on gap drawing
+        // gap drawing
         var manageGaps = function () {
             if (drawGap) {
                 //if gap drawing is on
@@ -316,10 +316,10 @@ function Environment () {
                 //if not currently drawing a gap
                 if (self.timeToNextGap > 0) {
                     if (game.transitionDrop) {
-                        console.log("MADE BIG GAP")
+                        console.log("MADE BIG GAP");
                         //force gap to appear soon
                         self.timeToNextGap = 0;
-                        gapLeft = 40;
+                        gapLeft = randomInt(38,45);
                         game.transitionDrop = false;
                         drawGap = true;
                     } else {
