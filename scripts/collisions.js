@@ -99,7 +99,7 @@ function Collisions() {
     }
     else if(isTop){
         if(player.abortJump){
-            console.log(overlap, "with", objName);
+            //console.log(overlap, "with", objName);
             player.abortJump();
         }
     }
@@ -128,7 +128,7 @@ function Collisions() {
           }
           // if player is falling and collides with a non-enemy
           else if (game.falling) {
-            console.log("HEY I SHOULD LAND");
+           // console.log("HEY I SHOULD LAND");
             // they should land
             game.falling = false;
           }

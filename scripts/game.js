@@ -288,7 +288,7 @@ function Game() {
         this.worldY = 0;
         this.width = 1200;
         this.height = 600;
-        this.scrollSpeed = -1;//-8;
+        this.scrollSpeed = -8;
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;

@@ -175,7 +175,6 @@ function Player(){
     }
     
     this.abortJump = function(){
-        console.log("jump aborted");
         this._canStartJump = false;
         this._canContinueJump = false;
         

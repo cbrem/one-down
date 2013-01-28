@@ -24,6 +24,7 @@ function SpriteImage(srcNickname){
 
         //CONNOR - store reference to image width
         this.width = srcData.animationData.default_static[0].w;
+        this.height = srcData.animationData.default_static[0].h;
 
         assert(srcImgObj !== undefined, "SpriteImage: no Image set for " + this.nickname);
         assert(srcImgObj instanceof Image, "SpriteImage: not given Image object");

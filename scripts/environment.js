@@ -65,7 +65,9 @@ var levels = [
 
 //constructor for EnvBlock objects, which build the environment
 function EnvBlock (name, x, level, necessary, collidable, drawable,
-                   harmful, scaleFactor) {
+                   harmful, width, height) {
+    assert(typeof(width) === "number" && width > 0, "invalid width for EnvBlock"+name);
+    assert(typeof(height) === "number" && height > 0, "invalid height for EnvBlock"+name);
     this.img = new SpriteImage(name);
     if(this.img.hasAnimation("chomping")){
         this.img.switchAnimation("chomping");
@@ -78,9 +80,8 @@ function EnvBlock (name, x, level, necessary, collidable, drawable,
     this.collidable = collidable;
     this.drawable = drawable;
     this.harmful = harmful;
-    this.scaleFactor = scaleFactor;
-    this.width = this.img.width * this.scaleFactor;
-    this.height = this.width;
+    this.width = width;
+    this.height = height;
 }
 
 function Environment () {
@@ -100,15 +101,15 @@ function Environment () {
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
     var spriteChoices = [
-        {name : "groundBlock",  level : 0, necessary : true,  collidable : true},
-        {name : "groundBlock",  level : 1, necessary : true,  collidable : true},
-        {name : "groundBlock",  level : 2, necessary : true,  collidable : true},
-        {name : "groundBlock",  level : 3, necessary : true,  collidable : true},
-        {name : "bush",         level : 4, necessary : false,  collidable : false},
-        {name : "pipe",         level : 5, necessary : false, collidable : true},
-        {name : "brickBlock",   level : 6, necessary : false, collidable : true},
-        {name : "cloudPlatform",level : 7, necessary : false, collidable : true},
-        {name : "cloud",        level : 8, necessary : false, collidable : false},
+        {name : "groundBlock",  level : 0, necessary : true,  collidable : true, width:32, height:32},
+        {name : "groundBlock",  level : 1, necessary : true,  collidable : true, width:32, height:32},
+        {name : "groundBlock",  level : 2, necessary : true,  collidable : true, width:32, height:32},
+        {name : "groundBlock",  level : 3, necessary : true,  collidable : true, width:32, height:32},
+        {name : "bush",         level : 4, necessary : false,  collidable : false, width:96, height:32},
+        {name : "pipe",         level : 5, necessary : false, collidable : true, width:64, height:64},
+        {name : "brickBlock",   level : 6, necessary : false, collidable : true, width:32, height:32},
+        {name : "cloudPlatform",level : 7, necessary : false, collidable : true, width:96, height:32},
+        {name : "cloud",        level : 8, necessary : false, collidable : false, width:96, height:64},
     ];
 
     //moves all EnvBlocks in a by a given distance
@@ -164,7 +165,7 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height, true);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -174,7 +175,7 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && !envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height, true);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -261,7 +262,7 @@ function Environment () {
             var newSprite =
                 new EnvBlock(levelChoice.name, furthestRight,
                              levelChoice.level, levelChoice.necessary,
-                             collidable, drawable, false, 2);
+                             collidable, drawable, false, levelChoice.width, levelChoice.height);
             furthestRight += newSprite.width;
             //furthestRight += buffer;
             spritesOnScreen.push(newSprite);
@@ -292,8 +293,9 @@ function Environment () {
                 if (choice.level === 0 && plants) {
                     //draw a piranha plant over the gap
                     var holeSprite = 
-                        new EnvBlock("piranhaPlant", furthestRight,
-                                     0, false, true, true, true, 1);
+                        new EnvBlock("piranhaPlant", furthestRight, 
+                                     0, false, true, true, true, 
+                                     32,48); // size is hardcoded as hell, yikes
                     spritesOnScreen.push(holeSprite);
                 }
                 collidable = false;
@@ -305,7 +307,7 @@ function Environment () {
 
             var newSprite = new EnvBlock(choice.name, furthestRight,
                                          choice.level, choice.necessary,
-                                         collidable, drawable, false, 2);
+                                         collidable, drawable, false, choice.width, choice.height);
             spritesOnScreen.push(newSprite);
             furthestRight += newSprite.width;
         }
