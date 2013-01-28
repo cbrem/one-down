@@ -85,52 +85,59 @@ function Game() {
     this.gamePaused;
     this.gameOver;
     this.time;
-    this.transition;
+    this.transitionDrop;
+    this.transitionLand;
     this.nextTransition;
     this.falling;
     // set of directions to kill the player in if they are offscreen there
     this.deadZoneDirs;
 
     var updateModel = function () {
-        //synchronously send updates to player
-        //console.log(clicks, heldKeys);
-        clicks = [];      //clear clicks, but don't clear 
-                                        // heldKeys until keyup event
-        //checks player collisions and corrects position
-        
+        //clear clicks, but don't clear the held keys
+        clicks = [];
+
+        // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
-            collisions.collide(player,environment.spritesOnScreen); 
+            collisions.collide(player,environment.spritesOnScreen,self); 
         }
         else{ 
             pauseSprite.nextFrame();
         }
 
-        // for the high score
+        // for timing and score
         if ((!self.gameOver) && (!self.gamePaused)) {
             self.time++;
         }
-        // first falling transition
+        console.log(self.nextTransition);
+        // activate TRANSITION
         if (self.time > self.nextTransition) {
-            if (!self.falling) {
-                self.transition = true;
-                self.nextTransition += 400;
+            // activate GAP (if X direction is moving, make drop)
+            if (self.scrollX !== 0){
+                console.log("GAP TRANSISTION at ", self.time);
+                self.transitionDrop = true;
+                // this gets overridden when they fall
+                // and is a safety in case they don't
+                self.nextTransition += 300;
             }
+            // activate STOP FALLING
             else {
-                self.transition = false;
-                self.nextTransition += 200;
-                self.falling = false;
-                self.scrollX = -4;
-                self.scrollY = 0;
+                console.log("STOP FALLING TRANSISTION at ", self.time);
+                self.transitionLand = true;
+                self.nextTransition = self.time + 300;
+                //self.falling = false;
+                environment.init(self, self.height);
             }
         }
-        // player has fallen into a hole or falls too far down
-        if (player.y > 445) {
+        // activate FALLING
+        if ((!self.falling) && (player.y > 445)) {
+            console.log("FALLING NOW!");
             self.falling = true;
             self.scrollX = 0;
             self.scrollY = -10;
+            self.nextTransition = self.time + 100;
         }
     };
 
@@ -201,11 +208,11 @@ function Game() {
         player.draw(ctx);
         _drawTopBar();
         
-        if (self.gameOver){
-            _drawGameOverScreen();
-        }
-        else if(self.gamePaused){
+        if(self.gamePaused){
             _drawPauseScreen();
+        }
+        else if (self.gameOver){
+            _drawGameOverScreen();
         }
     };
 
@@ -242,10 +249,8 @@ function Game() {
             self.init();
         }
         else if(keyCode === P_KEYCODE){
-            if(self.gameOver !== true){
-                self.gamePaused = !self.gamePaused;
-                pauseSprite.switchAnimation("default_static", true);
-            }
+            self.gamePaused = !self.gamePaused;
+            pauseSprite.switchAnimation("default_static", true);
         }
     };
     
@@ -267,8 +272,10 @@ function Game() {
         heldKeys = {};
         this.gamePaused = false;
         this.gameOver = false;
-        this.transition = false;
-        this.nextTransition = 250;
+        this.transitionDrop = false;
+        this.transitionLand = false;
+        this.nextTransition = 100;
+        this.nextEnvironment = 0;
         this.falling = false;
         
         //set game dimensions and speed
@@ -284,7 +291,8 @@ function Game() {
         player = new Player(300, 400, 32, 32);
         //initialize environment
         environment = new Environment();
-        environment.init(ctx, self);
+        environment.init(self, 0);
+        environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
         // initialize Collisions
         collisions = new Collisions();
         

@@ -63,9 +63,10 @@ var levels = [
      followChance : undefined}, 
     {y : 440, nonNecessary : false, startChance : undefined,
      followChance : undefined}, 
-    {y : 408, nonNecessary : true, startChance : 2, followChance : 5}, 
-    {y : 300, nonNecessary : true, startChance : 2, followChance : 1.1},
-    {y : 200, nonNecessary : true, startChance : 4, followChance : 6}
+    {y : 408, nonNecessary : true, startChance : 8, followChance : 8}, 
+    {y : 300, nonNecessary : true, startChance : 4, followChance : 1.3},
+    {y : 200, nonNecessary : true, startChance : 4, followChance : 1.3},
+    {y : 100, nonNecessary : true, startChance : 4, followChance : 2}
 ];
 
 //constructor for EnvBlock objects, which build the environment
@@ -88,8 +89,13 @@ function Environment () {
 
     this.spritesOnScreen; //lists of sprites currently on the screen
     this.bgColor;
+    this.timeToNextGap; //time until setNextGap is turned on
     
     var buffer; //min space between nonNecessary EnvBlocks
+    var drawGap; //boolean which determines whether gap should be
+                 //currently drawn
+    var gapLeft;  //once setNextGap is on, time for which gap continues
+                  //to be drawn
 
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
@@ -102,38 +108,52 @@ function Environment () {
         {name : "pipe",         level : 5, necessary : false, collidable : true},
         //{name : "solidBlock",   level : 6, necessary : false, collidable : true},
         {name : "brickBlock",   level : 6, necessary : false, collidable : true},
-        {name : "cloud",        level : 7, necessary : false, collidable : false}
+        {name : "brickBlock",   level : 7, necessary : false, collidable : true},
+        {name : "cloud",        level : 8, necessary : false, collidable : false}
     ];
 
-    this.init = function (ctx, game) {
-        //clear sprite arrays
+    //moves all EnvBlocks in a by a given distance
+    var moveEnvBlocks = function (a, distX, distY) {
+        for (var i = 0; i < a.length; i++){
+            a[i].x += distX;
+            a[i].y += distY;
+        }    
+    };
 
+    //initialize the environment, with "below" determining how far beneath
+    //the current top of the screen the top of the environment is located
+    this.init = function (game, below) {
         //clear spritesOnScreen
         this.spritesOnScreen = [];
 
-        //set buffer
         buffer = 50;
+        gapLeft = 0;
+        drawGap = false;
 
-        //randomly choose background color
-        this.bgColor = {red: 0x93, green:0xbe, blue:0xff};;
+        //randomly choose background color and first gap location
+        this.bgColor = randomColor();
+        this.timeToNextGap = 0;
 
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
             if (choice.necessary)
-                addNecessarySprite(choice, game.width, this.spritesOnScreen);
+                addNecessarySprite(choice, game.width, this.spritesOnScreen,
+                                   drawGap);
         }
 
         //fill screen with random sprites on each level
         for (var i = 0; i < levels.length; i++)
             if (levels[i].nonNecessary === true)
                 addNonNecessarySprite(i, game.width, this.spritesOnScreen,
-                                      spriteChoices, levels, buffer, true);
+                                      spriteChoices, levels, buffer, true,
+                                      drawGap);
+
+        moveEnvBlocks(this.spritesOnScreen, 0, below);
     };
 
     this.draw = function (ctx, game) {
         //draw background
-        //console.log(this.bgColor);
         ctx.fillStyle = ("#"+(this.bgColor.red.toString(16))+
                         (this.bgColor.green.toString(16))+
                         this.bgColor.blue.toString(16));
@@ -180,7 +200,8 @@ function Environment () {
     //onScreen is a boolean which determines whether EnvBlocks can be created
     //if they are in a position that is currently on the screen
     var addNonNecessarySprite = function (level, gameWidth, spritesOnScreen,
-                                          choices, levels, buffer, onScreen) {
+                                          choices, levels, buffer, onScreen,
+                                          gap) {
         
         //ensure that all objects created will be off screen
         var furthestRight = (onScreen) ? 0 : gameWidth;
@@ -222,7 +243,7 @@ function Environment () {
 
             var chance = (furthestRightDrawn) ? levels[level].followChance :
                                                 levels[level].startChance;
-            if (randomChance(chance)) {
+            if (randomChance(chance) && !gap) {
                 collidable = levelChoice.collidable;
                 drawable = true;
             } else {
@@ -242,7 +263,8 @@ function Environment () {
     };
 
     //span the screen with instances of a necessary sprite.
-    var addNecessarySprite = function (choice, gameWidth, spritesOnScreen) {
+    var addNecessarySprite = function (choice, gameWidth, spritesOnScreen,
+                                       gap) {
 
         //determine how much screen space of the necessary sprite is missing
         var furthestRight = 0; //right side of furthest right sprite
@@ -257,9 +279,19 @@ function Environment () {
         //fill that screen space with an appropriate number of instances
         //of the necessary sprite
         while (furthestRight < 2 * gameWidth) {
+            var collidable,
+                drawable;
+            if (gap) {
+                collidable = false;
+                drawable = false;
+            } else {
+                collidable = choice.collidable;
+                drawable = true;
+            }
+
             var newSprite = new EnvBlock(choice.name, furthestRight,
                                          choice.level, choice.necessary,
-                                         choice.collidable, true, 2);
+                                         collidable, drawable, 2);
             spritesOnScreen.push(newSprite);
             furthestRight += newSprite.width;
         }
@@ -268,13 +300,40 @@ function Environment () {
     //takes the x-coordinate of the screen's sides in world coordinates.
     //note that these should be the NEW side coordinates.
     this.update = function (game) {
-        //moves all EnvBlocks in a by a given distance
-        var moveEnvBlocks = function (a, distX, distY) {
-            for (var i = 0; i < a.length; i++){
-                a[i].x += distX;
-                a[i].y += distY;
-            }    
+
+        //possibly turn on gap drawing
+        var manageGaps = function () {
+            if (drawGap) {
+                //if gap drawing is on
+                if (gapLeft > 0) {
+                    gapLeft--;
+                } else {
+                    //time to turn gap drawing off
+                    drawGap = false;
+                    self.timeToNextGap = randomInt(50, 100);
+                }
+            } else {
+                //if not currently drawing a gap
+                if (self.timeToNextGap > 0) {
+                    if (game.transitionDrop) {
+                        console.log("MADE BIG GAP")
+                        //force gap to appear soon
+                        self.timeToNextGap = 0;
+                        gapLeft = 35;
+                        game.transitionDrop = false;
+                        drawGap = true;
+                    } else {
+                        self.timeToNextGap--;
+                    }
+                } else {
+                    //time to turn gap drawing on
+                    drawGap = true;
+                    gapLeft = randomInt(20, 30);
+                }
+
+            }
         };
+        manageGaps();
 
         //shift all EnvBlocks
         moveEnvBlocks(this.spritesOnScreen, game.scrollX, game.scrollY);
@@ -282,26 +341,40 @@ function Environment () {
         //remove elements which have moved off left side
         pruneSprites(this.spritesOnScreen, game.width);
 
-        if (!game.transition) {
-            //fill screen with random sprites on each level
-            for (var i = 0; i < levels.length; i++){
-                if (levels[i].nonNecessary === true){
-                    addNonNecessarySprite(i, game.width, this.spritesOnScreen,
-                                          spriteChoices, levels, buffer, false);
-                }
-            }
-
-            //add in necessary sprites
-            for (var i = 0; i < spriteChoices.length; i++) {
-                var choice = spriteChoices[i];
-                if (choice.necessary){
-                    addNecessarySprite(choice, game.width, this.spritesOnScreen);
-                }
+        //fill screen with random sprites on each level
+        for (var i = 0; i < levels.length; i++){
+            if (levels[i].nonNecessary === true){
+                addNonNecessarySprite(i, game.width, this.spritesOnScreen,
+                                      spriteChoices, levels, buffer, false,
+                                      drawGap);
             }
         }
-        else if (game.falling)
-        {
-            // don't let it get below 16...bad hex error-turns white
+
+        //add in necessary sprites
+        for (var i = 0; i < spriteChoices.length; i++) {
+            var choice = spriteChoices[i];
+            if (choice.necessary){
+                addNecessarySprite(choice, game.width, 
+                                   this.spritesOnScreen, drawGap);
+            }
+        }
+
+        //check for next environment reaching correct y - coordinate
+        var maxY = 0;
+        for (var i = 0; i < this.spritesOnScreen.length; i++) {
+            var envBlock = this.spritesOnScreen[i];
+            maxY = Math.max(maxY, envBlock.y + envBlock.width);
+        }
+        if (game.transitionLand) {console.log("maxY = ", maxY);}
+        if ((game.transitionLand) && (maxY <= game.height)) {
+            console.log("BACK TO PLATFORM TRANSITION!");
+            game.scrollX = -6;
+            game.scrollY = 0;
+            game.transitionLand = false;
+        }
+
+        if (game.falling) {
+           // don't let it get below 16...bad hex error-turns white
             var fadeSpeed = 2;
             if (this.bgColor.red > 15+fadeSpeed) 
                 {this.bgColor.red -= fadeSpeed;};

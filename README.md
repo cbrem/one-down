@@ -6,8 +6,6 @@ TO DO:
 
 fixes:
 
--fix block gap problems
--fix odd collision things
 
 falling mode:
 
@@ -18,13 +16,11 @@ transitions:
 -make transitions smoother
 -bring color back after transition
 -make new worlds after the first one have strange colored objects
--make an other side that looks like you can jump to it (insurmountable hole)
 
 platforming mode:
 
 -add enemies in platforming mode
 -make the brick blocks breakable
--make more blocks in a row
 -make stairs of blocks
 
 falling mode awesome extra:
