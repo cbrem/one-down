@@ -280,7 +280,7 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -6;
+        this.scrollX = -10;
         this.scrollY = 0;
         this.time = 0;
         
