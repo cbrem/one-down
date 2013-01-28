@@ -298,6 +298,7 @@ function Game() {
         
         allEnemies = new Enemies();
         allEnemies.addEnemy("goomba", 50, 50);
+        allEnemies.addEnemy("bullet_bill", 50, 80);
         
         pauseSprite = new SpriteImage("sleep_render");
     }
