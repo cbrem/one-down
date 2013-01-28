@@ -334,7 +334,7 @@ function Environment () {
                 if (self.timeToNextGap > 0) {
                     if (game.transitionDrop) {
                         plants = false;
-                        console.log("MADE BIG GAP");
+                        //console.log("MADE BIG GAP");
                         //force gap to appear soon
                         self.timeToNextGap = 0;
                         gapLeft = randomInt(49,54);
@@ -384,7 +384,7 @@ function Environment () {
             maxY = Math.max(maxY, envBlock.y + envBlock.width);
         }
         if ((game.transitionLand) && (maxY <= game.height)) {
-            console.log("BACK TO PLATFORM TRANSITION!");
+           // console.log("BACK TO PLATFORM TRANSITION!");
             game.scrollX = game.scrollSpeed;
             game.scrollY = 0;
             game.transitionLand = false;

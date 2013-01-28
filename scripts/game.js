@@ -100,6 +100,9 @@ function Game() {
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
+            allEnemies.getAllEnemies().forEach(function(enemy){
+                collisions.collide(enemy,environment.spritesOnScreen,self); 
+            });
             collisions.collide(player,environment.spritesOnScreen,self); 
         }
         else{ 
@@ -114,7 +117,7 @@ function Game() {
         if (self.time > self.nextTransition) {
             // activate GAP (if X direction is moving, make drop)
             if (self.scrollX !== 0){
-                console.log("GAP TRANSISTION at ", self.time);
+                //console.log("GAP TRANSISTION at ", self.time);
                 self.transitionDrop = true;
                 // this gets overridden when they fall
                 // and is a safety in case they don't
@@ -122,19 +125,19 @@ function Game() {
             }
             // activate STOP FALLING
             else {
-                console.log("STOP FALLING TRANSISTION at ", self.time);
+                //console.log("STOP FALLING TRANSISTION at ", self.time);
                 self.transitionLand = true;
                 self.nextTransition = self.time + 300;
                 // increase speed!
                 self.scrollSpeed -= 2;
                 player.maxVelX += 2;
-                console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
+                //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height);
             }
         }
         // activate FALLING
         if ((!self.falling) && (player.y > 550)) {
-            console.log("FALLING NOW!");
+           // console.log("FALLING NOW!");
             self.falling = true;
             self.scrollX = 0;
             self.scrollY = -10;
@@ -301,8 +304,8 @@ function Game() {
         collisions = new Collisions();
         
         allEnemies = new Enemies();
-        allEnemies.addEnemy("spiny", 50, 50);
-        allEnemies.addEnemy("bullet_bill", 50, 80);
+        allEnemies.addEnemy("spiny", 500, 100);
+        //allEnemies.addEnemy("bullet_bill", 1000, 80);
         
         pauseSprite = new SpriteImage("sleep_render");
     }

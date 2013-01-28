@@ -24,7 +24,8 @@ function Player(){
         this.accelY = this.gravAccel;
         
         this.maxVelX = 11;
-        this.maxUpVel = 17;
+        this.maxVelX = Math.abs(this.maxVelX);
+        this.maxUpVel = 18;
         this.maxDownVel = this.maxUpVel*(3/4);
         
         this._accelRate = 2;
@@ -161,17 +162,20 @@ function Player(){
         this.switchAnimation(fullAnimName);
     }
     
-    this.resetJump = function(){
-        this._canStartJump = true;
-        this._canContinueJump = true;
-        
+    this.killDownwardMomentum = function(){
         // kill falling momentum to 
         // prevent player from shooting into ground when walking off surfaces
         // (remember positive y coordinates move down)
         this.velY = Math.min(this.velY, 0);
     }
     
+    this.resetJump = function(){
+        this._canStartJump = true;
+        this._canContinueJump = true;
+    }
+    
     this.abortJump = function(){
+        console.log("jump aborted");
         this._canStartJump = false;
         this._canContinueJump = false;
         

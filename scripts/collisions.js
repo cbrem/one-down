@@ -38,8 +38,10 @@ function Collisions() {
   function unOverlap(player,overlap,ox,oy,ow,oh) {
     //console.log(overlap);
     if (overlap === "no collision") {return;}
-  	// side collisions-make the sides flush
-  	else if (overlap === "bottom collide") {player.y = oy-player.height;}
+  	// side collisions-make the sides flush 
+    // (+- 1 as a bandaid-fix to give slight buffer room and 
+    //  prevent getting stuck on blocks as much)
+  	else if (overlap === "bottom collide") {player.y = oy-player.height-1;}
   	else if (overlap === "right collide") {player.x = ox-player.width;}
   	else if (overlap === "top collide") {player.y = oy+oh;}
   	else if (overlap === "left collide") {player.x = ox+ow;}
@@ -65,7 +67,7 @@ function Collisions() {
       var xCollGap = (ox + ow) - player.x;
       var yCollGap = (player.y + player.height) - oy;
       // if bottom left is mostly on top, move player up
-      if (xCollGap > yCollGap) {player.y = oy-player.height;}
+      if (xCollGap > yCollGap) {player.y = oy-player.height-1;}
       // if bottom left is mostly on left, move player right
       else {player.x = ox + ow;}
     }
@@ -73,7 +75,7 @@ function Collisions() {
       var xCollGap = (player.x + player.width) - ox;
       var yCollGap = (player.y + player.height) - oy;
       // if bottom right is mostly on top, move player up
-      if (xCollGap > yCollGap) {player.y = oy-player.height;}
+      if (xCollGap > yCollGap) {player.y = oy-player.height-1;}
       // if bottom right is mostly on the right, move player left
       else {player.x = ox-player.width;}
     }
@@ -83,15 +85,23 @@ function Collisions() {
   	  player.y = oy-player.height;
     }
     var isBottom = overlap.indexOf("bottom") !== -1;
-    var isTop = overlap.indexOf("top") !== -1
-    var isLeft = overlap.indexOf("left") !== -1
-    var isRight = overlap.indexOf("right") !== -1
+    var isTop = overlap.indexOf("top") !== -1;
+    var isLeft = overlap.indexOf("left") !== -1;
+    var isRight = overlap.indexOf("right") !== -1;
     // reset ability to jump if they have a resetJump function defined
-    if(player.resetJump !== undefined && isBottom){
-        player.resetJump();
+    if(isBottom){
+        if(player.killDownwardMomentum){
+            player.killDownwardMomentum();
+        }
+        if(player.resetJump){
+            player.resetJump();
+        }
     }
-    else if(player.abortJump !== undefined && isTop){
-        player.abortJump();
+    else if(isTop){
+        if(player.abortJump){
+            console.log(overlap);
+            player.abortJump();
+        }
     }
   }
 
@@ -104,9 +114,13 @@ function Collisions() {
 	  for (var i = 0; i < env.length; i++) {
 	  	envObj = env[i];
 
+        if(envObj.collidable === false || player.collidable === false){
+            continue;
+        }
+        
 	  	overlap = getOverlap(envObj.x,envObj.y,envObj.width,envObj.height,
 	  										player.x,player.y,player.width,player.height);
-	  	if ((overlap !== "no collision") && envObj.collidable)
+	  	if (overlap !== "no collision")
 	  	  {
           // enemy collision
           if (envObj.harmful) {
