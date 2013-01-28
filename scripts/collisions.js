@@ -111,9 +111,6 @@ function Collisions() {
             player.switchDirection(LEFT_DIR);
         }
     }
-    if(player instanceof Enemy && player.type === "spiny" && overlap !== "no collide"){
-        console.log("spiny", overlap, "with", objName);
-    }
   }
 
   this.collide = function(player,env,game) {
@@ -134,7 +131,7 @@ function Collisions() {
 	  	if (overlap !== "no collision")
 	  	  {
           // enemy collision
-          if (envObj.harmful) {
+          if (envObj.harmful && player instanceof Player) {
             game.gameOver = true;
           }
           // if player is falling and collides with a non-enemy

@@ -22,7 +22,9 @@ function Enemy(type, x, y){
         this.maxUpVel = 17;
         this.maxDownVel = this.maxUpVel*(3/4);
         
-        this.velX = -this.maxVelX;
+        
+        this.facing = LEFT_DIR; // overridden in first switch direction call
+        this.velX = 0; // overridden in first switch direction call
         this.velY = 0;
         this.accelX = 0;
         this.gravAccel = 3;
@@ -33,8 +35,17 @@ function Enemy(type, x, y){
         this.exists = true;
         this.collidable = (typeData.flags.collidable) ? true : false;
         this.harmful = true;
-        
-        this.facing = LEFT_DIR;
+
+        this.switchDirection(LEFT_DIR);
+    }
+    
+    this.switchDirection = function(newDir){
+        // default to simply toggling direction if not given a direction
+        if(newDir !== LEFT_DIR && newDir !== RIGHT_DIR){
+            newDir = (this.facing === LEFT_DIR) ? RIGHT_DIR : LEFT_DIR;
+        }
+        this.facing = newDir;
+        this.velX = (this.facing === LEFT_DIR) ? -this.maxVelX : this.maxVelX;
     }
     
     this.draw = function(ctx,showDebug){
@@ -82,15 +93,6 @@ function Enemy(type, x, y){
         this._constrainVelocities();
     }
     
-    this.switchDirection = function(newDir){
-        // default to simply toggling direction if not given a direction
-        if(newDir !== LEFT_DIR && newDir !== RIGHT_DIR){
-            newDir = (this.facing === LEFT_DIR) ? RIGHT_DIR : LEFT_DIR;
-        }
-        this.facing = newDir;
-        this.velX = (this.facing === LEFT_DIR) ? -this.maxVelX : this.maxVelX;
-    }
-    
     this.update = function(game){
         this._updateVel(game);
         this._updatePos(game);
@@ -98,7 +100,7 @@ function Enemy(type, x, y){
         this._updateMovementAnim();
     }
     
-    this._init(type, x ,y);
+    this._init(type, x, y);
     //this._init.apply(this, arguments); // commented due to hw1 restriction
 }
 

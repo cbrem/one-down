@@ -11,36 +11,6 @@ Interface:
 
 */
 
-//generates a random integer.
-//lower bound is inclusive, upper bound is exclusive.
-function randomInt(bound1, bound2) {
-    var lo = Math.min(bound1, bound2);
-    var hi = Math.max(bound1, bound2);
-    var rand = lo + Math.floor(Math.random()*(hi - lo));
-    if(rand === hi)
-        //this is highly unlikely, maybe impossible
-        return randomInt(bound1, bound2);
-    else
-        return rand;
-}
-
-//randomly chooses an element from an array
-function randomChoice (a) {
-    return a[randomInt(0, a.length)];
-}
-
-//returns true with probability 1/x
-function randomChance(x) {
-    return (0 === randomInt(0, x));
-}
-
-//return a random hexidecimal color
-function randomColor() {
-    return {red : randomInt(0x10, 0xFF), 
-            blue : randomInt(0x10, 0xFF),
-            green : randomInt(0x10, 0xFF)};
-}
-
 //used by both EnvBlock and Environment.
 //level[n] gives the y-coordinate associated with level n,
 //a boolean (nonNecessary) which determines whether nonNecessary sprites
