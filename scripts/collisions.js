@@ -111,7 +111,6 @@ function Collisions() {
           // enemy collision
           if (envObj.harmful) {
             game.gameOver = true;
-            console.log("DRAWIN MAH PLANTS");
           }
           // if player is falling and collides with a non-enemy
           else if (game.falling) {
