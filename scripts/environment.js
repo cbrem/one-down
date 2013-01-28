@@ -359,7 +359,7 @@ function Environment () {
             }
         }
 
-        //check for next environment reaching correct y - coordinate
+        //check for the whole environment being on screen
         var maxY = 0;
         for (var i = 0; i < this.spritesOnScreen.length; i++) {
             var envBlock = this.spritesOnScreen[i];
@@ -368,9 +368,10 @@ function Environment () {
         if (game.transitionLand) {console.log("maxY = ", maxY);}
         if ((game.transitionLand) && (maxY <= game.height)) {
             console.log("BACK TO PLATFORM TRANSITION!");
-            game.scrollX = -6;
+            game.scrollX = -10;
             game.scrollY = 0;
             game.transitionLand = false;
+            if (game.falling) game.falling = false;
         }
 
         if (game.falling) {

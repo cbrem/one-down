@@ -23,7 +23,7 @@ function Player(x, y, width, height){
         this.gravAccel = 3;
         this.accelY = this.gravAccel;
         
-        this.maxVelX = 7;
+        this.maxVelX = 13;
         this.maxUpVel = 17;
         this.maxDownVel = this.maxUpVel*(3/4);
         
