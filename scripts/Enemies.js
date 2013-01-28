@@ -18,6 +18,11 @@ function Enemy(type, x, y){
         
         this.velX = 1;
         this.velY = 0;
+        this.accelX = 0;
+        this.gravAccel = 3;
+        this.accelY = this.gravAccel;
+        
+        this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 3;
         
         this.alive = true;
         this.exists = true;
@@ -25,12 +30,18 @@ function Enemy(type, x, y){
         this.sprite.switchAnimation("walk");
     }
     
-    this.updatePos = function(game){
+    this._updatePos = function(game){
         this.x += this.velX;
         this.y += this.velY;
         
         this.x += game.scrollX;
         this.y += game.scrollY;
+        
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+    }
+    
+    this._updateVel = function(game){
     }
     
     this.draw = function(ctx,showDebug){
@@ -39,7 +50,8 @@ function Enemy(type, x, y){
     }
     
     this.update = function(game){
-        this.updatePos(game);
+        this._updateVel(game);
+        this._updatePos(game);
     }
     
     this._init(type, x ,y);
@@ -90,7 +102,8 @@ function Enemies(){
 Enemy.types = {
     "goomba":{
         "spriteName": "goomba",
-        "width": 16,
-        "height": 16
+        "width": 32,
+        "height": 32,
+        "flags":[]
     }
 }
