@@ -111,9 +111,6 @@ function Collisions() {
             player.switchDirection(LEFT_DIR);
         }
     }
-    if(player instanceof Enemy && player.type === "spiny" && overlap !== "no collide"){
-        console.log("spiny", overlap, "with", objName);
-    }
   }
 
   this.collide = function(player,env,game) {
