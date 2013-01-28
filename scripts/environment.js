@@ -331,7 +331,7 @@ function Environment () {
                         console.log("MADE BIG GAP");
                         //force gap to appear soon
                         self.timeToNextGap = 0;
-                        gapLeft = randomInt(38,45);
+                        gapLeft = randomInt(49,54);
                         game.transitionDrop = false;
                         drawGap = true;
                     } else {
@@ -377,10 +377,9 @@ function Environment () {
             var envBlock = this.spritesOnScreen[i];
             maxY = Math.max(maxY, envBlock.y + envBlock.width);
         }
-        if (game.transitionLand) {console.log("maxY = ", maxY);}
         if ((game.transitionLand) && (maxY <= game.height)) {
             console.log("BACK TO PLATFORM TRANSITION!");
-            game.scrollX = -10;
+            game.scrollX = game.scrollSpeed;
             game.scrollY = 0;
             game.transitionLand = false;
             if (game.falling) game.falling = false;

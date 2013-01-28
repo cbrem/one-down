@@ -89,8 +89,7 @@ function Game() {
     this.transitionLand;
     this.nextTransition;
     this.falling;
-    // set of directions to kill the player in if they are offscreen there
-    this.deadZoneDirs;
+    this.scrollSpeed;
 
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
@@ -111,7 +110,6 @@ function Game() {
         if ((!self.gameOver) && (!self.gamePaused)) {
             self.time++;
         }
-        console.log(self.nextTransition);
         // activate TRANSITION
         if (self.time > self.nextTransition) {
             // activate GAP (if X direction is moving, make drop)
@@ -127,7 +125,10 @@ function Game() {
                 console.log("STOP FALLING TRANSISTION at ", self.time);
                 self.transitionLand = true;
                 self.nextTransition = self.time + 300;
-                //self.falling = false;
+                // increase speed!
+                self.scrollSpeed -= 2;
+                player.maxVelX += 2;
+                console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height);
             }
         }
@@ -283,12 +284,14 @@ function Game() {
         this.worldY = 0;
         this.width = 600;
         this.height = 600;
-        this.scrollX = -6;
+        this.scrollSpeed = -8;
+        this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
         
         // initialize player
         player = new Player(300, 400, 32, 32);
+        player.maxVelX = -this.scrollSpeed+3;
         //initialize environment
         environment = new Environment();
         environment.init(self, 0);

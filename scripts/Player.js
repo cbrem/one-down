@@ -6,7 +6,7 @@ params:
     width       the width of the player, as displayed on the canvas
     height      the height of the player, as displayed on the canvas
 **/
-function Player(x, y, width, height){
+function Player(){
     this._init = function(x, y, width, height){
         console.log("initializing", this);
         
@@ -20,10 +20,10 @@ function Player(x, y, width, height){
         this.velY = 0;
         this.accelX = 0;
         
-        this.gravAccel = 2.7;
+        this.gravAccel = 3;
         this.accelY = this.gravAccel;
         
-        this.maxVelX = 13;
+        this.maxVelX = 11;
         this.maxUpVel = 17;
         this.maxDownVel = this.maxUpVel*(3/4);
         
@@ -41,11 +41,10 @@ function Player(x, y, width, height){
         this.sprite = undefined;
     }
     
-    /** Player.draw(canvas context, optional Boolean) -> () 
+    /** Player.draw(canvas context) -> () 
     **/
-    this.draw = function(ctx, showDebug){
-        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height, showDebug);
-        this.sprite.nextFrame();
+    this.draw = function(ctx){
+        this.sprite.drawTo(ctx, this.x, this.y, this.width, this.height);
     };
     
     /** Player.switchAnimation(String, Boolean) -> ()
@@ -162,28 +161,22 @@ function Player(x, y, width, height){
         this.switchAnimation(fullAnimName);
     }
     
-    this.killDownMomentum = function(){
+    this.resetJump = function(){
+        this._canStartJump = true;
+        this._canContinueJump = true;
+        
         // kill falling momentum to 
         // prevent player from shooting into ground when walking off surfaces
         // (remember positive y coordinates move down)
         this.velY = Math.min(this.velY, 0);
     }
     
-    this.killUpMomentum = function(){
-        // kill upwards momentum (remember positive y coordinates move down)
-        this.velY = Math.max(this.velY, 0);
-    }
-    
-    this.resetJump = function(){
-        this._canStartJump = true;
-        this._canContinueJump = true;
-        this.killDownMomentum();
-    }
-    
     this.abortJump = function(){
         this._canStartJump = false;
         this._canContinueJump = false;
-        this.killUpMomentum();
+        
+        // kill upwards momentum (remember positive y coordinates move down)
+        this.velY = Math.max(this.velY, 0);
     }
     
     /** Player.update(Array, dictionary) -> ()
@@ -236,14 +229,14 @@ function Player(x, y, width, height){
             }
             else if(this._canContinueJump){
                 // counteract some of gravity to implement controllable ascent
-                this.velY -= this.gravAccel*(.5);
+                this.velY -= this.gravAccel*(1/2);
             }
         }
     
         this._updateMovementAnim(game);
         this._updateVelocity();
         this._updatePos(game);
-        //console.log("Player is at:", this.x, this.y, "moving", this.velX, this.velY);
+        this.sprite.nextFrame();
 
         // gameOver is triggered by falling down or going past left side
         if (this.x + this.width < 0){
@@ -251,6 +244,5 @@ function Player(x, y, width, height){
         }
     };
     
-    this._init(x, y, width, height);
-    //this._init.apply(this, arguments); // commented due to hw1 restriction
+    this._init.apply(this, arguments);
 };
