@@ -18,9 +18,12 @@ TODO:
 */
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, y, level, width, height,  necessary, collidable, drawable, harmful) {
-    assert(typeof(width) === "number" && width > 0, "invalid width for EnvBlock "+name);
-    assert(typeof(height) === "number" && height > 0, "invalid height for EnvBlock "+name);
+function EnvBlock (name, x, y, level, width, height,  necessary, collidable,
+                   drawable, harmful) {
+    assert(typeof(width) === "number" && width > 0,
+           "invalid width for EnvBlock "+name);
+    assert(typeof(height) === "number" && height > 0,
+           "invalid height for EnvBlock "+name);
     this.img = new SpriteImage(name);
     if(this.img.hasAnimation("chomping")){
         this.img.switchAnimation("chomping");
@@ -54,19 +57,64 @@ function Environment () {
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
     var spriteChoices = [
-        {name : "groundBlock",  level : -7, necessary : true,  collidable : true,  width : 32, height : 32, y : 224},
-        {name : "groundBlock",  level : -6, necessary : true,  collidable : true,  width : 32, height : 32, y : 192},
-        {name : "groundBlock",  level : -5, necessary : true,  collidable : true,  width : 32, height : 32, y : 160},
-        {name : "groundBlock",  level : -4, necessary : true,  collidable : true,  width : 32, height : 32, y : 128},
-        {name : "groundBlock",  level : -3, necessary : true,  collidable : true,  width : 32, height : 32, y : 96},
-        {name : "groundBlock",  level : -2, necessary : true,  collidable : true,  width : 32, height : 32, y : 64},
-        {name : "groundBlock",  level : -1, necessary : true,  collidable : true,  width : 32, height : 32, y : 32},
-        {name : "groundBlock",  level : 0, necessary : true,  collidable : true,  width : 32, height : 32, y : 0},
-        {name : "bush",         level : 1, necessary : false, collidable : false, width : 96, height : 32, y : -32,  startChance : 2, followChance : 1.5},
-        {name : "pipe",         level : 2, necessary : false, collidable : true,  width : 64, height : 64, y : -64,  startChance : 8, followChance : 8},
-        {name : "brickBlock",   level : 3, necessary : false, collidable : true,  width : 32, height : 32, y : -172, startChance : 4, followChance : 1.3},
-        {name : "cloudPlatform",level : 4, necessary : false, collidable : true,  width : 96, height : 32, y : -272, startChance : 4, followChance : 1.3},
-        {name : "cloud",        level : 5, necessary : false, collidable : false, width : 96, height : 64, y : -372, startChance : 4, followchance : 2}
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -7, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 224},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -6, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 192},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -5, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 160},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -4, necessary : true, collidable : true,  width : 32, 
+         height : 32, y : 128},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -3, necessary : true, collidable : true,  width : 32, 
+         height : 32, y : 96},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -2, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 64},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -1, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 32},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : 0, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 0},
+        {name : undefined, nameOptions : ["bush"],
+         level : 1, necessary : false, collidable : false, width : 96,
+         height : 32, y : -32, startChance : 2, followChance : 1.5},
+        {name : undefined,
+         nameOptions : ["pipe", "pipe_orange", "pipe_white", "pipe_purple"],
+         level : 2, necessary : false, collidable : true,  width : 64,
+         height : 64, y : -64, startChance : 8, followChance : 8},
+        {name : undefined,
+         nameOptions : ["brickBlock", "brickBlock_white",
+                        "brickBlock_blue", "brickBlock_green"],
+         level : 3, necessary : false, collidable : true,  width : 32,
+         height : 32, y : -172, startChance : 4, followChance : 1.3},
+        {name : undefined, nameOptions : ["cloudPlatform"],
+         level : 4, necessary : false, collidable : true,  width : 96,
+         height : 32, y : -272, startChance : 4, followChance : 1.3},
+        {name : undefined, nameOptions : ["cloud"],
+         level : 5, necessary : false, collidable : false, width : 96,
+         height : 64, y : -372, startChance : 4, followchance : 2}
     ];
 
     //moves all EnvBlocks in a by a given distance
@@ -88,6 +136,11 @@ function Environment () {
         gapLeft = 0;
         drawGap = false;
         plants = true;
+
+        //randomly pick sprites
+        for (var i = 0; i < spriteChoices.length; i++) {
+            spriteChoices[i].name = randomChoice(spriteChoices[i].nameOptions);
+        }
 
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
@@ -117,7 +170,8 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                                        envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -127,7 +181,8 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && !envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                                        envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -239,7 +294,7 @@ function Environment () {
                                      0, 32, 48, false, true, true, true); 
                     spritesOnScreen.push(pirhanaPlant);
                     var plantBlock =
-                        new EnvBlock("groundBlock", furthestRight, 568,
+                        new EnvBlock(spriteChoices[4].name, furthestRight, 568,
                                      0, 32, 32, false, true, true, false); 
                     spritesOnScreen.push(plantBlock);
                 }
