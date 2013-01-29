@@ -138,15 +138,15 @@ function Collisions() {
           // enemy collision
           if (envObj.harmful && (player instanceof Player)) {
             if (envObj.sprite !== undefined) {
-              // spinys bounce you back
-              if (envObj.sprite.nickname === "spiny") {
-                player.velX = -20;
-                player.velY = -15;
-              }
-              else if (envObj.sprite.nickname === "1down") {
+              if (envObj.sprite.nickname === "1down") {
                 console.log("colliding with 1DOWN!!!");
                 assert(game.falling && !game.transitionLand);
                 game.transitionLand = true;
+              }
+              // spinys bounce you back
+              else if (envObj instanceof Enemy && player instanceof Player) {
+                player.velX = -20;
+                player.velY = -15;
               }
               else {game.gameOver = true;}              
             }
