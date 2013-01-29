@@ -142,11 +142,12 @@ function Collisions() {
                 console.log("colliding with 1DOWN!!!");
                 assert(game.falling && !game.transitionLand);
                 game.transitionLand = true;
+                game.mushroomCount += 1;
               }
               // spinys bounce you back
               else if (envObj instanceof Enemy && player instanceof Player) {
                 if(envObj.sprite.nickname !== "wackyBlock") {
-                  player.velX = -20;
+                  player.velX = -10;
                 }
                 player.velY = -15;
               }

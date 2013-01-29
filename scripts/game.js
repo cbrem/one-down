@@ -92,13 +92,14 @@ function Game() {
     this.falling;
     this.scrollSpeed;
     this._nextEnemyDelayCountdown; // how many frames until the next enemy
+    this.mushroomCount;
 
     // get a random number of frames to wait until next enemy
     var _regenNextEnemyDelay = function(self){
-        var minDist = 20;
-        var maxDist = self.width * 1.1;
+        var minDist = 10;
+        var maxDist = self.width;
         var distanceToNextEnemy = randomInt(minDist, maxDist);
-        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
+        return Math.max(0,Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed)));
     }
     
     var updateModel = function () {
@@ -114,12 +115,13 @@ function Game() {
                 self._nextEnemyDelayCountdown--;
                 if(self._nextEnemyDelayCountdown <= 0){
                    self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
+                   var groundHeight = environment.groundHeight;
                    if(Math.random() < 0.4){
-                        var randHeight = randomInt(50, 300); // hardcoding, eep!
+                        var randHeight = randomInt(1, groundHeight-50); // hardcoding, eep!
                         allEnemies.addEnemy("bullet_bill", self.width, randHeight);
                    }
                    else{
-                        var randHeight = randomInt(200, 475); // hardcoding, eep!
+                        var randHeight = randomInt(groundHeight-275, groundHeight-50); 
                         allEnemies.addEnemy("spiny", self.width, randHeight);
                    }
                 }
@@ -179,9 +181,9 @@ function Game() {
 
         // add falling enemies
         if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
-            if ((self.time % 3) < 1) {
+            if ((self.time % 2) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
-            if ((self.time % 50) < 1) {
+            if ((self.time % 110) < 1) {
                 allEnemies.addEnemy("1down", randomInt(100, 1100), 650);
             }
         }
@@ -265,6 +267,11 @@ function Game() {
         ctx.fillText("SCORE ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
         ctx.fillText(String(self.time), canvas.width-10, 22);
+
+        // write 1DOWN count
+        ctx.textAlign = "left";
+        ctx.fillText("1 DOWNS", 10, 22);
+        ctx.fillText(String(self.mushroomCount), 120, 22);
     };
 
     var updateView = function () {
@@ -375,6 +382,7 @@ function Game() {
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
+        this.mushroomCount = 0;
         
         this._nextEnemyDelayCountdown = 0; //start with enemy on screen
         

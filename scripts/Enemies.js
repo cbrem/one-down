@@ -3,7 +3,7 @@ function Enemy(type, x, y){
         assert(Enemy.types[type] !== undefined, "Enemy type '"+type+
                 "' does not exist, check that Enemy.types is formatted properly");
         this.type = type;
-        //console.log("made Enemy:" + type);
+        //console.log("made Enemy:", type, "at", x,y);
         
         var typeData = Enemy.types[type];
         ["spriteName", "width", "height", "flags"].forEach(function(dataParam){
