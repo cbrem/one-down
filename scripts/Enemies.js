@@ -1,3 +1,12 @@
+/*15-237 Spring 2013 Hw1
+Project name: 1-Down
+Group:
+
+- Connor Brem (cbrem)
+- Erik Pintar (epintar)
+- Leon Zhang (lwzhang)
+*/
+
 function Enemy(type, x, y){
     this._init = function(type, x, y){
         assert(Enemy.types[type] !== undefined, "Enemy type '"+type+
