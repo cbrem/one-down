@@ -82,8 +82,8 @@ function Player(){
                 {this.x = 0;}
             if (this.y + this.height > game.height)
                 {this.y = game.height-this.height;}
-            if (this.y < 30)
-                {this.y = 30}
+            if (this.y + this.height < 0)
+                {game.gameOver = true;}
         }
     }
     

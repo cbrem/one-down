@@ -182,7 +182,7 @@ function Game() {
             if ((self.time % 3) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
             if ((self.time % 50) < 1) {
-                allEnemies.addEnemy("1down", randomInt(300,900), 650);
+                allEnemies.addEnemy("1down", randomInt(100, 1100), 650);
             }
         }
     };
