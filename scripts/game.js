@@ -96,10 +96,10 @@ function Game() {
 
     // get a random number of frames to wait until next enemy
     var _regenNextEnemyDelay = function(self){
-        var minDist = 20;
-        var maxDist = self.width * 1.1;
+        var minDist = 10;
+        var maxDist = self.width;
         var distanceToNextEnemy = randomInt(minDist, maxDist);
-        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
+        return Math.max(0,Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed)));
     }
     
     var updateModel = function () {
@@ -115,12 +115,13 @@ function Game() {
                 self._nextEnemyDelayCountdown--;
                 if(self._nextEnemyDelayCountdown <= 0){
                    self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
+                   var groundHeight = environment.groundHeight;
                    if(Math.random() < 0.4){
-                        var randHeight = randomInt(50, 300); // hardcoding, eep!
+                        var randHeight = randomInt(1, groundHeight-50); // hardcoding, eep!
                         allEnemies.addEnemy("bullet_bill", self.width, randHeight);
                    }
                    else{
-                        var randHeight = randomInt(200, 475); // hardcoding, eep!
+                        var randHeight = randomInt(groundHeight-275, groundHeight-50); 
                         allEnemies.addEnemy("spiny", self.width, randHeight);
                    }
                 }
