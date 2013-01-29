@@ -264,13 +264,13 @@ function Game() {
         ctx.font = 'bold 20px Arial, Monaco, monospace';
         ctx.textAlign = "left";
         ctx.fillStyle = "white";
-        ctx.fillText("SCORE ", canvas.width*5/6, 22);
+        ctx.fillText("SCORE: ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
         ctx.fillText(String(self.time), canvas.width-10, 22);
 
         // write 1DOWN count
         ctx.textAlign = "left";
-        ctx.fillText("1 DOWNS", 10, 22);
+        ctx.fillText("1-DOWNS: ", 10, 22);
         ctx.fillText(String(self.mushroomCount), 120, 22);
     };
 
