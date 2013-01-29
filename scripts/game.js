@@ -140,9 +140,10 @@ function Game() {
         if ((!self.falling) && (player.y > 550)) {
            // console.log("FALLING NOW!");
             self.falling = true;
+            self.startFallingCount = 60;
             self.scrollX = 0;
             self.scrollY = -10;
-            self.nextTransition = self.time + 100;
+            self.nextTransition = self.time + 150;
         }
     };
 

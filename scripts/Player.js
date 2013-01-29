@@ -213,7 +213,7 @@ function Player(){
             this._facing = RIGHT_DIR;
         }
         if (game.falling) {
-            if(holdingUp === holdingDown){
+            if (holdingUp === holdingDown){
                 this._applyDecelY();
             }
             else if (holdingUp){// && game.falling) {
@@ -238,6 +238,14 @@ function Player(){
     
         this._updateMovementAnim(game);
         this._updateVelocity();
+
+        // when player doesn't have control
+        // beginning to fall, move player to the middle of the screen
+        if (game.startFallingCount > 0) {
+            game.startFallingCount--;
+            this.velY -= 5;
+        }
+        
         this._updatePos(game);
         this.sprite.nextFrame();
 
