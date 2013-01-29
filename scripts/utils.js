@@ -1,3 +1,12 @@
+/*15-237 Spring 2013 Hw1
+Project name: 1-Down
+Group:
+
+- Connor Brem (cbrem)
+- Erik Pintar (epintar)
+- Leon Zhang (lwzhang)
+*/
+
 UP_KEYCODE = 38;
 DOWN_KEYCODE = 40;
 LEFT_KEYCODE = 37;

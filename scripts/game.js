@@ -1,3 +1,11 @@
+/*15-237 Spring 2013 Hw1
+Project name: 1-Down
+Group:
+
+- Connor Brem (cbrem)
+- Erik Pintar (epintar)
+- Leon Zhang (lwzhang)
+*/
 function startGame(){
     console.log('starting game with src data:', SpriteImage.sourcesData);
     var game = new Game();
@@ -6,6 +14,14 @@ function startGame(){
 
 
 function runPreloader(){
+    var canvas = document.getElementById("gamecanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.font = 'bold 20px "Lucida Console", Monaco, monospace';
+    ctx.textAlign = "center";
+    ctx.fillStyle = "grey";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "white";
+    ctx.fillText("Loading...", 100, 100);
     preloadImages(startGame);
 }
 
