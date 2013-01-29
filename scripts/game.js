@@ -6,6 +6,14 @@ function startGame(){
 
 
 function runPreloader(){
+    var canvas = document.getElementById("gamecanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.font = 'bold 20px "Lucida Console", Monaco, monospace';
+    ctx.textAlign = "center";
+    ctx.fillStyle = "grey";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "white";
+    ctx.fillText("Loading...", 100, 100);
     preloadImages(startGame);
 }
 
