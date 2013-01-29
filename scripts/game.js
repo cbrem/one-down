@@ -149,6 +149,7 @@ function Game() {
         }
         else{ 
             pauseSprite.nextFrame();
+            self.fallTutorial = false;
         }
 
         // for timing and score
