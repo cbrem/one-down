@@ -161,8 +161,8 @@ function Game() {
                 //console.log("STOP FALLING TRANSISTION at ", self.time);
                 self.nextTransition = self.time + randomInt(200,450);
                 // increase speed!
-                self.scrollSpeed -= 2;
-                player.maxVelX += 2;
+                self.scrollSpeed -= 3;
+                player.maxVelX += 3;
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height, false);
                 allEnemies._init();
@@ -172,7 +172,7 @@ function Game() {
         if ((!self.falling) && (player.y > 500)) {
            // console.log("FALLING NOW!");
             self.falling = true;
-            self.startFallingCount = 60;
+            self.startFallingCount = 40;
             self.scrollX = 0;
             self.scrollY = -10;
             self.nextTransition = self.time + 50;
@@ -182,7 +182,7 @@ function Game() {
         if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
             if ((self.time % 3) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
-            if ((self.time % 20) < 1) {
+            if ((self.time % 50) < 1) {
                 allEnemies.addEnemy("1down", randomInt(300,900), 650);
             }
         }

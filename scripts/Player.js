@@ -237,7 +237,7 @@ function Player(){
         // beginning to fall, move player to the middle of the screen
         if (game.startFallingCount > 0) {
             game.startFallingCount--;
-            this.velY -= 5;
+            this.velY -= 2;
         }
         
         this._updatePos(game);
