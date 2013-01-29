@@ -241,7 +241,8 @@ SpriteImage.sourcesData = {
                  "groundBlock_green", "groundBlock_white", "solidBlock",
                  "brickBlock", "brickBlock_white", "brickBlock_blue",
                  "brickBlock_green", "cloud", "bush", "sleep_render", "bullet_bill",
-                 "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock", "1down"],
+                 "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock", "1down",
+                 "titleBackground","jumpMsg"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -351,6 +352,23 @@ SpriteImage.sourcesData = {
             "default_static":[{x:256,y:640,w:96,h:32}],
         }
     },
+    "titleBackground":{
+        "srcPath": "assets/images/title_background.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:0,w:1200,h:600}],
+        }
+    },
+    "jumpMsg":{
+        "srcPath": "assets/images/jump_msg.png",
+        "imgObj": undefined,
+        "frameStepDelay": 15,
+        "animationData":{
+            "default_static":[{x:0,y:0,w:492,h:48}],
+            "flash":[{x:0,y:0,w:492,h:48},
+                     {x:0,y:48,w:492,h:48}],
+        }
+    },
     "brickBlock_blue":{
         "srcPath": "assets/images/tileset.png",
         "imgObj": undefined,
@@ -434,4 +452,5 @@ SpriteImage.sourcesData = {
             "default_static":[{x:0,y:0,w:48,h:48}]
         }
     }
+    
 }

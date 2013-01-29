@@ -36,12 +36,6 @@ function Player(){
         this._canContinueJump = true;
     };
     
-    this.destroyReferences = function(){
-        // remove references for cleanup
-        this.game = undefined;
-        this.sprite = undefined;
-    }
-    
     /** Player.draw(canvas context) -> () 
     **/
     this.draw = function(ctx){

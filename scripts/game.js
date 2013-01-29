@@ -76,7 +76,7 @@ function Game() {
         heldKeys;
         //add more objects here
     var pauseSprite;
-
+    var titleSprites;
     this.width;
     this.height;
     this.worldX;
@@ -84,22 +84,54 @@ function Game() {
     this.speed;
     this.gamePaused;
     this.gameOver;
+    this.atTitle;
     this.time;
     this.transitionDrop;
     this.transitionLand;
     this.nextTransition;
     this.falling;
     this.scrollSpeed;
+    this._nextEnemyDelayCountdown; // how many frames until the next enemy
 
+    // get a random number of frames to wait until next enemy
+    var _regenNextEnemyDelay = function(self){
+        var minDist = 20;
+        var maxDist = self.width * 1.1;
+        var distanceToNextEnemy = randomInt(minDist, maxDist);
+        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
+    }
+    
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
         clicks = [];
-
+        if(self.atTitle === true){
+            return;
+        }
+        console.log(environment.spritesOnScreen.length, "sprites on screen");
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
+            // spawn new enemies
+            if (!self.falling){
+                self._nextEnemyDelayCountdown--;
+                if(self._nextEnemyDelayCountdown <= 0){
+                   self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
+                   if(Math.random() < 0.4){
+                        var randHeight = randomInt(50, 300); // hardcoding, eep!
+                        allEnemies.addEnemy("bullet_bill", self.width, randHeight);
+                   }
+                   else{
+                        var randHeight = randomInt(200, 475); // hardcoding, eep!
+                        allEnemies.addEnemy("spiny", self.width, randHeight);
+                   }
+                }
+            }
+            
+            // update location/velocity/etc data
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
+            
+            // check collisions
             allEnemies.getAllEnemies().forEach(function(enemy){
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
@@ -124,11 +156,10 @@ function Game() {
                 // and is a safety in case they don't
                 self.nextTransition += 300;
             }
-            // activate STOP FALLING
-            else {
+            // activate STOP FALLING when 1down is hit (see collisions)
+            else if (self.transitionLand) {
                 //console.log("STOP FALLING TRANSISTION at ", self.time);
-                self.transitionLand = true;
-                self.nextTransition = self.time + 300;
+                self.nextTransition = self.time + randomInt(200,450);
                 // increase speed!
                 self.scrollSpeed -= 2;
                 player.maxVelX += 2;
@@ -144,14 +175,14 @@ function Game() {
             self.startFallingCount = 60;
             self.scrollX = 0;
             self.scrollY = -10;
-            self.nextTransition = self.time + 150;
+            self.nextTransition = self.time + 50;
         }
 
         // add falling enemies
-        if (self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+        if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
             if ((self.time % 3) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
-            if ((self.time % 10) < 1) {
+            if ((self.time % 20) < 1) {
                 allEnemies.addEnemy("1down", randomInt(300,900), 650);
             }
         }
@@ -160,7 +191,13 @@ function Game() {
 
     // draw title screen when game starts
     var _drawTitleScreen = function(){
-        console.log("SHOULD BE DRAWING TITLE SCREEN NOW");
+        titleSprites.forEach(function(spriteInfo){
+            var x = spriteInfo.x;
+            var y = spriteInfo.y;
+            var sprite = spriteInfo.sprite;
+            sprite.drawTo(ctx,x,y);
+            sprite.nextFrame();
+        });
     }
     
     // split this type of drawing into a HUD object or something
@@ -191,14 +228,27 @@ function Game() {
         ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = 'bold 95px Arial, Monaco, monospace';
+        ctx.font = 'bold 95px "Lucida Console", Monaco, monospace';
         ctx.textAlign = "center";
+        
+        var bigMsg = "GAME OVER";
+        var smallMsg = "Press R to Restart";
+        var bigX = canvas.width/2;
+        var bigY = canvas.height/2-50;
+        var smallX = canvas.width/2;
+        var smallY = canvas.height/2+50;
+        ctx.fillStyle = "black";
+        ctx.fillText(bigMsg, bigX + 1, bigY + 1);
+        
         ctx.fillStyle = "red";
-        ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2-50);
+        ctx.fillText(bigMsg, bigX, bigY);
 
-        ctx.font = 'bold 45px Arial, Monaco, monospace';
+        ctx.font = 'bold 45px "Lucida Console", Monaco, monospace';
+        ctx.fillStyle = "black";
+        ctx.fillText(smallMsg, smallX + 1, smallY + 1);
+        
         ctx.fillStyle = "white";
-        ctx.fillText("Press R to Restart", canvas.width/2, canvas.height/2+50);
+        ctx.fillText(smallMsg, smallX, smallY);
 
         ctx.restore();
     };
@@ -220,6 +270,10 @@ function Game() {
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(self.atTitle === true){
+            _drawTitleScreen();
+            return;
+        }
         ctx.save();
         // draw blue background
         ctx.fillStyle = "#9eb3ff";
@@ -267,11 +321,13 @@ function Game() {
         }
         
         heldKeys[keyCode] = true;
-        if(keyCode === R_KEYCODE){
-            player.destroyReferences();
-            self.init();
+        if(keyCode === R_KEYCODE && self.atTitle === false){
+            self.initGame();
         }
-        else if(keyCode === P_KEYCODE && self.gameOver === false){
+        else if(keyCode === SPACE_KEYCODE && self.atTitle === true){
+            self.initGame();
+        }
+        else if(keyCode === P_KEYCODE && self.atTitle === false && self.gameOver === false){
             self.gamePaused = !self.gamePaused;
             pauseSprite.switchAnimation("default_static", true);
         }
@@ -287,12 +343,22 @@ function Game() {
         // remove key
         delete(heldKeys[keyCode]);
     };
-
-    this.init = function(){
-        console.log("reinitializing game");
-        // initialize mouse and key event queues
-        clicks = [];
-        heldKeys = {};
+    
+    this.initTitle = function(){
+        this.atTitle = true;
+        this.gamePaused = false;
+        this.gameOver = false;
+        titleSprites = [];
+        titleSprites.push({x:0, y:0, sprite:new SpriteImage("titleBackground")});
+        var jumpMsgSprite = new SpriteImage("jumpMsg");
+        jumpMsgSprite.switchAnimation("flash");
+        // mega hard code goooooo
+        titleSprites.push({x:575, y:512, sprite:jumpMsgSprite});
+    }
+    
+    this.initGame = function(){
+        titleSprites = []
+        this.atTitle = false;
         this.gamePaused = false;
         this.gameOver = false;
         this.transitionDrop = false;
@@ -311,6 +377,8 @@ function Game() {
         this.scrollY = 0;
         this.time = 0;
         
+        this._nextEnemyDelayCountdown = 0; //start with enemy on screen
+        
         // initialize player
         player = new Player(500, 400, 32, 32);
         player.maxVelX = -this.scrollSpeed+3;
@@ -321,10 +389,17 @@ function Game() {
         collisions = new Collisions();
         
         allEnemies = new Enemies();
-        allEnemies.addEnemy("spiny", 500, 300);
-        allEnemies.addEnemy("bullet_bill", 1000, 80);
         
         pauseSprite = new SpriteImage("sleep_render");
+    }
+    
+    this.init = function(){
+        console.log("reinitializing game");
+        // initialize mouse and key event queues
+        clicks = [];
+        heldKeys = {};
+        
+        this.initTitle();
     }
     
     /** like Tkinter's run; sets up event handlers etc. **/

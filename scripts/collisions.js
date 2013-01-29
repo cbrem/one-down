@@ -137,18 +137,24 @@ function Collisions() {
 	  	  {
           // enemy collision
           if (envObj.harmful && (player instanceof Player)) {
-            // enemies bounce you back
-            if (envObj.sprite !== undefined && 
-                envObj instanceof Enemy) {
-              player.velX = -player.velX*5;
-              player.velY = -player.velY*5;
-              if (player.velX > -20) {player.velX = -20;}
-              if (player.velY > -15) {player.velY = -15;}
+            if (envObj.sprite !== undefined) {
+              // spinys bounce you back
+              if (envObj.sprite.nickname === "spiny") {
+                player.velX = -20;
+                player.velY = -15;
+              }
+              else if (envObj.sprite.nickname === "1down") {
+                console.log("colliding with 1DOWN!!!");
+                assert(game.falling && !game.transitionLand);
+                game.transitionLand = true;
+              }
+              else {game.gameOver = true;}              
             }
             else {game.gameOver = true;}
           }
+
           // if player is falling and collides with a non-enemy
-          else if (game.falling) {
+          else if (game.falling && game.transitionLand) {
            // console.log("HEY I SHOULD LAND");
             // they should land
             game.falling = false;
