@@ -107,7 +107,6 @@ function Game() {
         if(self.atTitle === true){
             return;
         }
-        console.log(environment.spritesOnScreen.length, "sprites on screen");
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
             // spawn new enemies
