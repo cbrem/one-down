@@ -359,10 +359,11 @@ SpriteImage.sourcesData = {
     "jumpMsg":{
         "srcPath": "assets/images/jump_msg.png",
         "imgObj": undefined,
+        "frameStepDelay": 15,
         "animationData":{
-            "default_static":[{x:0,y:0,w:380,h:40}],
-            "flash":[{x:0,y:0,w:380,h:40},
-                     {x:0,y:40,w:380,h:40}],
+            "default_static":[{x:0,y:0,w:492,h:48}],
+            "flash":[{x:0,y:0,w:492,h:48},
+                     {x:0,y:48,w:492,h:48}],
         }
     }
     

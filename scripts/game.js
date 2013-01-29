@@ -76,7 +76,7 @@ function Game() {
         heldKeys;
         //add more objects here
     var pauseSprite;
-
+    var titleSprites;
     this.width;
     this.height;
     this.worldX;
@@ -84,6 +84,7 @@ function Game() {
     this.speed;
     this.gamePaused;
     this.gameOver;
+    this.atTitle;
     this.time;
     this.transitionDrop;
     this.transitionLand;
@@ -104,6 +105,9 @@ function Game() {
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
         clicks = [];
+        if(self.atTitle === true){
+            return;
+        }
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
             if (!self.falling){
@@ -176,6 +180,13 @@ function Game() {
     // draw title screen when game starts
     var _drawTitleScreen = function(){
         console.log("SHOULD BE DRAWING TITLE SCREEN NOW");
+        titleSprites.forEach(function(spriteInfo){
+            var x = spriteInfo.x;
+            var y = spriteInfo.y;
+            var sprite = spriteInfo.sprite;
+            sprite.drawTo(ctx,x,y);
+            sprite.nextFrame();
+        });
     }
     
     // split this type of drawing into a HUD object or something
@@ -235,6 +246,10 @@ function Game() {
 
     var updateView = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(self.atTitle === true){
+            _drawTitleScreen();
+            return;
+        }
         ctx.save();
         // draw blue background
         ctx.fillStyle = "#9eb3ff";
@@ -261,6 +276,7 @@ function Game() {
     var timer = function (){
         updateModel();
         updateView();
+        console.log(self.atTitle);
         setTimeout(timer, cycleLength);
     };
     
@@ -285,11 +301,13 @@ function Game() {
         }
         
         heldKeys[keyCode] = true;
-        if(keyCode === R_KEYCODE){
-            player.destroyReferences();
-            self.init();
+        if(keyCode === R_KEYCODE && self.atTitle === false){
+            self.initGame();
         }
-        else if(keyCode === P_KEYCODE && self.gameOver === false){
+        else if(keyCode === SPACE_KEYCODE && self.atTitle === true){
+            self.initGame();
+        }
+        else if(keyCode === P_KEYCODE && self.atTitle === false && self.gameOver === false){
             self.gamePaused = !self.gamePaused;
             pauseSprite.switchAnimation("default_static", true);
         }
@@ -306,11 +324,21 @@ function Game() {
         delete(heldKeys[keyCode]);
     };
     
-    this.init = function(){
-        console.log("reinitializing game");
-        // initialize mouse and key event queues
-        clicks = [];
-        heldKeys = {};
+    this.initTitle = function(){
+        this.atTitle = true;
+        this.gamePaused = false;
+        this.gameOver = false;
+        titleSprites = [];
+        titleSprites.push({x:0, y:0, sprite:new SpriteImage("titleBackground")});
+        var jumpMsgSprite = new SpriteImage("jumpMsg");
+        jumpMsgSprite.switchAnimation("flash");
+        // mega hard code goooooo
+        titleSprites.push({x:575, y:512, sprite:jumpMsgSprite});
+    }
+    
+    this.initGame = function(){
+        titleSprites = []
+        this.atTitle = false;
         this.gamePaused = false;
         this.gameOver = false;
         this.transitionDrop = false;
@@ -344,6 +372,15 @@ function Game() {
         allEnemies = new Enemies();
         
         pauseSprite = new SpriteImage("sleep_render");
+    }
+    
+    this.init = function(){
+        console.log("reinitializing game");
+        // initialize mouse and key event queues
+        clicks = [];
+        heldKeys = {};
+        
+        this.initTitle();
     }
     
     /** like Tkinter's run; sets up event handlers etc. **/
