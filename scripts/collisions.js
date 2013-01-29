@@ -145,7 +145,7 @@ function Collisions() {
               }
               // spinys bounce you back
               else if (envObj instanceof Enemy && player instanceof Player) {
-                player.velX = -20;
+                player.velX = (player.facing === LEFT_DIR) ? 10 : -10;
                 player.velY = -15;
               }
               else {game.gameOver = true;}              
