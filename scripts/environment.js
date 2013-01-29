@@ -201,7 +201,11 @@ function Environment () {
         var newSpritesOnScreen = [];
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var sprite = spritesOnScreen[i];
+            // for sidescrolling objects
             if ((sprite.x + sprite.width) > 0) newSpritesOnScreen.push(sprite);
+            // for upward objects
+            else if ((sprite.y + sprite.height) > 0) 
+                {newSpritesOnScreen.push(sprite);}
         }
         self.spritesOnScreen = newSpritesOnScreen;
     };
