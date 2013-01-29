@@ -242,7 +242,6 @@ SpriteImage.sourcesData = {
                  "brickBlock", "brickBlock_white", "brickBlock_blue",
                  "brickBlock_green", "cloud", "bush", "sleep_render", "bullet_bill",
                  "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock", "1down",
-                 "titleBackground","jumpMsg", "tutorial"],
                  "titleBackground","jumpMsg", "mushPlatform_green",
                  "mushPlatform_orange", "mushPlatform_white",
                  "mushPlatform_purple", "tutorial"],
