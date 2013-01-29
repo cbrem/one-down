@@ -175,6 +175,7 @@ function Game() {
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height, false);
                 allEnemies._init();
+                self.fallTutorial = false;
             }
         }
         // activate FALLING
@@ -185,10 +186,13 @@ function Game() {
             self.scrollX = 0;
             self.scrollY = -10;
             self.nextTransition = self.time + 50;
+            if (self.mushroomCount === 0) {
+                self.fallTutorial = true;
+            }
         }
 
         // add falling enemies
-        if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+        if (!self.gamePaused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
             if ((self.time % 2) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
             if ((self.time % 110) < 1) {
@@ -272,13 +276,13 @@ function Game() {
         ctx.font = 'bold 20px Arial, Monaco, monospace';
         ctx.textAlign = "left";
         ctx.fillStyle = "white";
-        ctx.fillText("SCORE ", canvas.width*5/6, 22);
+        ctx.fillText("SCORE: ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
         ctx.fillText(String(self.time), canvas.width-10, 22);
 
         // write 1DOWN count
         ctx.textAlign = "left";
-        ctx.fillText("1 DOWNS", 10, 22);
+        ctx.fillText("1-DOWNS: ", 10, 22);
         ctx.fillText(String(self.mushroomCount), 120, 22);
     };
 
@@ -304,6 +308,11 @@ function Game() {
         }
         else if(self.gamePaused){
             _drawPauseScreen();
+        }
+        else if (self.fallTutorial && (self.startFallingCount < 10)) {
+            ctx.save();
+            tutorialSprite.drawTo(ctx,900,400);
+            ctx.restore();
         }
     };
 
@@ -406,6 +415,8 @@ function Game() {
         allEnemies = new Enemies();
         
         pauseSprite = new SpriteImage("sleep_render");
+
+        tutorialSprite = new SpriteImage("tutorial");
     }
     
     this.init = function(){

@@ -242,9 +242,10 @@ SpriteImage.sourcesData = {
                  "brickBlock", "brickBlock_white", "brickBlock_blue",
                  "brickBlock_green", "cloud", "bush", "sleep_render", "bullet_bill",
                  "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock", "1down",
+                 "titleBackground","jumpMsg", "tutorial"],
                  "titleBackground","jumpMsg", "mushPlatform_green",
                  "mushPlatform_orange", "mushPlatform_white",
-                 "mushPlatform_purple"],
+                 "mushPlatform_purple", "tutorial"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -452,6 +453,13 @@ SpriteImage.sourcesData = {
         "imgObj": undefined,
         "animationData": {
             "default_static":[{x:0,y:0,w:48,h:48}]
+        }
+    },
+    "tutorial":{
+        "srcPath": "assets/images/fallingHelper.png",
+        "imgObj": undefined,
+        "animationData": {
+            "default_static":[{x:0,y:0,w:192,h:120}]
         }
     },
     "mushPlatform_green":{
