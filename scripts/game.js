@@ -92,6 +92,7 @@ function Game() {
     this.falling;
     this.scrollSpeed;
     this._nextEnemyDelayCountdown; // how many frames until the next enemy
+    this.mushroomCount;
 
     // get a random number of frames to wait until next enemy
     var _regenNextEnemyDelay = function(self){
@@ -180,9 +181,9 @@ function Game() {
 
         // add falling enemies
         if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
-            if ((self.time % 3) < 1) {
+            if ((self.time % 2) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
-            if ((self.time % 50) < 1) {
+            if ((self.time % 110) < 1) {
                 allEnemies.addEnemy("1down", randomInt(100, 1100), 650);
             }
         }
@@ -266,6 +267,11 @@ function Game() {
         ctx.fillText("SCORE ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
         ctx.fillText(String(self.time), canvas.width-10, 22);
+
+        // write 1DOWN count
+        ctx.textAlign = "left";
+        ctx.fillText("1 DOWNS", 10, 22);
+        ctx.fillText(String(self.mushroomCount), 120, 22);
     };
 
     var updateView = function () {
@@ -376,6 +382,7 @@ function Game() {
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
+        this.mushroomCount = 0;
         
         this._nextEnemyDelayCountdown = 0; //start with enemy on screen
         
