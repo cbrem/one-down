@@ -217,14 +217,27 @@ function Game() {
         ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = 'bold 95px Arial, Monaco, monospace';
+        ctx.font = 'bold 95px "Lucida Console", Monaco, monospace';
         ctx.textAlign = "center";
+        
+        var bigMsg = "GAME OVER";
+        var smallMsg = "Press R to Restart";
+        var bigX = canvas.width/2;
+        var bigY = canvas.height/2-50;
+        var smallX = canvas.width/2;
+        var smallY = canvas.height/2+50;
+        ctx.fillStyle = "black";
+        ctx.fillText(bigMsg, bigX + 1, bigY + 1);
+        
         ctx.fillStyle = "red";
-        ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2-50);
+        ctx.fillText(bigMsg, bigX, bigY);
 
-        ctx.font = 'bold 45px Arial, Monaco, monospace';
+        ctx.font = 'bold 45px "Lucida Console", Monaco, monospace';
+        ctx.fillStyle = "black";
+        ctx.fillText(smallMsg, smallX + 1, smallY + 1);
+        
         ctx.fillStyle = "white";
-        ctx.fillText("Press R to Restart", canvas.width/2, canvas.height/2+50);
+        ctx.fillText(smallMsg, smallX, smallY);
 
         ctx.restore();
     };
