@@ -133,7 +133,7 @@ function Game() {
                 self.scrollSpeed -= 2;
                 player.maxVelX += 2;
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
-                environment.init(self, self.height);
+                environment.init(self, self.height, false);
                 allEnemies._init();
             }
         }
@@ -306,7 +306,7 @@ function Game() {
         this.worldY = 0;
         this.width = 1200;
         this.height = 600;
-        this.scrollSpeed = -8;
+        this.scrollSpeed = -16;
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
@@ -316,8 +316,7 @@ function Game() {
         player.maxVelX = -this.scrollSpeed+3;
         //initialize environment
         environment = new Environment();
-        environment.init(self, 0);
-        environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
+        environment.init(self, 0, true);
         // initialize Collisions
         collisions = new Collisions();
         

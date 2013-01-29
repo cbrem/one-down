@@ -126,10 +126,10 @@ function Environment () {
     };
 
     //initialize the environment, with "below" determining how far beneath
-    //the current top of the screen the top of the environment is located
-    this.init = function (game, below) {
+    //the current top of the screen the top of the environment is located.
+    //normal is a boolean which determines whether defaults are used.
+    this.init = function (game, below, normal) {
         this.spritesOnScreen = [];
-        this.bgColor = randomColor();
         this.timeToNextGap = 0;
         this.groundHeight = 472;
 
@@ -137,10 +137,15 @@ function Environment () {
         drawGap = false;
         plants = true;
 
-        //randomly pick sprites
-        for (var i = 0; i < spriteChoices.length; i++) {
-            spriteChoices[i].name = randomChoice(spriteChoices[i].nameOptions);
-        }
+        //randomly pick background color if !normal
+        this.bgColor = (normal) ? {red : 0x93, green : 0xb3, blue : 0xff} :
+                                  randomColor();
+
+        //randomly pick sprites if !normal. if normal, choose defaults
+        for (var i = 0; i < spriteChoices.length; i++)
+            spriteChoices[i].name = (normal) ? 
+                                    spriteChoices[i].nameOptions[0] :
+                                    randomChoice(spriteChoices[i].nameOptions);
 
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
@@ -201,13 +206,13 @@ function Environment () {
         var newSpritesOnScreen = [];
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var sprite = spritesOnScreen[i];
-            // for sidescrolling objects
-            if ((sprite.x + sprite.width) > 0) newSpritesOnScreen.push(sprite);
-            // for upward objects
-            else if ((sprite.y + sprite.height) > 0) 
-                {newSpritesOnScreen.push(sprite);}
+            //test for sidescrolling objects and upward objects
+            if ((sprite.x + sprite.width) > 0
+               && (sprite.y + sprite.height) > 0)
+                newSpritesOnScreen.push(sprite);
         }
         self.spritesOnScreen = newSpritesOnScreen;
+        //console.log("length: ", self.spritesOnScreen.length);
     };
 
     //Adds enough new sprites on a given level to span the screen. 
