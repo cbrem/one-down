@@ -91,17 +91,7 @@ function Game() {
     this.nextTransition;
     this.falling;
     this.scrollSpeed;
-    this._nextEnemyDelayCountdown; // how many frames until the next enemy
-    this.groundY;
 
-    // get a random number of frames to wait until next enemy
-    var _regenNextEnemyDelay = function(self){
-        var minDist = 20;
-        var maxDist = self.width * 1.1;
-        var distanceToNextEnemy = randomInt(minDist, maxDist);
-        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
-    }
-    
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
         clicks = [];
@@ -110,26 +100,9 @@ function Game() {
         }
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
-            if (!self.falling){
-                // spawn new enemy
-                self._nextEnemyDelayCountdown--;
-                if(self._nextEnemyDelayCountdown <= 0){
-                   self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
-                   if(Math.random() < 0.4){
-                        var randHeight = randomInt(50, 300); // hardcoding, eep!
-                        allEnemies.addEnemy("bullet_bill", self.width, randHeight);
-                   }
-                   else{
-                        var randHeight = randomInt(200, 475); // hardcoding, eep!
-                        allEnemies.addEnemy("spiny", self.width, randHeight);
-                   }
-                }
-            }
-            // update objects
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
-            // check collisions
             allEnemies.getAllEnemies().forEach(function(enemy){
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
@@ -154,25 +127,35 @@ function Game() {
                 // and is a safety in case they don't
                 self.nextTransition += 300;
             }
-            // activate STOP FALLING
-            else {
+            // activate STOP FALLING when 1down is hit (see collisions)
+            else if (self.transitionLand) {
                 //console.log("STOP FALLING TRANSISTION at ", self.time);
-                self.transitionLand = true;
-                self.nextTransition = self.time + 300;
+                self.nextTransition = self.time + randomInt(200,450);
                 // increase speed!
                 self.scrollSpeed -= 2;
                 player.maxVelX += 2;
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height);
+                allEnemies._init();
             }
         }
         // activate FALLING
-        if ((!self.falling) && (player.y > 550)) {
+        if ((!self.falling) && (player.y > 500)) {
            // console.log("FALLING NOW!");
             self.falling = true;
+            self.startFallingCount = 60;
             self.scrollX = 0;
             self.scrollY = -10;
-            self.nextTransition = self.time + 100;
+            self.nextTransition = self.time + 50;
+        }
+
+        // add falling enemies
+        if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+            if ((self.time % 3) < 1) {
+                allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
+            if ((self.time % 20) < 1) {
+                allEnemies.addEnemy("1down", randomInt(300,900), 650);
+            }
         }
     };
 
@@ -252,9 +235,9 @@ function Game() {
         ctx.font = 'bold 20px Arial, Monaco, monospace';
         ctx.textAlign = "left";
         ctx.fillStyle = "white";
-        ctx.fillText("SCORE ", canvas.width*2/3, 22);
+        ctx.fillText("SCORE ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
-        ctx.fillText(String(self.time), canvas.width-5, 22);
+        ctx.fillText(String(self.time), canvas.width-10, 22);
     };
 
     var updateView = function () {
@@ -280,9 +263,6 @@ function Game() {
         else if(self.gamePaused){
             _drawPauseScreen();
         }
-        
-        //ctx.fillStyle = "rgba(255,0,0,0.5)";
-        //ctx.fillRect(0, 0, canvas.width, 250);
     };
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
@@ -369,8 +349,6 @@ function Game() {
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
-        this._nextEnemyDelayCountdown = 0; //start with enemy on screen
-        this.groundY = 450;// temp hardcode
         
         // initialize player
         player = new Player(500, 400, 32, 32);
@@ -381,7 +359,7 @@ function Game() {
         environment.bgColor = {red : 0x9e, blue : 0xff, green : 0xb3};
         // initialize Collisions
         collisions = new Collisions();
-        // initialize enemies manager
+        
         allEnemies = new Enemies();
         
         pauseSprite = new SpriteImage("sleep_render");

@@ -18,9 +18,12 @@ TODO:
 */
 
 //constructor for EnvBlock objects, which build the environment
-function EnvBlock (name, x, y, level, width, height,  necessary, collidable, drawable, harmful) {
-    assert(typeof(width) === "number" && width > 0, "invalid width for EnvBlock "+name);
-    assert(typeof(height) === "number" && height > 0, "invalid height for EnvBlock "+name);
+function EnvBlock (name, x, y, level, width, height,  necessary, collidable,
+                   drawable, harmful) {
+    assert(typeof(width) === "number" && width > 0,
+           "invalid width for EnvBlock "+name);
+    assert(typeof(height) === "number" && height > 0,
+           "invalid height for EnvBlock "+name);
     this.img = new SpriteImage(name);
     if(this.img.hasAnimation("chomping")){
         this.img.switchAnimation("chomping");
@@ -43,8 +46,8 @@ function Environment () {
     this.spritesOnScreen; //lists of sprites currently on the screen
     this.bgColor;
     this.timeToNextGap; //time until setNextGap is turned on
+    this.groundHeight;
     
-    var buffer; //min space between nonNecessary EnvBlocks
     var drawGap; //boolean which determines whether gap should be
                  //currently drawn
     var gapLeft;  //once setNextGap is on, time for which gap continues
@@ -54,15 +57,64 @@ function Environment () {
     //options for sprites on the top and bottom of the screen.
     //also, sprites which must be drawn (e.g. sky, grass)
     var spriteChoices = [
-        {name : "groundBlock",  level : 0, necessary : true,  collidable : true,  width : 32, height : 32, y : 568},
-        {name : "groundBlock",  level : 1, necessary : true,  collidable : true,  width : 32, height : 32, y : 536},
-        {name : "groundBlock",  level : 2, necessary : true,  collidable : true,  width : 32, height : 32, y : 504},
-        {name : "groundBlock",  level : 3, necessary : true,  collidable : true,  width : 32, height : 32, y : 472},
-        {name : "bush",         level : 4, necessary : false, collidable : false, width : 96, height : 32, y : 440, startChance : 2, followChance : 1.5},
-        {name : "pipe",         level : 5, necessary : false, collidable : true,  width : 64, height : 64, y : 408, startChance : 8, followChance : 8},
-        {name : "brickBlock",   level : 6, necessary : false, collidable : true,  width : 32, height : 32, y : 300, startChance : 4, followChance : 1.3},
-        {name : "cloudPlatform",level : 7, necessary : false, collidable : true,  width : 96, height : 32, y : 200, startChance : 4, followChance : 1.3},
-        {name : "cloud",        level : 8, necessary : false, collidable : false, width : 96, height : 64, y : 100, startChance : 4, followchance : 2}
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -7, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 224},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -6, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 192},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -5, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 160},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -4, necessary : true, collidable : true,  width : 32, 
+         height : 32, y : 128},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -3, necessary : true, collidable : true,  width : 32, 
+         height : 32, y : 96},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -2, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 64},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : -1, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 32},
+        {name : undefined,
+         nameOptions : ["groundBlock", "groundBlock_blue",
+                        "groundBlock_white", "groundBlock_green"],
+         level : 0, necessary : true, collidable : true,  width : 32,
+         height : 32, y : 0},
+        {name : undefined, nameOptions : ["bush"],
+         level : 1, necessary : false, collidable : false, width : 96,
+         height : 32, y : -32, startChance : 2, followChance : 1.5},
+        {name : undefined,
+         nameOptions : ["pipe", "pipe_orange", "pipe_white", "pipe_purple"],
+         level : 2, necessary : false, collidable : true,  width : 64,
+         height : 64, y : -64, startChance : 8, followChance : 8},
+        {name : undefined,
+         nameOptions : ["brickBlock", "brickBlock_white",
+                        "brickBlock_blue", "brickBlock_green"],
+         level : 3, necessary : false, collidable : true,  width : 32,
+         height : 32, y : -172, startChance : 4, followChance : 1.3},
+        {name : undefined, nameOptions : ["cloudPlatform"],
+         level : 4, necessary : false, collidable : true,  width : 96,
+         height : 32, y : -272, startChance : 4, followChance : 1.3},
+        {name : undefined, nameOptions : ["cloud"],
+         level : 5, necessary : false, collidable : false, width : 96,
+         height : 64, y : -372, startChance : 4, followchance : 2}
     ];
 
     //moves all EnvBlocks in a by a given distance
@@ -76,17 +128,19 @@ function Environment () {
     //initialize the environment, with "below" determining how far beneath
     //the current top of the screen the top of the environment is located
     this.init = function (game, below) {
-        //clear spritesOnScreen
         this.spritesOnScreen = [];
+        this.bgColor = randomColor();
+        this.timeToNextGap = 0;
+        this.groundHeight = 472;
 
-        buffer = 50;
         gapLeft = 0;
         drawGap = false;
         plants = true;
 
-        //randomly choose background color and first gap location
-        this.bgColor = randomColor();
-        this.timeToNextGap = 0;
+        //randomly pick sprites
+        for (var i = 0; i < spriteChoices.length; i++) {
+            spriteChoices[i].name = randomChoice(spriteChoices[i].nameOptions);
+        }
 
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
@@ -96,7 +150,7 @@ function Environment () {
                                    drawGap);
             } else {
                 addNonNecessarySprite(choice, game.width, this.spritesOnScreen,
-                                      drawGap, true, buffer);
+                                      drawGap, true, game.scrollX);
             }
         }
 
@@ -116,7 +170,8 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                                        envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -126,7 +181,8 @@ function Environment () {
             for (var i = 0; i < a.length; i++) {
                 var envBlock = a[i];
                 if(envBlock.drawable && !envBlock.necessary) {
-                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y, envBlock.width, envBlock.height);
+                    envBlock.img.drawTo(ctx, envBlock.x, envBlock.y,
+                                        envBlock.width, envBlock.height);
                     if((game.gameOver || game.gamePaused) === false){
                         envBlock.img.nextFrame();
                     }
@@ -145,7 +201,11 @@ function Environment () {
         var newSpritesOnScreen = [];
         for (var i = 0; i < spritesOnScreen.length; i++) {
             var sprite = spritesOnScreen[i];
+            // for sidescrolling objects
             if ((sprite.x + sprite.width) > 0) newSpritesOnScreen.push(sprite);
+            // for upward objects
+            else if ((sprite.y + sprite.height) > 0) 
+                {newSpritesOnScreen.push(sprite);}
         }
         self.spritesOnScreen = newSpritesOnScreen;
     };
@@ -158,7 +218,7 @@ function Environment () {
     //onScreen is a boolean which determines whether EnvBlocks can be created
     //if they are in a position that is currently on the screen
     var addNonNecessarySprite = function (choice, gameWidth, spritesOnScreen,
-                                          drawGap, onScreen, buffer) {
+                                          drawGap, onScreen, gameSpeed) {
                                           
         //ensure that all objects created will be off screen
         var furthestRight = (onScreen) ? 0 : gameWidth;
@@ -178,7 +238,6 @@ function Environment () {
                 furthestRightDrawn = envBlock.drawable;
             }
         }
-        //furthestRight += buffer;
 
         while(furthestRight < 2 * gameWidth) {
             var collidable,
@@ -186,7 +245,13 @@ function Environment () {
 
             var chance = (furthestRightDrawn) ? choice.followChance :
                                                 choice.startChance;
-            if (randomChance(chance) && !drawGap) {
+            if (randomChance(chance)
+               && !drawGap
+               && furthestRight + choice.width
+                  < 2 * gameWidth - gameSpeed * self.timeToNextGap) {
+                //if a gap is not currently being drawn
+                //and the edge of the sprite to be drawn will not extend into
+                //the next gap
                 collidable = choice.collidable;
                 drawable = true;
             } else {
@@ -196,11 +261,11 @@ function Environment () {
             }
 
             var newSprite =
-                new EnvBlock(choice.name, furthestRight, choice.y,
+                new EnvBlock(choice.name, furthestRight, 
+                             self.groundHeight + choice.y,
                              choice.level, choice.width, choice.height,
                              choice.necessary, collidable, drawable, false);
             furthestRight += newSprite.width;
-            //furthestRight += buffer;
             spritesOnScreen.push(newSprite);
         }
     };
@@ -228,10 +293,14 @@ function Environment () {
             if (drawGap) {
                 if (choice.level === 0 && plants) {
                     //draw a piranha plant over the gap
-                    var holeSprite = 
-                        new EnvBlock("piranhaPlant", furthestRight, 552, 
-                                     1, 32, 48, false, true, true, true); 
-                    spritesOnScreen.push(holeSprite);
+                    var pirhanaPlant = 
+                        new EnvBlock("piranhaPlant", furthestRight, 520,
+                                     0, 32, 48, false, true, true, true); 
+                    spritesOnScreen.push(pirhanaPlant);
+                    var plantBlock =
+                        new EnvBlock(spriteChoices[4].name, furthestRight, 568,
+                                     0, 32, 32, false, true, true, false); 
+                    spritesOnScreen.push(plantBlock);
                 }
                 collidable = false;
                 drawable = false;
@@ -241,7 +310,8 @@ function Environment () {
             }
 
             var newSprite = 
-                new EnvBlock(choice.name, furthestRight, choice.y,
+                new EnvBlock(choice.name, furthestRight, 
+                             self.groundHeight + choice.y,
                              choice.level, choice.width, choice.height,
                              choice.necessary, collidable, drawable, false);
             spritesOnScreen.push(newSprite);
@@ -252,7 +322,6 @@ function Environment () {
     //takes the x-coordinate of the screen's sides in world coordinates.
     //note that these should be the NEW side coordinates.
     this.update = function (game) {
-
         // gap drawing
         var manageGaps = function () {
             if (drawGap) {
@@ -264,6 +333,7 @@ function Environment () {
                     drawGap = false;
                     plants = true;
                     self.timeToNextGap = randomInt(50, 100);
+                    self.groundHeight = randomInt(344, 504);
                 }
             } else {
                 //if not currently drawing a gap
@@ -304,7 +374,7 @@ function Environment () {
             } else {
                 addNonNecessarySprite(choice, game.width,
                                       this.spritesOnScreen, drawGap,
-                                      false, buffer)
+                                      false, game.scrollX);
             }
         }
 

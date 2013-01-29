@@ -236,10 +236,13 @@ function SpriteImage(srcNickname){
 SpriteImage.sourcesData = {
     // human-readable-nickname array to make this for-loopable to work around
     // not being allowed to forloop through object keys by homework constraints
-    "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
-                 "cloud", "bush", "sleep_render", "bullet_bill",
-                 "piranhaPlant", "spiny", "cloudPlatform", "titleBackground",
-                 "jumpMsg"],
+    "nicknames":["mario", "pipe", "pipe_orange", "pipe_white", "pipe_purple",
+                 "groundBlock", "groundBlock_blue",
+                 "groundBlock_green", "groundBlock_white", "solidBlock",
+                 "brickBlock", "brickBlock_white", "brickBlock_blue",
+                 "brickBlock_green", "cloud", "bush", "sleep_render", "bullet_bill",
+                 "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock",
+                 "titleBackground", "jumpMsg"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -364,6 +367,82 @@ SpriteImage.sourcesData = {
             "default_static":[{x:0,y:0,w:492,h:48}],
             "flash":[{x:0,y:0,w:492,h:48},
                      {x:0,y:48,w:492,h:48}],
+        }
+    },
+    "brickBlock_blue":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:32,y:64,w:32,h:32}],
+        }
+    },
+    "brickBlock_white":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:32,y:128,w:32,h:32}],
+        }
+    },
+    "brickBlock_green":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:32,y:192,w:32,h:32}],
+        }
+    },
+    "groundBlock_blue":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:64,w:32,h:32}],
+        }
+    },
+    "groundBlock_white":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:128,w:32,h:32}],
+        }
+    },
+    "groundBlock_green":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:192,w:32,h:32}],
+        }
+    },
+    "pipe_orange": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:384,w:64,h:64}]
+        }
+    },
+    "pipe_white": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:512,w:64,h:64}]
+        }
+    },
+    "pipe_purple": {
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:0,y:576,w:64,h:64}]
+        }
+    },
+    "wackyBlock":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "randomDelay": true,
+        "frameStepDelay": 4,
+        "animationData":{
+            "default_static":[{x:0,y:64,w:32,h:32},
+                            {x:64,y:192,w:32,h:32},
+                            {x:98,y:128,w:32,h:32},
+                            {x:768,y:128,w:32,h:32},
+                            {x:128,y:736,w:32,h:32}]
         }
     }
     

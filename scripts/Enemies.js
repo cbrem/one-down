@@ -19,7 +19,7 @@ function Enemy(type, x, y){
         
         this.maxVelX = (typeData.maxVelX !== undefined) ? typeData.maxVelX : 2;
         this.maxVelX = Math.abs(this.maxVelX);
-        this.maxUpVel = 17;
+        this.maxUpVel = (typeData.maxVelY !== undefined) ? typeData.maxVelY : 17;
         this.maxDownVel = this.maxUpVel*(3/4);
         
         
@@ -157,7 +157,8 @@ Enemy.types = {
         "height": 28,
         "flags":{
             "has_gravity": true,
-            "collidable": true // if set to true, enemy will also change directions at walls
+            // if set to true, enemy will also change directions at walls
+            "collidable": true
         }
     },
     "bullet_bill":{
@@ -165,6 +166,26 @@ Enemy.types = {
         "width": 28,
         "height": 20,
         "maxVelX": 5,
+        "flags":{
+            "collidable_player_only":true
+        }
+    },
+    "wackyBlock":{
+        "spriteName": "wackyBlock",
+        "width": 32,
+        "height": 32,
+        "maxVelY": 0,
+        "maxVelX": 0,
+        "flags":{
+            "collidable_player_only":true
+        }
+    },
+    "1down":{
+        "spriteName": "1down",
+        "width": 48,
+        "height": 48,
+        "maxVelX": 0,
+        "maxVelY": 3,
         "flags":{
             "collidable_player_only":true
         }
