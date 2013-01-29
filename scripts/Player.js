@@ -82,8 +82,8 @@ function Player(){
                 {this.x = 0;}
             if (this.y + this.height > game.height)
                 {this.y = game.height-this.height;}
-            if (this.y < 30)
-                {this.y = 30}
+            if (this.y + this.height < 0)
+                {game.gameOver = true;}
         }
     }
     
@@ -237,7 +237,7 @@ function Player(){
         // beginning to fall, move player to the middle of the screen
         if (game.startFallingCount > 0) {
             game.startFallingCount--;
-            this.velY -= 5;
+            this.velY -= 2;
         }
         
         this._updatePos(game);

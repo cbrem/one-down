@@ -145,7 +145,9 @@ function Collisions() {
               }
               // spinys bounce you back
               else if (envObj instanceof Enemy && player instanceof Player) {
-                player.velX = -20;
+                if(envObj.sprite.nickname !== "wackyBlock") {
+                  player.velX = -20;
+                }
                 player.velY = -15;
               }
               else {game.gameOver = true;}              
