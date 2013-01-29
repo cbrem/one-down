@@ -370,42 +370,44 @@ function Environment () {
         //remove elements which have moved off left side
         pruneSprites(this.spritesOnScreen, game.width);
 
-        //add in necessary sprites
-        for (var i = 0; i < spriteChoices.length; i++) {
-            var choice = spriteChoices[i];
-            if (choice.necessary){
-                addNecessarySprite(choice, game.width, 
-                                   this.spritesOnScreen, drawGap);
-            } else {
-                addNonNecessarySprite(choice, game.width,
-                                      this.spritesOnScreen, drawGap,
-                                      false, game.scrollX);
+        if (!game.falling) {
+            //add in necessary sprites
+            for (var i = 0; i < spriteChoices.length; i++) {
+                var choice = spriteChoices[i];
+                if (choice.necessary){
+                    addNecessarySprite(choice, game.width, 
+                                       this.spritesOnScreen, drawGap);
+                } else {
+                    addNonNecessarySprite(choice, game.width,
+                                          this.spritesOnScreen, drawGap,
+                                          false, game.scrollX);
+                }
             }
-        }
 
-        //check for the whole environment being on screen
-        var maxY = 0;
-        for (var i = 0; i < this.spritesOnScreen.length; i++) {
-            var envBlock = this.spritesOnScreen[i];
-            maxY = Math.max(maxY, envBlock.y + envBlock.height);
-        }
-        if ((game.transitionLand) && (maxY <= game.height)) {
-           // console.log("BACK TO PLATFORM TRANSITION!");
-            game.scrollX = game.scrollSpeed;
-            game.scrollY = 0;
-            game.transitionLand = false;
-            if (game.falling) game.falling = false;
-        }
+            //check for the whole environment being on screen
+            var maxY = 0;
+            for (var i = 0; i < this.spritesOnScreen.length; i++) {
+                var envBlock = this.spritesOnScreen[i];
+                maxY = Math.max(maxY, envBlock.y + envBlock.height);
+            }
+            if ((game.transitionLand) && (maxY <= game.height)) {
+                // console.log("BACK TO PLATFORM TRANSITION!");
+                game.scrollX = game.scrollSpeed;
+                game.scrollY = 0;
+                game.transitionLand = false;
+                if (game.falling) game.falling = false;
+            }
 
-        if (game.falling) {
-           // don't let it get below 16...bad hex error-turns white
-            var fadeSpeed = 2;
-            if (this.bgColor.red > 15+fadeSpeed) 
-                {this.bgColor.red -= fadeSpeed;};
-            if (this.bgColor.green > 15+fadeSpeed) 
-                {this.bgColor.green -= fadeSpeed;};
-            if (this.bgColor.blue > 15+fadeSpeed) 
-                {this.bgColor.blue -= fadeSpeed;};
+            if (game.falling) {
+                // don't let it get below 16...bad hex error-turns white
+                var fadeSpeed = 2;
+                if (this.bgColor.red > 15+fadeSpeed) 
+                    {this.bgColor.red -= fadeSpeed;};
+               if (this.bgColor.green > 15+fadeSpeed) 
+                    {this.bgColor.green -= fadeSpeed;};
+                if (this.bgColor.blue > 15+fadeSpeed) 
+                    {this.bgColor.blue -= fadeSpeed;};
+           }
         }
     };
 }
