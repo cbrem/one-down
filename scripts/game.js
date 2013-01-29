@@ -134,6 +134,7 @@ function Game() {
                 player.maxVelX += 2;
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height);
+                allEnemies._init();
             }
         }
         // activate FALLING
@@ -144,6 +145,15 @@ function Game() {
             self.scrollX = 0;
             self.scrollY = -10;
             self.nextTransition = self.time + 150;
+        }
+
+        // add falling enemies
+        if (self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+            if ((self.time % 3) < 1) {
+                allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
+            if ((self.time % 3) < 1) {
+            //    allEnemies.addEnemy("star", randomInt(300,900), 650);
+            }
         }
     };
 
@@ -203,9 +213,9 @@ function Game() {
         ctx.font = 'bold 20px Arial, Monaco, monospace';
         ctx.textAlign = "left";
         ctx.fillStyle = "white";
-        ctx.fillText("SCORE ", canvas.width*2/3, 22);
+        ctx.fillText("SCORE ", canvas.width*5/6, 22);
         ctx.textAlign = "right";
-        ctx.fillText(String(self.time), canvas.width-5, 22);
+        ctx.fillText(String(self.time), canvas.width-10, 22);
     };
 
     var updateView = function () {

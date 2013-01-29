@@ -238,7 +238,8 @@ SpriteImage.sourcesData = {
     // not being allowed to forloop through object keys by homework constraints
     "nicknames":["mario", "pipe", "groundBlock", "solidBlock", "brickBlock",
                  "cloud", "bush", "sleep_render", "bullet_bill",
-                 "piranhaPlant", "spiny", "cloudPlatform"],
+                 "piranhaPlant", "spiny", "cloudPlatform",
+                 "wackyBlock"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -346,6 +347,19 @@ SpriteImage.sourcesData = {
         "imgObj": undefined,
         "animationData":{
             "default_static":[{x:256,y:640,w:96,h:32}],
+        }
+    },
+    "wackyBlock":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "randomDelay": true,
+        "frameStepDelay": 4,
+        "animationData":{
+            "default_static":[{x:0,y:64,w:32,h:32},
+                            {x:64,y:192,w:32,h:32},
+                            {x:98,y:128,w:32,h:32},
+                            {x:768,y:128,w:32,h:32},
+                            {x:128,y:736,w:32,h:32}]
         }
     }
 }
