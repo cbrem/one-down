@@ -141,12 +141,23 @@ function Environment () {
         this.bgColor = (normal) ? {red : 0x93, green : 0xb3, blue : 0xff} :
                                   randomColor();
 
-        //randomly pick sprites if !normal. if normal, choose defaults
-        for (var i = 0; i < spriteChoices.length; i++)
-            spriteChoices[i].name = (normal) ? 
-                                    spriteChoices[i].nameOptions[0] :
-                                    randomChoice(spriteChoices[i].nameOptions);
-
+        //randomly pick block colors.
+        //to ensure that all groundBlocks get same color, pick this first
+        //and apply it to all blocks identified as groundBlocks.
+        var groundBlockChoice = randomChoice(spriteChoices[0].nameOptions);
+        for (var i = 0; i < spriteChoices.length; i++) {
+            var sprite = spriteChoices[i];
+            if(normal) {
+                //choose default
+                sprite.name = sprite.nameOptions[0];
+            } else {
+                //choose randomly
+                sprite.name = (sprite.nameOptions[0] === "groundBlock") ?
+                              groundBlockChoice :
+                              randomChoice(sprite.nameOptions);
+            }
+        }
+        
         //fill map with necessary sprites
         for (var i = 0; i < spriteChoices.length; i++) {
             var choice = spriteChoices[i];
