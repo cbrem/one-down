@@ -91,18 +91,47 @@ function Game() {
     this.nextTransition;
     this.falling;
     this.scrollSpeed;
+    this._nextEnemyDelayCountdown; // how many frames until the next enemy
 
+    // get a random number of frames to wait until next enemy
+    var _regenNextEnemyDelay = function(self){
+        var minDist = 20;
+        var maxDist = self.width * 1.1;
+        var distanceToNextEnemy = randomInt(minDist, maxDist);
+        return Math.ceil(distanceToNextEnemy / Math.abs(self.scrollSpeed));
+    }
+    
     var updateModel = function () {
         //clear clicks, but don't clear the held keys
         clicks = [];
         if(self.atTitle === true){
             return;
         }
+        console.log(environment.spritesOnScreen.length, "sprites on screen");
         // update player, environment, and collisions!
         if(!(self.gamePaused) && !(self.gameOver)){
+            // spawn new enemies
+            if (!self.falling){
+                self._nextEnemyDelayCountdown--;
+                if(self._nextEnemyDelayCountdown <= 0){
+                   self._nextEnemyDelayCountdown = _regenNextEnemyDelay(self);
+                   if(Math.random() < 0.4){
+                        var randHeight = randomInt(50, 300); // hardcoding, eep!
+                        allEnemies.addEnemy("bullet_bill", self.width, randHeight);
+                   }
+                   else{
+                        var randHeight = randomInt(200, 475); // hardcoding, eep!
+                        allEnemies.addEnemy("spiny", self.width, randHeight);
+                   }
+                }
+            }
+            
+            // update location/velocity/etc data
             player.update(self, clicks, heldKeys); 
             allEnemies.update(self);
             environment.update(self);
+            
+            // check collisions
             allEnemies.getAllEnemies().forEach(function(enemy){
                 collisions.collide(enemy,environment.spritesOnScreen,self); 
             });
@@ -162,7 +191,6 @@ function Game() {
 
     // draw title screen when game starts
     var _drawTitleScreen = function(){
-        console.log("SHOULD BE DRAWING TITLE SCREEN NOW");
         titleSprites.forEach(function(spriteInfo){
             var x = spriteInfo.x;
             var y = spriteInfo.y;
@@ -269,7 +297,6 @@ function Game() {
     var timer = function (){
         updateModel();
         updateView();
-        console.log(self.atTitle);
         setTimeout(timer, cycleLength);
     };
     
@@ -349,6 +376,8 @@ function Game() {
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
+        
+        this._nextEnemyDelayCountdown = 0; //start with enemy on screen
         
         // initialize player
         player = new Player(500, 400, 32, 32);
