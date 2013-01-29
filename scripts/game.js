@@ -383,7 +383,7 @@ function Game() {
         player.maxVelX = -this.scrollSpeed+3;
         //initialize environment
         environment = new Environment();
-        environment.init(self, 0, false);
+        environment.init(self, 0, true);
         // initialize Collisions
         collisions = new Collisions();
         
