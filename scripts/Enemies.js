@@ -179,5 +179,15 @@ Enemy.types = {
         "flags":{
             "collidable_player_only":true
         }
+    },
+    "1down":{
+        "spriteName": "1down",
+        "width": 48,
+        "height": 48,
+        "maxVelX": 0,
+        "maxVelY": 3,
+        "flags":{
+            "collidable_player_only":true
+        }
     }
 }
