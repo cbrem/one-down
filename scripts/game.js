@@ -372,7 +372,7 @@ function Game() {
         this.worldY = 0;
         this.width = 1200;
         this.height = 600;
-        this.scrollSpeed = -16;
+        this.scrollSpeed = -8;
         this.scrollX = this.scrollSpeed;
         this.scrollY = 0;
         this.time = 0;
@@ -384,7 +384,7 @@ function Game() {
         player.maxVelX = -this.scrollSpeed+3;
         //initialize environment
         environment = new Environment();
-        environment.init(self, 0, true);
+        environment.init(self, 0, false);
         // initialize Collisions
         collisions = new Collisions();
         
