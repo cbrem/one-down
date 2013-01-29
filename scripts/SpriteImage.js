@@ -243,6 +243,9 @@ SpriteImage.sourcesData = {
                  "brickBlock_green", "cloud", "bush", "sleep_render", "bullet_bill",
                  "piranhaPlant", "spiny", "cloudPlatform", "wackyBlock", "1down",
                  "titleBackground","jumpMsg", "tutorial"],
+                 "titleBackground","jumpMsg", "mushPlatform_green",
+                 "mushPlatform_orange", "mushPlatform_white",
+                 "mushPlatform_purple", "tutorial"],
     "mario": {
         "srcPath": "assets/images/supermariobros_mario_sheet_big.png",
         "imgObj": undefined, // overwritten with Image object after preload
@@ -458,6 +461,33 @@ SpriteImage.sourcesData = {
         "animationData": {
             "default_static":[{x:0,y:0,w:192,h:120}]
         }
-    }
-    
+    },
+    "mushPlatform_green":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData": {
+            "default_static":[{x:160,y:288,w:96,h:32}]
+        }
+    },
+    "mushPlatform_orange":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData": {
+            "default_static":[{x:160,y:416,w:96,h:32}]
+        }
+    },
+    "mushPlatform_white":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:160,y:544,w:96,h:32}],
+        }
+    },    
+    "mushPlatform_purple":{
+        "srcPath": "assets/images/tileset.png",
+        "imgObj": undefined,
+        "animationData":{
+            "default_static":[{x:160,y:608,w:96,h:32}],
+        }
+    }    
 }
