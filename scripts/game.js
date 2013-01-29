@@ -167,6 +167,7 @@ function Game() {
                 //console.log("NEW SPEEDS: player-", player.maxVelX, " level-", -self.scrollSpeed)
                 environment.init(self, self.height, false);
                 allEnemies._init();
+                self.fallTutorial = false;
             }
         }
         // activate FALLING
@@ -177,10 +178,13 @@ function Game() {
             self.scrollX = 0;
             self.scrollY = -10;
             self.nextTransition = self.time + 50;
+            if (self.mushroomCount === 0) {
+                self.fallTutorial = true;
+            }
         }
 
         // add falling enemies
-        if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+        if (!self.gamePaused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
             if ((self.time % 2) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
             if ((self.time % 110) < 1) {
@@ -297,6 +301,11 @@ function Game() {
         else if(self.gamePaused){
             _drawPauseScreen();
         }
+        else if (self.fallTutorial && (self.startFallingCount < 10)) {
+            ctx.save();
+            tutorialSprite.drawTo(ctx,900,400);
+            ctx.restore();
+        }
     };
 
     var cycleLength = Math.max(1, Math.round(1000/_gameFps)); //length of a timer cycle
@@ -398,6 +407,8 @@ function Game() {
         allEnemies = new Enemies();
         
         pauseSprite = new SpriteImage("sleep_render");
+
+        tutorialSprite = new SpriteImage("tutorial");
     }
     
     this.init = function(){
