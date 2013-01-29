@@ -124,11 +124,10 @@ function Game() {
                 // and is a safety in case they don't
                 self.nextTransition += 300;
             }
-            // activate STOP FALLING
-            else {
+            // activate STOP FALLING when 1down is hit (see collisions)
+            else if (self.transitionLand) {
                 //console.log("STOP FALLING TRANSISTION at ", self.time);
-                self.transitionLand = true;
-                self.nextTransition = self.time + 300;
+                self.nextTransition = self.time + randomInt(200,450);
                 // increase speed!
                 self.scrollSpeed -= 2;
                 player.maxVelX += 2;
@@ -144,14 +143,14 @@ function Game() {
             self.startFallingCount = 60;
             self.scrollX = 0;
             self.scrollY = -10;
-            self.nextTransition = self.time + 150;
+            self.nextTransition = self.time + 50;
         }
 
         // add falling enemies
-        if (self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
+        if (!self.paused && !self.gameOver && self.falling && !self.transitionLand && (self.startFallingCount < 10)) {
             if ((self.time % 3) < 1) {
                 allEnemies.addEnemy("wackyBlock", randomInt(0,1160), 650);}
-            if ((self.time % 10) < 1) {
+            if ((self.time % 20) < 1) {
                 allEnemies.addEnemy("1down", randomInt(300,900), 650);
             }
         }
